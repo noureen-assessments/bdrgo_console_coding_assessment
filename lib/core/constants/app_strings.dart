@@ -3,9 +3,30 @@ abstract final class AppStrings {
   static const appName = 'badrgo Ops Console';
 
   // Pages
-  static const setupComplete = 'Project setup complete';
   static const pageNotFound = 'Page not found';
   static const goHome = 'Go home';
+  static const retry = 'Retry';
+
+  // Sign-in
+  static const signIn = 'Sign in';
+  static const signInSubtitle = 'Use your operations account.';
+  static const email = 'Email';
+  static const password = 'Password';
+  static const showPassword = 'Show password';
+  static const hidePassword = 'Hide password';
+  static const emailRequired = 'Enter your email.';
+  static const emailInvalid = 'Enter a valid email address.';
+  static const passwordRequired = 'Enter your password.';
+  static const sessionExpired = 'Your session has ended. Please sign in again.';
+
+  // Session
+  static const restoringSession = 'Checking your session…';
+  static const restoreFailed = "Couldn't check your session";
+  static const signOut = 'Sign out';
+  static const allCities = 'All cities';
+  static const consolePlaceholder = 'Your console will appear here.';
+
+  static String welcome(String name) => 'Welcome, $name';
 
   // Connectivity
   static const offline =

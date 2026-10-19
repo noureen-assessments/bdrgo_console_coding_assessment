@@ -7,6 +7,8 @@ import 'config/flavor/flavor_config.dart';
 import 'config/routing/app_router.dart';
 import 'core/bloc/app_bloc_observer.dart';
 import 'core/di/injection_container.dart';
+import 'features/auth/presentation/bloc/auth/auth_bloc.dart';
+import 'features/connectivity/presentation/bloc/connectivity_bloc.dart';
 import 'my_app.dart';
 
 /// Shared bootstrap for every flavor entry point.
@@ -19,7 +21,15 @@ Future<void> mainCommon(FlavorConfig config) async {
   }
 
   await initCore(config);
-  runApp(MyApp(router: sl<AppRouter>(), flavorConfig: config));
+  runApp(
+    MyApp(
+      router: sl<AppRouter>(),
+      flavorConfig: config,
+      authBloc: sl<AuthBloc>()..add(const AuthStarted()),
+      connectivityBloc: sl<ConnectivityBloc>()
+        ..add(const ConnectivityStarted()),
+    ),
+  );
 }
 
 // Dev:   flutter run -d chrome -t lib/main_dev.dart
