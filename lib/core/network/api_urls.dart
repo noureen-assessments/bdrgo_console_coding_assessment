@@ -19,8 +19,7 @@ final class ApiUrls {
 
   /// [token] is omitted in web cookie mode after a refresh: `EventSource`
   /// then authenticates with the HttpOnly cookie (`withCredentials`).
-  Uri events({String? token}) =>
-      _withPath(SseEndpoints.path, token: token);
+  Uri events({String? token}) => _withPath(SseEndpoints.path, token: token);
 
   /// Same host with a `ws`/`wss` scheme. Without [token] the handshake relies
   /// on the browser sending the HttpOnly cookie.

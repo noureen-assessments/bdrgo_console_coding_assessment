@@ -28,6 +28,20 @@ void main() {
       );
     });
 
+    test('reads the bare { code, message } body of the auth endpoints', () {
+      final failure = ApiErrorParser.fromRestBody({
+        'code': 'INVALID_EMAIL_OR_PASSWORD',
+        'message': 'Invalid email or password',
+      }, 401);
+
+      expect(
+        failure,
+        isA<ServerFailure>()
+            .having((f) => f.message, 'message', 'Invalid email or password')
+            .having((f) => f.code, 'code', 'INVALID_EMAIL_OR_PASSWORD'),
+      );
+    });
+
     test('keeps validation details', () {
       final failure = ApiErrorParser.fromRestBody(
         _rest('VALIDATION_FAILED', {'field': 'amount'}),

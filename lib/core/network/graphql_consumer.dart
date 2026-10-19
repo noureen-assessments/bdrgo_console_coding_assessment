@@ -4,6 +4,7 @@ import '../constants/app_strings.dart';
 import '../constants/graphql_endpoints.dart';
 import '../errors/api_error_parser.dart';
 import '../errors/failures.dart';
+import '../session/session_expiry_notifier.dart';
 import 'api_urls.dart';
 
 /// GraphQL-over-HTTP transport. The console only sends queries with
@@ -20,11 +21,15 @@ abstract interface class GraphQLConsumer {
   });
 }
 
+/// GraphQL answers `200` with `extensions.code: UNAUTHENTICATED` when the
+/// session is gone, so that case is reported here; HTTP `401`s are reported
+/// by the shared `AuthInterceptor`.
 final class DioGraphQLConsumer implements GraphQLConsumer {
-  DioGraphQLConsumer(this._dio, this._urls);
+  DioGraphQLConsumer(this._dio, this._urls, this._sessionExpiry);
 
   final Dio _dio;
   final ApiUrls _urls;
+  final SessionExpiryNotifier _sessionExpiry;
 
   @override
   Future<Map<String, Object?>> query(
@@ -60,6 +65,7 @@ final class DioGraphQLConsumer implements GraphQLConsumer {
       throw ServerFailure(AppStrings.unexpectedResponse, statusCode: status);
     }
     final failure = ApiErrorParser.fromGraphQLBody(body, statusCode: status);
+    if (failure is UnauthenticatedFailure) _sessionExpiry.notify();
     if (failure != null) throw failure;
     final data = body[GraphQLKeys.data];
     return data is Map ? data.cast<String, Object?>() : const {};

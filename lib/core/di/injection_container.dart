@@ -11,6 +11,7 @@ import '../network/api_urls.dart';
 import '../network/dio_consumer.dart';
 import '../network/graphql_consumer.dart';
 import '../network/interceptors/api_interceptors.dart';
+import '../session/session_expiry_notifier.dart';
 import '../storage/in_memory_token_storage.dart';
 import '../storage/token_storage.dart';
 import '../utils/secure_storage.dart';
@@ -31,16 +32,17 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
   sl
     ..registerSingleton<FlavorConfig>(flavorConfig)
     ..registerSingleton<ApiUrls>(ApiUrls(flavorConfig.values.baseUri))
-    ..registerSingleton<TokenStorage>(tokenStorage);
+    ..registerSingleton<TokenStorage>(tokenStorage)
+    ..registerSingleton<SessionExpiryNotifier>(SessionExpiryNotifier());
 
   // Network
   sl
     ..registerLazySingleton<Dio>(
-      () => _createDio(sl(), sl(), withCredentials: useHttpOnlyCookie),
+      () => _createDio(sl(), sl(), sl(), withCredentials: useHttpOnlyCookie),
     )
     ..registerLazySingleton<ApiConsumer>(() => DioConsumer(sl()))
     ..registerLazySingleton<GraphQLConsumer>(
-      () => DioGraphQLConsumer(sl(), sl()),
+      () => DioGraphQLConsumer(sl(), sl(), sl()),
     );
 
   // Routing
@@ -59,21 +61,24 @@ TokenStorage _createTokenStorage(bool useHttpOnlyCookie) =>
 /// logging. No `sendTimeout`: on web it only applies to requests with a body.
 Dio _createDio(
   ApiUrls urls,
-  TokenStorage tokenStorage, {
+  TokenStorage tokenStorage,
+  SessionExpiryNotifier sessionExpiry, {
   required bool withCredentials,
 }) {
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: urls.restBaseUrl,
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 30),
-      contentType: Headers.jsonContentType,
-      responseType: ResponseType.json,
-    ),
-  )..httpClientAdapter = createHttpClientAdapter(
-      withCredentials: withCredentials,
-    );
-  dio.interceptors.add(AuthInterceptor(tokenStorage));
+  final dio =
+      Dio(
+          BaseOptions(
+            baseUrl: urls.restBaseUrl,
+            connectTimeout: const Duration(seconds: 15),
+            receiveTimeout: const Duration(seconds: 30),
+            contentType: Headers.jsonContentType,
+            responseType: ResponseType.json,
+          ),
+        )
+        ..httpClientAdapter = createHttpClientAdapter(
+          withCredentials: withCredentials,
+        );
+  dio.interceptors.add(AuthInterceptor(tokenStorage, sessionExpiry));
   if (kDebugMode) dio.interceptors.add(LoggingInterceptor());
   return dio;
 }

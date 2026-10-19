@@ -12,3 +12,8 @@ abstract interface class UseCase<T, Params> {
 final class NoParams {
   const NoParams();
 }
+
+/// A use case that streams values, e.g. connectivity or session events.
+abstract interface class StreamUseCase<T, Params> {
+  Stream<T> call(Params params);
+}

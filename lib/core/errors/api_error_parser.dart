@@ -7,7 +7,8 @@ import 'failures.dart';
 
 /// Builds [Failure]s from transport errors.
 ///
-/// REST: `{ "error": { "code", "message", "details" } }`.
+/// REST: `{ "error": { "code", "message", "details" } }`. The Better Auth
+/// endpoints (sign-in, sign-out) answer `{ "code", "message" }` instead.
 /// GraphQL: `{ "errors": [ { "message", "extensions": { "code", … } } ] }`.
 abstract final class ApiErrorParser {
   static Failure fromDioException(DioException exception) {
@@ -29,7 +30,8 @@ abstract final class ApiErrorParser {
   }
 
   static Failure fromRestBody(Object? body, int? statusCode) {
-    final error = body is Map ? body[ApiErrorKeys.error] : null;
+    final envelope = body is Map ? body[ApiErrorKeys.error] : null;
+    final error = envelope is Map ? envelope : body;
     if (error is! Map) {
       return _build(null, AppStrings.unexpectedResponse, const {}, statusCode);
     }
