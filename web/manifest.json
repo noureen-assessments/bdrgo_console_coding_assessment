@@ -1,11 +1,11 @@
 {
-    "name": "badrgo_console_assesment",
-    "short_name": "badrgo_console_assesment",
+    "name": "badrgo Ops Console",
+    "short_name": "badrgo Ops",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Badrgo Console Assesment",
+    "description": "badrgo Ops Console – city operations dashboard",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
