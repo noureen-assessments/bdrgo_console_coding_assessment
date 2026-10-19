@@ -7,6 +7,11 @@ abstract final class AppStrings {
   static const pageNotFound = 'Page not found';
   static const goHome = 'Go home';
 
+  // Connectivity
+  static const offline =
+      "You're offline. We'll reconnect automatically when the connection is "
+      'back.';
+
   // Errors
   static const unexpectedError = 'Something went wrong. Please try again.';
   static const unexpectedResponse = 'Unexpected server response.';

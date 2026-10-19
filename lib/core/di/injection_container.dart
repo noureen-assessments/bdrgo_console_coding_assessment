@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import '../../config/env/env.dart';
 import '../../config/flavor/flavor_config.dart';
 import '../../config/routing/app_router.dart';
+import '../../features/connectivity/connectivity_injection.dart';
 import '../network/adapters/http_adapter.dart';
 import '../network/api_consumer.dart';
 import '../network/api_urls.dart';
@@ -49,6 +50,7 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
   sl.registerLazySingleton<AppRouter>(AppRouter.new);
 
   // Features
+  initConnectivity();
 }
 
 /// Web cookie mode keeps nothing in browser storage (the server's HttpOnly
