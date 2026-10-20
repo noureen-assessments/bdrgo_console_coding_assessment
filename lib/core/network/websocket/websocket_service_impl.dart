@@ -35,8 +35,8 @@ final class WebSocketServiceImpl implements WebSocketService {
     var controller = _topics[topic];
     if (controller == null) {
       controller = StreamController<Map<String, Object?>>.broadcast(
-        onListen: _connect,
-        onCancel: _disconnectWhenUnused,
+        onListen: () => _onListen(topic),
+        onCancel: () => _onCancel(topic),
       );
       _topics[topic] = controller;
     }
@@ -56,6 +56,25 @@ final class WebSocketServiceImpl implements WebSocketService {
     return false;
   }
 
+  void _onListen(WebSocketTopic topic) {
+    if (_status == WebSocketStatus.open) {
+      _send(WebSocketMessage.subscribe(topic));
+      return;
+    }
+    _connect();
+  }
+
+  void _onCancel(WebSocketTopic topic) {
+    if (!_hasListeners) {
+      _closeConnection();
+      _setStatus(WebSocketStatus.closed);
+      return;
+    }
+    if (_status == WebSocketStatus.open) {
+      _send(WebSocketMessage.unsubscribe(topic));
+    }
+  }
+
   Future<void> _connect() async {
     if (_channel != null) return;
     _setStatus(WebSocketStatus.connecting);
@@ -70,6 +89,21 @@ final class WebSocketServiceImpl implements WebSocketService {
   void _onOpened(WebSocketChannel channel) {
     if (channel != _channel) return;
     _setStatus(WebSocketStatus.open);
+    _subscribeAll();
+  }
+
+  void _subscribeAll() {
+    for (final entry in _topics.entries) {
+      if (entry.value.hasListener) {
+        _send(WebSocketMessage.subscribe(entry.key));
+      }
+    }
+  }
+
+  void _send(WebSocketMessage message) {
+    final channel = _channel;
+    if (channel == null) return;
+    channel.sink.add(message.encode());
   }
 
   void _onData(Object? data) {
@@ -83,12 +117,6 @@ final class WebSocketServiceImpl implements WebSocketService {
   }
 
   void _onClosed() {
-    _closeConnection();
-    _setStatus(WebSocketStatus.closed);
-  }
-
-  void _disconnectWhenUnused() {
-    if (_hasListeners) return;
     _closeConnection();
     _setStatus(WebSocketStatus.closed);
   }
