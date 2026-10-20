@@ -19,12 +19,10 @@ import '../storage/in_memory_token_storage.dart';
 import '../storage/token_storage.dart';
 import '../utils/secure_storage.dart';
 
-/// Service locator. Read only in the composition root (main, router, Bloc
-/// providers); every other class gets dependencies through its constructor.
+///  every other class gets dependencies through its constructor.
 final GetIt sl = GetIt.instance;
 
-/// Registers core services, then each feature's `init<Feature>()` from its
-/// `<feature>_injection.dart` as features are added.
+
 Future<void> initCore(FlavorConfig flavorConfig) async {
   final useHttpOnlyCookie = Env.usesHttpOnlyCookie;
   final tokenStorage = _createTokenStorage(useHttpOnlyCookie);
@@ -69,8 +67,7 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
 TokenStorage _createTokenStorage(bool useHttpOnlyCookie) =>
     useHttpOnlyCookie ? InMemoryTokenStorage() : AppSecureStorage();
 
-/// One Dio for REST and GraphQL so both share the auth header, cookies and
-/// logging. No `sendTimeout`: on web it only applies to requests with a body.
+/// One Dio for REST and GraphQL
 Dio _createDio(
   ApiUrls urls,
   TokenStorage tokenStorage,

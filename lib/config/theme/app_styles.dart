@@ -4,7 +4,7 @@ import 'app_colors.dart';
 import 'app_dimensions.dart';
 import 'app_text_styles.dart';
 
-/// Reusable decorations and component styles.
+
 abstract final class AppStyles {
   static const animationDuration = Duration(milliseconds: 200);
 

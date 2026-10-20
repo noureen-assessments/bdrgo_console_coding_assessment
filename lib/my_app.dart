@@ -10,8 +10,6 @@ import 'features/auth/presentation/widgets/auth_gate.dart';
 import 'features/connectivity/presentation/bloc/connectivity_bloc.dart';
 import 'features/connectivity/presentation/widgets/offline_banner.dart';
 
-/// Root widget. Provides the app-wide Blocs (session, connectivity), which
-/// live as long as the app and are created by the composition root.
 class MyApp extends StatelessWidget {
   const MyApp({
     required this.router,

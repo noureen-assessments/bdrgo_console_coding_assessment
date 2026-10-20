@@ -7,8 +7,7 @@ import '../../domain/usecases/watch_connectivity_use_case.dart';
 part 'connectivity_event.dart';
 part 'connectivity_state.dart';
 
-/// App-wide online/offline status for the offline banner. Starts as online
-/// so the banner never flashes while the first check runs.
+
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   ConnectivityBloc(this._watchConnectivity)
     : super(const ConnectivityOnline()) {

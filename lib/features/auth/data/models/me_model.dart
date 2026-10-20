@@ -3,17 +3,7 @@ import '../../domain/entities/user_role.dart';
 import 'city_model.dart';
 import 'permissions_model.dart';
 
-/// `GET /api/me` response:
-///
-/// ```json
-/// {
-///   "user": { "id", "name", "email" },
-///   "role": "dispatcher",
-///   "roleDescription": "…",
-///   "city": { "id", "name", … } | null,
-///   "permissions": { "trip": ["read", "assign"], … }
-/// }
-/// ```
+
 class MeModel extends CurrentUser {
   const MeModel({
     required super.id,
@@ -41,7 +31,6 @@ class MeModel extends CurrentUser {
     );
   }
 
-  // The constructor only accepts the model types, so these casts are safe.
   @override
   CityModel? get city => super.city as CityModel?;
 

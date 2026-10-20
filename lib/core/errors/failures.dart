@@ -2,10 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../constants/log_constants.dart';
 
-/// Transport-agnostic errors. Consumers throw them, `safeCall` turns them
-/// into `Left`, and Blocs handle them with an exhaustive `switch`.
-///
-/// Server codes come from REST `error.code` or GraphQL `extensions.code`.
+
 sealed class Failure extends Equatable implements Exception {
   const Failure(this.message, {this.statusCode});
 
@@ -34,7 +31,7 @@ final class NotFoundFailure extends Failure {
   const NotFoundFailure(super.message, {super.statusCode});
 }
 
-/// `INVALID_STATE` / 409: e.g. cancelling a trip that just completed.
+/// `INVALID_STATE` / 409:  cancelling a trip that just completed.
 final class InvalidStateFailure extends Failure {
   const InvalidStateFailure(super.message, {super.statusCode});
 }
@@ -63,7 +60,7 @@ final class MaintenanceFailure extends Failure {
     super.statusCode,
   });
 
-  /// `planned` or `unavailable`.
+
   final String? reason;
   final Duration? retryAfter;
   final DateTime? since;

@@ -12,22 +12,9 @@ IOSOptions _getIOSOptions() => const IOSOptions(
   accessibility: KeychainAccessibility.first_unlock_this_device,
 );
 
-/// sessionStorage: the token survives a refresh but not closing the tab, and
-/// two tabs never share (or overwrite) one session.
+
 WebOptions _getWebOptions() => const WebOptions(useSessionStorage: true);
 
-/// Secure token storage for mobile, and the web fallback.
-///
-/// - Android: AES-GCM with a Keystore-protected key.
-/// - iOS: Keychain, readable after first unlock, never synced off-device.
-/// - Web, only with `--dart-define=WEB_AUTH_MODE=storage`: AES-GCM via
-///   WebCrypto in sessionStorage. This is not `HttpOnly`: page scripts can
-///   still reach it, so it hides the token at rest but cannot stop XSS. The
-///   default web mode (`InMemoryTokenStorage` plus the server's HttpOnly
-///   cookie) keeps nothing in browser storage.
-///
-/// The token is cached in memory after the first read so the HTTP
-/// interceptor does not decrypt on every request.
 class AppSecureStorage implements TokenStorage {
   AppSecureStorage({FlutterSecureStorage? storage})
     : _storage =

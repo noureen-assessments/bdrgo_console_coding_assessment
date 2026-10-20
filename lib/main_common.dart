@@ -11,11 +11,9 @@ import 'features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'features/connectivity/presentation/bloc/connectivity_bloc.dart';
 import 'my_app.dart';
 
-/// Shared bootstrap for every flavor entry point.
 Future<void> mainCommon(FlavorConfig config) async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Clean URLs (`/trips/42`) instead of `/#/trips/42`.
-  usePathUrlStrategy();
+  usePathUrlStrategy();  // Clean URLs (`/trips/42`) instead of `/#/trips/42`.
   if (!FlavorConfig.isProduction() && kDebugMode) {
     Bloc.observer = const AppBlocObserver();
   }

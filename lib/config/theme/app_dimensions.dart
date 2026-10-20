@@ -1,5 +1,3 @@
-/// Every size the app uses: spacing, radii, icon and control sizes, and the
-/// window-width breakpoints. Widgets never write raw numbers.
 abstract final class AppDimensions {
   // Spacing scale
   static const double spaceXxs = 4;

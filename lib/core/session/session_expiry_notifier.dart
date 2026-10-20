@@ -1,8 +1,5 @@
 import 'dart:async';
 
-/// The single place every transport reports a `401`. REST and GraphQL report
-/// through Dio, SSE and WebSocket clients call [notify] themselves. The auth
-/// feature listens and signs the user out locally, once.
 final class SessionExpiryNotifier {
   final _controller = StreamController<void>.broadcast();
 

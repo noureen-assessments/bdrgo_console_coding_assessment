@@ -1,4 +1,3 @@
-/// User-facing text. Kept in one place so it can move to localisation later.
 abstract final class AppStrings {
   static const appName = 'badrgo Ops Console';
 

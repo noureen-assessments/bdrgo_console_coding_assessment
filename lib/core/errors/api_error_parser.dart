@@ -5,11 +5,7 @@ import '../constants/app_strings.dart';
 import '../constants/graphql_endpoints.dart';
 import 'failures.dart';
 
-/// Builds [Failure]s from transport errors.
-///
-/// REST: `{ "error": { "code", "message", "details" } }`. The Better Auth
-/// endpoints (sign-in, sign-out) answer `{ "code", "message" }` instead.
-/// GraphQL: `{ "errors": [ { "message", "extensions": { "code", … } } ] }`.
+
 abstract final class ApiErrorParser {
   static Failure fromDioException(DioException exception) {
     switch (exception.type) {
@@ -54,7 +50,7 @@ abstract final class ApiErrorParser {
     );
   }
 
-  /// First error of a GraphQL response body, or null when there is none.
+
   static Failure? fromGraphQLBody(Object? body, {int? statusCode}) {
     final errors = body is Map ? body[GraphQLKeys.errors] : null;
     if (errors is! List || errors.isEmpty) return null;

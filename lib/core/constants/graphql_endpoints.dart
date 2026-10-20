@@ -1,5 +1,3 @@
-/// GraphQL endpoint. Used for dashboard KPIs and charts, the trip list and
-/// trip detail. Query documents live in each feature's data source.
 abstract final class GraphQLEndpoints {
   static const path = '/graphql';
 }

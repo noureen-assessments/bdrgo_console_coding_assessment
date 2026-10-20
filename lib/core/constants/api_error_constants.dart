@@ -1,14 +1,9 @@
-/// Keys of the REST error envelope
-/// `{ "error": { "code", "message", "details" } }` and of GraphQL errors
-/// `{ "message", "extensions": { "code" } }`.
 abstract final class ApiErrorKeys {
   static const error = 'error';
   static const code = 'code';
   static const message = 'message';
   static const details = 'details';
   static const extensions = 'extensions';
-
-  // MAINTENANCE details
   static const reason = 'reason';
   static const retryAfterSeconds = 'retryAfterSeconds';
   static const since = 'since';
