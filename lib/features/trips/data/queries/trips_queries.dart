@@ -67,6 +67,39 @@ static const _tripRow = r'''
 
   static Map<String, Object?> tripVariables(String id) => {'id': id};
 
+  static const tripDetail =
+      r'''
+    query TripDetail($id: ID!) {
+      trip(id: $id) {
+        ...TripRow
+        distanceKm
+        refundReason
+        cancelReason
+        cancelledBy
+        rider {
+          phone
+          email
+          rating
+        }
+        driver {
+          phone
+          rating
+          vehicle {
+            make
+            model
+            color
+            plate
+          }
+        }
+        timeline {
+          status
+          at
+        }
+      }
+    }
+  ''' +
+      _tripRow;
+
   static const availableDrivers = r'''
     query AvailableDrivers($cityId: ID!) {
       drivers(filter: { cityId: $cityId, status: [AVAILABLE] }, first: 100) {
