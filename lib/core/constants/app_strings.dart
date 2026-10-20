@@ -69,6 +69,7 @@ abstract final class AppStrings {
   static const loadMore = 'Load more';
   static const loadMoreFailed = "Couldn't load more trips";
   static const noDriverYet = 'No driver yet';
+  static const tripDetailTitle = 'Trip details';
   static const tripRequested = 'Requested';
   static const tripAssigned = 'Assigned';
   static const tripInProgress = 'In progress';
