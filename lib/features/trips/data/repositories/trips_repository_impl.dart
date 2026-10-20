@@ -2,6 +2,7 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/safe_call.dart';
+import '../../domain/entities/available_driver.dart';
 import '../../domain/entities/trip_action.dart';
 import '../../domain/entities/trip_change.dart';
 import '../../domain/entities/trip_page.dart';
@@ -31,4 +32,9 @@ final class TripsRepositoryImpl implements TripsRepository {
     final result = await safeCall(() => _remote.perform(action));
     return result.map((_) => unit);
   }
+
+  @override
+  Future<Either<Failure, List<AvailableDriver>>> getAvailableDrivers(
+    String cityId,
+  ) => safeCall(() => _remote.fetchAvailableDrivers(cityId));
 }
