@@ -28,8 +28,7 @@ class TripSummary extends Equatable {
   final Money fare;
   final DateTime requestedAt;
 
-  /// A status never goes back, so a copy with an earlier status is stale
-  /// (e.g. a slow answer that lands after a newer one).
+  // status number.
   bool isOlderThan(TripSummary other) => status.index < other.status.index;
 
   @override
