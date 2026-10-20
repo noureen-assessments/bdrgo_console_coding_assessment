@@ -70,6 +70,41 @@ abstract final class AppStrings {
   static const loadMoreFailed = "Couldn't load more trips";
   static const noDriverYet = 'No driver yet';
   static const tripDetailTitle = 'Trip details';
+  static const tripNotFound = 'Trip not found';
+  static const tripNotFoundDetail =
+      'It may belong to another city, or it no longer exists.';
+  static const backToTrips = 'Back to trips';
+  static const tripLoadFailed = "Couldn't load the trip";
+  static const sectionRider = 'Rider';
+  static const sectionDriver = 'Driver';
+  static const sectionRoute = 'Route';
+  static const sectionFare = 'Fare';
+  static const sectionCancellation = 'Cancellation';
+  static const sectionTimeline = 'Status timeline';
+  static const labelName = 'Name';
+  static const labelPhone = 'Phone';
+  static const labelEmail = 'Email';
+  static const labelRating = 'Rating';
+  static const labelVehicle = 'Vehicle';
+  static const labelPickup = 'Pickup';
+  static const labelDropoff = 'Dropoff';
+  static const labelDistance = 'Distance';
+  static const labelCity = 'City';
+  static const labelFare = 'Fare';
+  static const labelRefunded = 'Refunded';
+  static const labelLeftToRefund = 'Left to refund';
+  static const labelRefundReason = 'Refund reason';
+  static const labelReason = 'Reason';
+  static const labelCancelledBy = 'Cancelled by';
+
+  static String distanceKm(String km) => '$km km';
+
+  static String vehicle(
+    String make,
+    String model,
+    String color,
+    String plate,
+  ) => '$make $model · $color · $plate';
   static const tripRequested = 'Requested';
   static const tripAssigned = 'Assigned';
   static const tripInProgress = 'In progress';

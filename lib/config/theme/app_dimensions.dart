@@ -36,6 +36,7 @@ abstract final class AppDimensions {
   static const double dividerThin = 1;
 
   static const double formMaxWidth = 420;
+  static const double detailSectionWidth = 400;
 
   static const double tabletMinWidth = 600;
   static const double desktopMinWidth = 1024;
