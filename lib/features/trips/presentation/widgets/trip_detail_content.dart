@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../config/theme/app_text_styles.dart';
@@ -6,6 +7,8 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../domain/entities/trip_detail.dart';
 import '../../domain/entities/trip_status.dart';
+import '../bloc/trip_detail/trip_detail_bloc.dart';
+import 'trip_actions.dart';
 import 'trip_cancellation_section.dart';
 import 'trip_driver_section.dart';
 import 'trip_fare_section.dart';
@@ -33,7 +36,19 @@ class TripDetailContent extends StatelessWidget {
                 : AppTextStyles.headline,
           ),
           const SizedBox(height: AppDimensions.spaceXs),
-          TripStatusBadge(status: trip.status),
+          Wrap(
+            spacing: AppDimensions.spaceSm,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              TripStatusBadge(status: trip.status),
+              TripActions(
+                trip: trip,
+                onTripChanged: () => context.read<TripDetailBloc>().add(
+                  TripDetailRequested(trip.id),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: AppDimensions.spaceLg),
           Wrap(
             spacing: AppDimensions.spaceMd,
