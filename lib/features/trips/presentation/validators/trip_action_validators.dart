@@ -12,4 +12,15 @@ abstract final class TripActionValidators {
     }
     return null;
   }
+
+  static String? refundAmount(
+    String? value,
+    double remaining,
+    String remainingLabel,
+  ) {
+    final amount = double.tryParse((value ?? '').trim());
+    if (amount == null || amount <= 0) return AppStrings.amountInvalid;
+    if (amount > remaining) return AppStrings.amountTooHigh(remainingLabel);
+    return null;
+  }
 }
