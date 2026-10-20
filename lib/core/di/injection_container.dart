@@ -18,6 +18,8 @@ import '../network/interceptors/api_interceptors.dart';
 import '../network/sse/sse_client.dart';
 import '../network/sse/sse_client_impl.dart';
 import '../network/sse/sse_transport_factory.dart';
+import '../network/websocket/websocket_service.dart';
+import '../network/websocket/websocket_service_impl.dart';
 import '../session/access_denied_notifier.dart';
 import '../session/session_checker.dart';
 import '../session/session_expiry_notifier.dart';
@@ -62,6 +64,13 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
         tokenStorage: sl(),
         sessionChecker: sl(),
         withCredentials: useHttpOnlyCookie,
+      ),
+    )
+    ..registerLazySingleton<WebSocketService>(
+      () => WebSocketServiceImpl(
+        urls: sl(),
+        tokenStorage: sl(),
+        sessionChecker: sl(),
       ),
     );
 
