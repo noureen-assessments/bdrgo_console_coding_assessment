@@ -6,7 +6,6 @@ import '../../config/env/env.dart';
 import '../../config/flavor/flavor_config.dart';
 import '../../config/routing/app_router.dart';
 import '../../features/auth/auth_injection.dart';
-import '../../features/auth/presentation/bloc/auth/auth_bloc.dart';
 import '../../features/connectivity/connectivity_injection.dart';
 import '../network/adapters/http_adapter.dart';
 import '../network/api_consumer.dart';
@@ -61,10 +60,7 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
   initAuth();
 
   // Routing
-  sl.registerLazySingleton<AppRouter>(
-    () =>
-        AppRouter(isSignedIn: () => sl<AuthBloc>().state is AuthAuthenticated),
-  );
+  sl.registerLazySingleton<AppRouter>(() => AppRouter(session: sl()));
 }
 
 /// Web cookie mode keeps nothing in browser storage (the server's HttpOnly

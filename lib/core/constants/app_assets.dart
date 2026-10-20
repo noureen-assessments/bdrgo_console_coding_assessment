@@ -13,7 +13,13 @@ abstract final class AppAssets {
   static const IconData restoringSession = Icons.lock_clock_outlined;
   static const IconData restoreFailed = Icons.cloud_off_outlined;
   static const IconData signOut = Icons.logout;
+
+  // Console sections
   static const IconData dashboard = Icons.dashboard_outlined;
+  static const IconData trips = Icons.local_taxi_outlined;
+  static const IconData liveMap = Icons.map_outlined;
+  static const IconData alerts = Icons.notifications_outlined;
+  static const IconData noAccess = Icons.lock_person_outlined;
 
   // Connectivity
   static const IconData offline = Icons.wifi_off;

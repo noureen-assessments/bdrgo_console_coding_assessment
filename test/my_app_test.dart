@@ -13,6 +13,7 @@ import 'package:badrgo_console_assesment/features/auth/domain/usecases/watch_acc
 import 'package:badrgo_console_assesment/features/auth/domain/usecases/watch_session_expiry_use_case.dart';
 import 'package:badrgo_console_assesment/features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:badrgo_console_assesment/features/auth/presentation/bloc/sign_in/sign_in_bloc.dart';
+import 'package:badrgo_console_assesment/features/auth/presentation/services/auth_bloc_session_access.dart';
 import 'package:badrgo_console_assesment/features/connectivity/domain/usecases/watch_connectivity_use_case.dart';
 import 'package:badrgo_console_assesment/features/connectivity/presentation/bloc/connectivity_bloc.dart';
 import 'package:badrgo_console_assesment/my_app.dart';
@@ -44,6 +45,7 @@ void main() {
   late _MockSignOut signOut;
   late FakeConnectivity connectivity;
   late StreamController<void> expired;
+  late StreamController<void> denied;
   late AuthBloc authBloc;
 
   setUpAll(() {
@@ -60,10 +62,9 @@ void main() {
     signOut = _MockSignOut();
     connectivity = FakeConnectivity();
     expired = StreamController<void>.broadcast();
+    denied = StreamController<void>.broadcast();
     when(() => watchExpiry(any())).thenAnswer((_) => expired.stream);
-    when(
-      () => watchDenied(any()),
-    ).thenAnswer((_) => const Stream<void>.empty());
+    when(() => watchDenied(any())).thenAnswer((_) => denied.stream);
     sl.registerFactory(() => SignInBloc(signIn: signIn));
   });
 
@@ -83,9 +84,7 @@ void main() {
     addTearDown(authBloc.close);
     await tester.pumpWidget(
       MyApp(
-        router: AppRouter(
-          isSignedIn: () => authBloc.state is AuthAuthenticated,
-        ),
+        router: AppRouter(session: AuthBlocSessionAccess(authBloc)),
         flavorConfig: FlavorConfig(
           flavor: flavor,
           values: FlavorValues.fromApiUrl('https://api.example.com'),
@@ -203,5 +202,63 @@ void main() {
   testWidgets('shows the flavor banner except in prod', (tester) async {
     await pumpApp(tester, flavor: Flavor.DEV);
     expect(tester.widget<Banner>(find.byType(Banner)).message, 'DEV');
+  });
+
+  group('role-aware shell', () {
+    void openUrl(WidgetTester tester, String url) {
+      tester.binding.platformDispatcher.defaultRouteNameTestValue = url;
+      addTearDown(
+        tester.binding.platformDispatcher.clearDefaultRouteNameTestValue,
+      );
+    }
+
+    Finder menuItem(String label) => find.descendant(
+      of: find.byType(NavigationRail),
+      matching: find.text(label),
+    );
+
+    testWidgets('support sees no dashboard and no live map', (tester) async {
+      await pumpApp(tester, restored: userWith(supportPermissions));
+
+      expect(menuItem('Trips'), findsOneWidget);
+      expect(menuItem('Alerts'), findsOneWidget);
+      expect(menuItem('Dashboard'), findsNothing);
+      expect(menuItem('Live map'), findsNothing);
+    });
+
+    testWidgets('dispatcher sees every section', (tester) async {
+      await pumpApp(tester, restored: userWith(dispatcherPermissions));
+
+      expect(menuItem('Dashboard'), findsOneWidget);
+      expect(menuItem('Live map'), findsOneWidget);
+    });
+
+    testWidgets('a section the user may not open shows no access', (
+      tester,
+    ) async {
+      openUrl(tester, '/live-map');
+
+      await pumpApp(tester, restored: userWith(viewerPermissions));
+
+      expect(find.text("You don't have access to this page"), findsOneWidget);
+      expect(menuItem('Dashboard'), findsOneWidget);
+    });
+
+    testWidgets('a role change after a 403 updates the open page', (
+      tester,
+    ) async {
+      openUrl(tester, '/live-map');
+      await pumpApp(tester, restored: userWith(dispatcherPermissions));
+      expect(find.text("You don't have access to this page"), findsNothing);
+
+      when(
+        () => restore(any()),
+      ).thenAnswer((_) async => Right(userWith(viewerPermissions)));
+      denied.add(null);
+      await tester.pumpAndSettle();
+
+      expect(find.text("You don't have access to this page"), findsOneWidget);
+      expect(menuItem('Live map'), findsNothing);
+    });
   });
 }

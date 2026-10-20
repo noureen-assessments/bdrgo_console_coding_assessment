@@ -23,6 +23,9 @@ abstract final class AppDimensions {
   static const double progressMd = 20;
   static const double progressStroke = 2;
 
+  // Dividers
+  static const double dividerThin = 1;
+
   // Content widths
   static const double formMaxWidth = 420;
 

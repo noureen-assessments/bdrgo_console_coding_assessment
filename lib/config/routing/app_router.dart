@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../features/auth/domain/services/session_access.dart';
 import '../../features/auth/presentation/pages/sign_in_page.dart';
+import '../../features/shell/presentation/navigation/nav_destination.dart';
+import '../../features/shell/presentation/navigation/nav_destinations.dart';
 import '../../features/shell/presentation/pages/shell_page.dart';
 import '../../shared/pages/not_found_page.dart';
 import 'route_names.dart';
@@ -8,26 +11,36 @@ import 'route_names.dart';
 /// Navigator-based routing with named routes. On web the route name is the
 /// browser URL, so a deep link or refresh lands on the same page.
 ///
-/// Auth guard: signed out, every URL shows sign-in; signed in, `/sign-in`
-/// shows the console. [isSignedIn] is a callback so the router does not
-/// depend on how the session is stored.
+/// Guards, in order:
+/// 1. Signed out: every URL shows sign-in.
+/// 2. `/` and `/sign-in`: the first section the user may open, so every
+///    role lands on a page it can use.
+/// 3. A section URL: the shell for that section. The shell itself shows
+///    "no access" when the permission is missing, so the page also adapts
+///    when permissions change while it is open.
+/// 4. Anything else: not found.
+///
+/// The router only knows [SessionAccess], not how the session is stored.
 final class AppRouter {
-  AppRouter({required bool Function() isSignedIn}) : _isSignedIn = isSignedIn;
+  AppRouter({required SessionAccess session}) : _session = session;
 
-  final bool Function() _isSignedIn;
+  final SessionAccess _session;
 
   /// Lets non-widget code (e.g. the session listener on 401) navigate.
   final navigatorKey = GlobalKey<NavigatorState>();
 
   Route<void> onGenerateRoute(RouteSettings settings) {
     final name = settings.name ?? RouteNames.kRootPage;
-    if (!_isSignedIn()) return _route(RouteNames.kSignIn, const SignInPage());
+    if (!_session.isSignedIn) {
+      return _route(RouteNames.kSignIn, const SignInPage());
+    }
+    if (name == RouteNames.kRootPage || name == RouteNames.kSignIn) {
+      return _homeRoute();
+    }
 
-    return switch (name) {
-      RouteNames.kRootPage ||
-      RouteNames.kSignIn => _route(RouteNames.kRootPage, const ShellPage()),
-      _ => _route(name, NotFoundPage(path: name)),
-    };
+    final destination = NavDestinations.findByRoute(name);
+    if (destination == null) return _route(name, NotFoundPage(path: name));
+    return _sectionRoute(destination);
   }
 
   /// Opens only the requested URL. Flutter's default would also push every
@@ -44,6 +57,27 @@ final class AppRouter {
 
   void _resetTo(String name) =>
       navigatorKey.currentState?.pushNamedAndRemoveUntil(name, (_) => false);
+
+  /// The first section the user may open (e.g. Trips for support, who has
+  /// no dashboard). With none, the shell shows "no access".
+  Route<void> _homeRoute() {
+    for (final destination in NavDestinations.all) {
+      if (_session.can(destination.permission)) {
+        return _sectionRoute(destination);
+      }
+    }
+    return _route(RouteNames.kRootPage, const ShellPage());
+  }
+
+  /// No page transition: picking a section in the web menu or the mobile
+  /// drawer swaps the content at once.
+  static Route<void> _sectionRoute(NavDestination destination) =>
+      PageRouteBuilder<void>(
+        settings: RouteSettings(name: destination.route),
+        pageBuilder: (_, _, _) => ShellPage(destination: destination),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      );
 
   /// The URL shows the page actually displayed, e.g. `/sign-in` after a
   /// redirect.

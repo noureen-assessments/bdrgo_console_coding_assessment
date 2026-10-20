@@ -32,9 +32,23 @@ abstract final class AppStrings {
   static const roleSupport = 'Support';
   static const roleViewer = 'Viewer';
   static const roleUnknown = 'Unknown role';
-  static const consolePlaceholder = 'Your console will appear here.';
 
-  static String welcome(String name) => 'Welcome, $name';
+  // Console sections
+  static const dashboard = 'Dashboard';
+  static const trips = 'Trips';
+  static const liveMap = 'Live map';
+  static const alerts = 'Alerts';
+  static const sectionComingSoon = 'This section is on its way.';
+
+  // No access
+  static const noAccess = "You don't have access to this page";
+  static const noSections =
+      'Your account has no console pages yet. Ask an administrator for '
+      'access.';
+
+  static String noAccessTo(String section) =>
+      "Your role doesn't include $section. Ask an administrator if you need "
+      'it.';
 
   // Connectivity
   static const offline =
