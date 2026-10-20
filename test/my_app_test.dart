@@ -23,6 +23,10 @@ import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watc
 import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watch_live_status_use_case.dart';
 import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/dashboard/dashboard_bloc.dart';
 import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/trip_chart/trip_chart_bloc.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/entities/trip_filter.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/entities/trip_page_request.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/usecases/get_trips_use_case.dart';
+import 'package:badrgo_console_assesment/features/trips/presentation/bloc/trips/trips_bloc.dart';
 import 'package:badrgo_console_assesment/my_app.dart';
 import 'package:badrgo_console_assesment/shared/use_cases/use_case.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +55,8 @@ class _MockWatchKpis extends Mock implements WatchKpisUseCase {}
 
 class _MockWatchLiveStatus extends Mock implements WatchLiveStatusUseCase {}
 
+class _MockGetTrips extends Mock implements GetTripsUseCase {}
+
 /// The real Blocs, router and gate; only the use cases are mocked.
 void main() {
   late _MockWatchExpiry watchExpiry;
@@ -66,6 +72,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(const NoParams());
     registerFallbackValue(KpiRange.last24Hours);
+    registerFallbackValue(const TripPageRequest(filter: TripFilter()));
     registerFallbackValue(const SignInParams(email: '', password: ''));
   });
 
@@ -83,6 +90,7 @@ void main() {
     when(() => watchDenied(any())).thenAnswer((_) => denied.stream);
     sl.registerFactory(() => SignInBloc(signIn: signIn));
     _registerDashboard();
+    _registerTrips();
   });
 
   Future<void> pumpApp(
@@ -305,4 +313,13 @@ void _registerDashboard() {
     () => getTripSeries(any()),
   ).thenAnswer((_) async => const Left(NetworkFailure('offline')));
   sl.registerFactory(() => TripChartBloc(getTripSeries: getTripSeries));
+}
+
+/// Users without `kpi:read` (support) land on Trips; same error state.
+void _registerTrips() {
+  final getTrips = _MockGetTrips();
+  when(
+    () => getTrips(any()),
+  ).thenAnswer((_) async => const Left(NetworkFailure('offline')));
+  sl.registerFactory(() => TripsBloc(getTrips: getTrips));
 }
