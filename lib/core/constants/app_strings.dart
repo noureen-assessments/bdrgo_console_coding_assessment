@@ -80,6 +80,12 @@ abstract final class AppStrings {
   static const reason = 'Reason';
   static const reasonLength = 'Enter 3 to 200 characters.';
   static const tripCancelledDone = 'Trip cancelled';
+  static const assignDriver = 'Assign driver';
+  static const assign = 'Assign';
+  static const pickDriver = 'Pick a driver.';
+  static const noAvailableDrivers = 'No drivers are available right now.';
+  static const driversLoadFailed = "Couldn't load available drivers";
+  static const driverAssigned = 'Driver assigned';
 
   static String tripCount(int count, String formatted) =>
       count == 1 ? '$formatted trip' : '$formatted trips';
