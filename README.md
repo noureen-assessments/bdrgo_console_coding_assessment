@@ -6,8 +6,8 @@ sandbox API (REST, GraphQL, Server-Sent Events and WebSocket).
 > Status: **M1 (authentication)** and **M2 (role-aware shell)** are done, with
 > the offline part of M7 (offline banner, automatic retry). **M3 (dashboard)**
 > has its live KPI tiles and the trips-over-time chart. **M4 (trips)** has its
-> paginated list with filters. The rest of M4 and M5–M7 follow, each in its
-> own folder under `lib/features/`.
+> paginated list with filters and live rows. The rest of M4 and M5–M7
+> follow, each in its own folder under `lib/features/`.
 
 ## Running
 
@@ -440,10 +440,11 @@ imports a feature.
 
 ```
 features/trips/
-├── data/         TripsQueries (GraphQL document + variables), TripsRemoteDataSource,
-│                 TripSummaryModel, TripPageModel
-├── domain/       TripSummary, TripStatus, TripFilter, TripPage, TripPageRequest;
-│                 GetTrips
+├── data/         TripsQueries (TripRow fragment, trips + trip queries),
+│                 TripsRemoteDataSource (GraphQL + SSE trip events),
+│                 TripSummaryModel, TripPageModel, TripChangeModel
+├── domain/       TripSummary, TripStatus, TripFilter, TripPage, TripPageRequest,
+│                 TripChange; GetTrips / GetTrip / WatchTripChanges
 └── presentation/ TripsBloc, TripsView, TripFilterBar (search, date range, status
                   chips), TripList, TripListTile, TripStatusBadge
 ```
@@ -460,9 +461,13 @@ the rows don't fill the screen) asks for the page after `pageInfo.endCursor`.
   two pages push rows into the next page. `TripPage.append` skips ids that
   are already shown.
 
-**Filters.** Status chips (none selected = every status), a date range and a
-search box (exact trip id, address text or rider name).
+**Filters.** Status chips (none selected = every status except cancelled), a
+date range and a search box (exact trip id, address text or rider name).
 
+- **Cancelled trips are hidden by default.** They are many and rarely needed
+  in daily operations, so with no status chip selected the query asks for
+  every other status. Selecting Cancelled shows them. The rule lives in one
+  place (`TripFilter.shownStatuses`), used by the query and by live rows.
 - **Only set criteria are sent.** An empty string would filter to nothing,
   so `TripsQueries.filterVariables` leaves unset fields out.
 - **Dates are whole days.** The API excludes `to` (`requestedAt < to`), so
@@ -482,6 +487,46 @@ loading, error and empty states.
 - A failed next page keeps the loaded rows and shows Retry under them;
   scrolling does not retry by itself.
 - An empty result offers **Clear filters**.
+
+**Live rows (SSE).** `trip.created` and `trip.updated` update the list
+without a reload.
+
+- **SSE is the signal, GraphQL builds the row.** The event carries the REST
+  trip shape, which has `riderId` / `driverId` / `cityId` but no names, so it
+  cannot fill a row (after an assign the driver's name is unknown). The Bloc
+  reads only the trip id and fetches that one trip with `trip(id)`. The list
+  and this query share the `TripRow` fragment, so both build the same row.
+- **Rules:**
+  - An update to a row on screen replaces it in place, even if it no longer
+    matches the status filter (rows don't vanish while being read; the next
+    reload drops them).
+  - A new trip that matches the filter goes on top (the list is newest
+    first) and the total goes up by one.
+  - While a search is set, new trips are not added: the server matches
+    ids, addresses and rider names, and the app does not guess.
+  - An update to a trip that is not loaded is ignored, with no request.
+  - Events while the first page loads or failed are ignored; the page that
+    loads already has them.
+- **Order and races.** Changes are handled concurrently: each one fetches
+  its row at once, so there is no queue and a burst of events (super_admin,
+  busy hours) never makes the list fall behind. Answers can then land out of
+  order, so a row is never replaced by one with an earlier status
+  (`TripSummary.isOlderThan`): a trip only moves forward (requested →
+  assigned → in progress → completed / cancelled), so an earlier status
+  means a stale answer. This is the same "never show older data" rule as
+  the dashboard's `generatedAt`. A change whose row arrives after a filter
+  change is dropped.
+  - A `sequential()` queue was tried first. It was correct, but every event
+    waited for the previous fetch, so at more than ~4 events a second the
+    list would fall further and further behind.
+- **Lifetime.** `TripsStarted` subscribes for as long as the page is open,
+  separately from the filter handler, so a filter change (`restartable()`)
+  never cancels it. Closing the page cancels it, and the shared SSE
+  connection closes when nobody listens.
+- **Marking.** New rows get a green background and changed rows an amber
+  one. Marks stay until the list reloads (filter change or Retry). Rows have keys and the list builds lazily, so only the
+  changed row rebuilds. A new row at the top pushes the rows down when the
+  user has scrolled; a "N new trips" bar would avoid that later.
 
 ### Connectivity (part of M7)
 
