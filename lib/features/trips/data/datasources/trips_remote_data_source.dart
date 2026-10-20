@@ -9,6 +9,7 @@ import '../../domain/entities/trip_action.dart';
 import '../../domain/entities/trip_page_request.dart';
 import '../models/available_driver_model.dart';
 import '../models/trip_change_model.dart';
+import '../models/trip_detail_model.dart';
 import '../models/trip_page_model.dart';
 import '../models/trip_summary_model.dart';
 import '../queries/trips_queries.dart';
@@ -17,6 +18,7 @@ import '../queries/trips_queries.dart';
 abstract interface class TripsRemoteDataSource {
   Future<TripPageModel> fetchTrips(TripPageRequest request);
   Future<TripSummaryModel?> fetchTrip(String id);
+  Future<TripDetailModel?> fetchTripDetail(String id);
   Stream<TripChangeModel> watchTripChanges();
   Future<void> perform(TripAction action);
   Future<List<AvailableDriverModel>> fetchAvailableDrivers(String cityId);
@@ -106,6 +108,21 @@ final class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
       return AvailableDriverModel.listFromJson(drivers['nodes'] as List<dynamic>);
     } on TypeError {
       throw const FormatException('drivers');
+    }
+  }
+
+  @override
+  Future<TripDetailModel?> fetchTripDetail(String id) async {
+    final data = await _graphql.query(
+      TripsQueries.tripDetail,
+      variables: TripsQueries.tripVariables(id),
+    );
+    final trip = data['trip'];
+    if (trip == null) return null;
+    try {
+      return TripDetailModel.fromJson(trip as Map<String, dynamic>);
+    } on TypeError {
+      throw const FormatException('trip detail');
     }
   }
 }

@@ -5,6 +5,7 @@ import '../../../../core/utils/safe_call.dart';
 import '../../domain/entities/available_driver.dart';
 import '../../domain/entities/trip_action.dart';
 import '../../domain/entities/trip_change.dart';
+import '../../domain/entities/trip_detail.dart';
 import '../../domain/entities/trip_page.dart';
 import '../../domain/entities/trip_page_request.dart';
 import '../../domain/entities/trip_summary.dart';
@@ -23,6 +24,10 @@ final class TripsRepositoryImpl implements TripsRepository {
   @override
   Future<Either<Failure, TripSummary?>> getTrip(String id) =>
       safeCall(() => _remote.fetchTrip(id));
+
+  @override
+  Future<Either<Failure, TripDetail?>> getTripDetail(String id) =>
+      safeCall(() => _remote.fetchTripDetail(id));
 
   @override
   Stream<TripChange> watchTripChanges() => _remote.watchTripChanges();
