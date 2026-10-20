@@ -30,7 +30,9 @@ class TripList extends StatelessWidget {
             return TripListFooter(state: state, onLoadMore: onLoadMore);
           }
           final trip = trips[index];
-          return TripListTile(key: ValueKey(trip.id), trip: trip);
+          return TripListTile(key: ValueKey(trip.id), trip: trip,
+            mark: state.marks[trip.id],
+          );
         },
       ),
     );

@@ -6,16 +6,20 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/date_formatters.dart';
 import '../../../../core/utils/number_formatters.dart';
 import '../../domain/entities/trip_summary.dart';
+import '../bloc/trips/trips_bloc.dart';
 import 'trip_status_badge.dart';
 
 class TripListTile extends StatelessWidget {
-  const TripListTile({required this.trip, super.key});
+  const TripListTile({required this.trip, this.mark, super.key});
 
   final TripSummary trip;
+
+  final TripMark? mark;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      tileColor: mark?.color,
       title: Text(
         AppStrings.tripRoute(trip.pickupAddress, trip.dropoffAddress),
         style: AppTextStyles.title,
