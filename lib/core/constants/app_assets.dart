@@ -34,6 +34,8 @@ abstract final class AppAssets {
 
   static const IconData offline = Icons.wifi_off;
 
+  static const IconData driverMarker = Icons.directions_car;
+
   static const IconData error = Icons.error_outline;
   static const IconData info = Icons.info_outline;
   static const IconData empty = Icons.inbox_outlined;
