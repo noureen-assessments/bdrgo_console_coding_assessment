@@ -25,7 +25,9 @@ import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/da
 import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/trip_chart/trip_chart_bloc.dart';
 import 'package:badrgo_console_assesment/features/trips/domain/entities/trip_filter.dart';
 import 'package:badrgo_console_assesment/features/trips/domain/entities/trip_page_request.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/usecases/get_trip_use_case.dart';
 import 'package:badrgo_console_assesment/features/trips/domain/usecases/get_trips_use_case.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/usecases/watch_trip_changes_use_case.dart';
 import 'package:badrgo_console_assesment/features/trips/presentation/bloc/trips/trips_bloc.dart';
 import 'package:badrgo_console_assesment/my_app.dart';
 import 'package:badrgo_console_assesment/shared/use_cases/use_case.dart';
@@ -56,6 +58,10 @@ class _MockWatchKpis extends Mock implements WatchKpisUseCase {}
 class _MockWatchLiveStatus extends Mock implements WatchLiveStatusUseCase {}
 
 class _MockGetTrips extends Mock implements GetTripsUseCase {}
+
+class _MockGetTrip extends Mock implements GetTripUseCase {}
+
+class _MockWatchTripChanges extends Mock implements WatchTripChangesUseCase {}
 
 /// The real Blocs, router and gate; only the use cases are mocked.
 void main() {
@@ -321,5 +327,15 @@ void _registerTrips() {
   when(
     () => getTrips(any()),
   ).thenAnswer((_) async => const Left(NetworkFailure('offline')));
-  sl.registerFactory(() => TripsBloc(getTrips: getTrips));
+  final watchTripChanges = _MockWatchTripChanges();
+  when(
+    () => watchTripChanges(any()),
+  ).thenAnswer((_) => const Stream.empty());
+  sl.registerFactory(
+    () => TripsBloc(
+      getTrips: getTrips,
+      getTrip: _MockGetTrip(),
+      watchTripChanges: watchTripChanges,
+    ),
+  );
 }

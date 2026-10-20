@@ -16,5 +16,6 @@ void initTrips() {
     ..registerLazySingleton(() => GetTripsUseCase(sl()))
     ..registerLazySingleton(() => GetTripUseCase(sl()))
     ..registerLazySingleton(() => WatchTripChangesUseCase(sl()))
-    ..registerFactory<TripsBloc>(() => TripsBloc(getTrips: sl()));
+    ..registerFactory<TripsBloc>(() => TripsBloc(getTrips: sl(), getTrip: sl(), watchTripChanges: sl()),
+    );
 }
