@@ -34,6 +34,6 @@ void initTrips() {
       () => AvailableDriversBloc(getAvailableDrivers: sl()),
     )
     ..registerFactory<TripDetailBloc>(
-      () => TripDetailBloc(getTripDetail: sl()),
+      () => TripDetailBloc(getTripDetail: sl(), watchTripChanges: sl()),
     );
 }
