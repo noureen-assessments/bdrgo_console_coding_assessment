@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../config/routing/route_names.dart';
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -22,6 +23,11 @@ class TripListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       tileColor: mark?.color,
+      onTap: () => Navigator.pushNamed(
+        context,
+        RouteNames.kTripDetail,
+        arguments: trip.id,
+      ),
       title: Text(
         AppStrings.tripRoute(trip.pickupAddress, trip.dropoffAddress),
         style: AppTextStyles.title,
