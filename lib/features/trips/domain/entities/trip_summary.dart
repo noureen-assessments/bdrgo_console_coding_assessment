@@ -8,17 +8,20 @@ class TripSummary extends Equatable {
   const TripSummary({
     required this.id,
     required this.status,
+    required this.cityId,
     required this.cityName,
     required this.riderName,
     required this.driverName,
     required this.pickupAddress,
     required this.dropoffAddress,
     required this.fare,
+    required this.refunded,
     required this.requestedAt,
   });
 
   final String id;
   final TripStatus status;
+  final String cityId;
   final String cityName;
   final String riderName;
 
@@ -26,6 +29,7 @@ class TripSummary extends Equatable {
   final String pickupAddress;
   final String dropoffAddress;
   final Money fare;
+  final Money refunded;
   final DateTime requestedAt;
 
   // status number.
@@ -35,12 +39,14 @@ class TripSummary extends Equatable {
   List<Object?> get props => [
     id,
     status,
+    cityId,
     cityName,
     riderName,
     driverName,
     pickupAddress,
     dropoffAddress,
     fare,
+    refunded,
     requestedAt,
   ];
 }

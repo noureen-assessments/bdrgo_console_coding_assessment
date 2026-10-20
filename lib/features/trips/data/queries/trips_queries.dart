@@ -15,7 +15,12 @@ static const _tripRow = r'''
         amount
         currency
       }
+      refunded {
+        amount
+        currency
+      }
       city {
+        id
         name
       }
       rider {
