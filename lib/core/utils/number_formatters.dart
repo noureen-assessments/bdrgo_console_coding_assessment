@@ -1,11 +1,9 @@
 import 'package:intl/intl.dart';
 
-
-abstract final class AppFormatters {
+abstract final class NumberFormatters {
   static final _count = NumberFormat.decimalPattern();
   static final _percent = NumberFormat.percentPattern()
     ..maximumFractionDigits = 1;
-  static final _time = DateFormat.Hms();
 
   /// `19615` → `19,615`.
   static String count(int value) => _count.format(value);
@@ -20,7 +18,4 @@ abstract final class AppFormatters {
         name: currencyCode,
         symbol: '$currencyCode ',
       ).format(amount);
-
-  /// `14:05:09` in the browser's local time.
-  static String time(DateTime value) => _time.format(value.toLocal());
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/utils/app_formatters.dart';
+import '../../../../core/utils/number_formatters.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../shared/entities/money.dart';
 import '../../domain/entities/kpis.dart';
@@ -23,24 +23,26 @@ class KpiTileGrid extends StatelessWidget {
       KpiTile(
         label: AppStrings.kpiActiveTrips,
         icon: AppAssets.activeTrips,
-        value: AppFormatters.count(trips.active),
+        value: NumberFormatters.count(trips.active),
         detail: AppStrings.kpiActiveBreakdown(
-          AppFormatters.count(trips.requested),
-          AppFormatters.count(trips.assigned),
-          AppFormatters.count(trips.inProgress),
+          NumberFormatters.count(trips.requested),
+          NumberFormatters.count(trips.assigned),
+          NumberFormatters.count(trips.inProgress),
         ),
       ),
       KpiTile(
         label: AppStrings.kpiCompleted,
         icon: AppAssets.completedTrips,
-        value: AppFormatters.count(trips.completed),
+        value: NumberFormatters.count(trips.completed),
         detail: AppStrings.kpiLast24Hours,
       ),
       KpiTile(
         label: AppStrings.kpiCancellationRate,
         icon: AppAssets.cancellationRate,
-        value: AppFormatters.percent(trips.cancellationRate),
-        detail: AppStrings.kpiCancelled(AppFormatters.count(trips.cancelled)),
+        value: NumberFormatters.percent(trips.cancellationRate),
+        detail: AppStrings.kpiCancelled(
+          NumberFormatters.count(trips.cancelled),
+        ),
       ),
       KpiTile(
         label: AppStrings.kpiRevenue,
@@ -52,15 +54,17 @@ class KpiTileGrid extends StatelessWidget {
         label: AppStrings.kpiDrivers,
         icon: AppAssets.drivers,
         value: AppStrings.kpiDriverPair(
-          AppFormatters.count(drivers.available),
-          AppFormatters.count(drivers.onTrip),
+          NumberFormatters.count(drivers.available),
+          NumberFormatters.count(drivers.onTrip),
         ),
-        detail: AppStrings.kpiDriversTotal(AppFormatters.count(drivers.total)),
+        detail: AppStrings.kpiDriversTotal(
+          NumberFormatters.count(drivers.total),
+        ),
       ),
       KpiTile(
         label: AppStrings.kpiOpenAlerts,
         icon: AppAssets.openAlerts,
-        value: AppFormatters.count(kpis.openAlerts),
+        value: NumberFormatters.count(kpis.openAlerts),
         detail: AppStrings.kpiOpenAlertsDetail,
       ),
     ];
@@ -87,7 +91,7 @@ class KpiTileGrid extends StatelessWidget {
   static String _revenue(List<Money> revenue) {
     if (revenue.isEmpty) return AppStrings.noValue;
     return revenue
-        .map((money) => AppFormatters.currency(money.amount, money.currency))
+        .map((money) => NumberFormatters.currency(money.amount, money.currency))
         .join('\n');
   }
 }

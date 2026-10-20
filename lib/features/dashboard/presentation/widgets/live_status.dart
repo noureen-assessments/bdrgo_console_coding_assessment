@@ -4,7 +4,7 @@ import '../../../../config/theme/app_dimensions.dart';
 import '../../../../config/theme/app_styles.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/utils/app_formatters.dart';
+import '../../../../core/utils/date_formatters.dart';
 
 
 class LiveStatus extends StatelessWidget {
@@ -31,7 +31,7 @@ class LiveStatus extends StatelessWidget {
           ),
           const SizedBox(width: AppDimensions.spaceXs),
           Text(
-            '$status · ${AppStrings.updatedAt(AppFormatters.time(updatedAt))}',
+            '$status · ${AppStrings.updatedAt(DateFormatters.time(updatedAt))}',
             style: AppTextStyles.caption,
           ),
         ],
