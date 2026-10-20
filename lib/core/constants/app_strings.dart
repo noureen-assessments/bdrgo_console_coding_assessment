@@ -132,6 +132,8 @@ abstract final class AppStrings {
   static const driverOffline = 'Offline';
   static const mapAttribution = '© OpenStreetMap contributors';
   static const noDriversOnline = 'No drivers are online right now.';
+  static const currentTrip = 'Current trip';
+  static const noCurrentTrip = 'No current trip';
 
   static String refundable(String amount) => 'Refundable: $amount';
 
