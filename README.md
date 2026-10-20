@@ -3,9 +3,9 @@
 A Flutter web dashboard for the badrgo city operations team, built on the badrgo
 sandbox API (REST, GraphQL, Server-Sent Events and WebSocket).
 
-> Status: **M1 (authentication)** is done, with the offline part of M7
-> (offline banner, automatic retry). M2–M7 follow, each in its own folder under
-> `lib/features/`.
+> Status: **M1 (authentication)** and **M2 (role-aware shell)** are done, with
+> the offline part of M7 (offline banner, automatic retry). M3–M7 follow, each
+> in its own folder under `lib/features/`.
 
 ## Running
 
@@ -180,10 +180,11 @@ route name is the browser URL (path strategy, no `#`), so refresh and deep
 links work. `onGenerateInitialRoutes` opens only the requested page instead of
 stacking every parent segment.
 
-**Auth guard.** `onGenerateRoute` asks `isSignedIn()` (a callback, so the router
-does not know about `AuthBloc`). Signed out, every URL shows `/sign-in`;
-signed in, `/sign-in` shows the console. Permission guards (M2) go in the same
-place.
+**Guards.** The router depends only on the `SessionAccess` interface
+(`isSignedIn`, `can(permission)`), not on `AuthBloc`. Signed out, every URL
+shows `/sign-in`. Signed in, `/` and `/sign-in` open the first section the
+user may open, a section URL opens the shell for that section, and anything
+else is not found. See [Role-aware shell](#role-aware-shell-m2).
 
 ### Authentication (M1)
 
@@ -232,6 +233,76 @@ features/auth/
   `WatchSessionExpiry`). No feature Bloc depends on another feature:
   connectivity reaches `AuthBloc` as a plain `AuthConnectionRestored` event
   sent by `ConnectionRestoredListener` in the view.
+
+### Role-aware shell (M2)
+
+```
+features/auth/
+├── domain/services/session_access.dart              SessionAccess interface
+└── presentation/
+    ├── services/auth_bloc_session_access.dart       Adapter: SessionAccess over AuthBloc
+    └── widgets/permission_gate.dart                 Guard widget for buttons and pages
+features/shell/presentation/
+├── navigation/nav_destination(s).dart               Registry of sections + permission
+├── pages/shell_page.dart                            App bar, menu, guarded section
+└── widgets/                                         WebNavigation, MobileNavigation, NoAccessView, ShellAppBar
+```
+
+Nothing branches on the role name; the role is only a label.
+
+| Section | URL | Needs |
+| --- | --- | --- |
+| Dashboard | `/dashboard` | `kpi:read` |
+| Trips | `/trips` | `trip:read` |
+| Live map | `/live-map` | `driver:track` |
+| Alerts | `/alerts` | `alert:read` |
+
+**Patterns used, and why**
+
+- **Registry (open/closed).** `NavDestinations.all` lists every section
+  as one `NavDestination` (route, label, icon, permission). The router, both
+  menus and the no-access page read from it, so a new section is one new
+  entry and no other code changes.
+- **Dependency inversion + adapter.** The router needs two answers: "signed
+  in?" and "may they do X?". It gets them from the `SessionAccess` interface
+  (auth domain). `AuthBlocSessionAccess` adapts `AuthBloc` to it and is
+  registered in `initAuth()`. The router never reads the Bloc or the
+  service locator, and tests pass a `FakeSessionAccess`.
+- **Guard.** `PermissionGate(permission, child, fallback)` is the one place
+  the UI checks a permission. It hides action buttons (M4–M6:
+  `PermissionGate(permission: TripPermission.assign, child: …)`), and the
+  shell wraps each section in it with `NoAccessView` as the fallback. It
+  listens to `AuthBloc`, so it rebuilds when the permissions change.
+
+**Behaviour**
+
+- **Menu** lists `NavDestinations.allowedFor(user.permissions)`:
+  `WebNavigation` (side menu, icon then label) on web, `MobileNavigation` (drawer) on phones.
+  With the sandbox matrix, `support` has no Dashboard and no Live map, and
+  `viewer` has no Live map.
+- **Home.** `/` opens the first section the user may open, so `support`
+  lands on Trips, not on an empty dashboard. A user with no section gets
+  the no-access page without a "Go home" button.
+- **No access.** A section URL the user may not open (a bookmark, a typed
+  URL) still opens the shell, with `NoAccessView` in place of the content,
+  not a crash or an empty page.
+- **Switching sections** replaces the page without a transition, so the
+  content swaps at once and old sections (and later their realtime
+  connections) never pile up on the back stack.
+- **The shell shows** the user's name, role label and city ("All cities"
+  for `super_admin`) in the app bar.
+- **Role changed on the server.** The docs say to re-fetch `/api/me` after
+  any `403`. Every transport reports a `403` to one `AccessDeniedNotifier`
+  (in `core/session`, next to `SessionExpiryNotifier`): HTTP `403`s through
+  `AuthInterceptor`, and GraphQL `FORBIDDEN` on a `200` through
+  `DioGraphQLConsumer`. The SSE and WebSocket clients will call `notify()`
+  themselves. `AuthBloc` re-fetches the profile with a `droppable`
+  transformer, so a burst of `403`s sends one request. The menu, the open
+  section and every `PermissionGate` then rebuild from the new permissions.
+  If the re-fetch fails (offline, maintenance) the current permissions
+  stay. A banned user's `401` signs them out as in M1.
+- **No ShellBloc.** The shell's only state is the signed-in user, which
+  `AuthBloc` already holds. A second Bloc would just copy it.
 
 ### Connectivity (part of M7)
 
@@ -327,6 +398,7 @@ gets dependencies through its constructor. Blocs are registered with
 | `flutter_secure_storage` | Token storage for web and mobile (see [Token storage](#token-storage)). Used through `AppSecureStorage` behind the `TokenStorage` interface. |
 | `connectivity_plus` | Online/offline status behind `ConnectivityRepository`. On web it listens to the browser's `online`/`offline` events, and the same code works on mobile. |
 | `flutter_web_plugins` (SDK) | `usePathUrlStrategy()` for clean URLs (`/trips/…` instead of `/#/trips/…`). |
+| `bloc_concurrency` | `droppable()` for the `403` re-fetch, so a burst of `403`s sends one `/api/me`. |
 | `bloc_test`, `mocktail` (dev) | Bloc and mock testing without codegen. |
 
 **GraphQL without a GraphQL package.** The console only sends queries with
