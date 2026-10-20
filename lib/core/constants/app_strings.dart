@@ -86,6 +86,15 @@ abstract final class AppStrings {
   static const noAvailableDrivers = 'No drivers are available right now.';
   static const driversLoadFailed = "Couldn't load available drivers";
   static const driverAssigned = 'Driver assigned';
+  static const refundTrip = 'Refund';
+  static const refundAmount = 'Amount';
+  static const amountInvalid = 'Enter an amount above 0.';
+  static const refundIssued = 'Refund issued';
+
+  static String refundable(String amount) => 'Refundable: $amount';
+
+  static String amountTooHigh(String remaining) =>
+      'At most $remaining can be refunded.';
 
   static String tripCount(int count, String formatted) =>
       count == 1 ? '$formatted trip' : '$formatted trips';

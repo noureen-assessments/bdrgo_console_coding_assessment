@@ -30,6 +30,7 @@ abstract final class AppAssets {
   static const IconData cancelTrip = Icons.block;
   static const IconData assignDriver = Icons.person_add_alt_1_outlined;
   static const IconData selected = Icons.check_circle;
+  static const IconData refund = Icons.currency_exchange;
 
   static const IconData offline = Icons.wifi_off;
 
