@@ -24,6 +24,10 @@ abstract final class AppColors {
   static const chartTooltip = Color(0xFF263238);
   static const onChartTooltip = Color(0xFFFFFFFF);
 
+  // Live trip rows: new or updated since the list loaded
+  static const newRow = Color(0xFFE3F4E8);
+  static const updatedRow = Color(0xFFFFF4D6);
+
   // Snackbars
   static const snackBarError = Color(0xFFBA1A1A);
   static const snackBarSuccess = Color(0xFF0B6E4F);
