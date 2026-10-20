@@ -9,6 +9,7 @@ import '../../../auth/domain/entities/permission.dart';
 import '../../../auth/presentation/widgets/permission_gate.dart';
 import '../../domain/entities/trip_summary.dart';
 import '../bloc/trip_action/trip_action_bloc.dart';
+import 'assign_driver_dialog.dart';
 import 'cancel_trip_dialog.dart';
 
 
@@ -27,6 +28,19 @@ class TripActions extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (trip.canAssign)
+          PermissionGate(
+            permission: TripPermission.assign,
+            child: IconButton(
+              tooltip: AppStrings.assignDriver,
+              icon: const Icon(AppAssets.assignDriver),
+              onPressed: () => _open(
+                context,
+                AssignDriverDialog(trip: trip),
+                AppStrings.driverAssigned,
+              ),
+            ),
+          ),
         if (trip.canCancel)
           PermissionGate(
             permission: TripPermission.cancel,
