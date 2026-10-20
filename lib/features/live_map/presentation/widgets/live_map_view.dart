@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/live_map/live_map_bloc.dart';
 import 'live_map_content.dart';
+import 'live_map_layout.dart';
 
 class LiveMapView extends StatelessWidget {
   const LiveMapView({super.key});
@@ -12,9 +13,8 @@ class LiveMapView extends StatelessWidget {
     return BlocBuilder<LiveMapBloc, LiveMapState>(
       builder: (context, state) => switch (state) {
         LiveMapLoading() => const Center(child: CircularProgressIndicator()),
-        final LiveMapLoaded loaded => LiveMapContent(
-          drivers: loaded.drivers,
-          isLive: loaded.isLive,
+        final LiveMapLoaded loaded => LiveMapLayout(
+          map: LiveMapContent(drivers: loaded.drivers, isLive: loaded.isLive),
         ),
       },
     );
