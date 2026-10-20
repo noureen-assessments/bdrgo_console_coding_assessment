@@ -44,7 +44,7 @@ abstract final class AppDimensions {
   // Content widths
   static const double formMaxWidth = 420;
 
-  // Window-width breakpoints (logical pixels)
+  // Window-width breakpoints
   static const double tabletMinWidth = 600;
   static const double desktopMinWidth = 1024;
 }
