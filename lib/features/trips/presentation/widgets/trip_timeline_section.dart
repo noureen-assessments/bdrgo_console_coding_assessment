@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/date_formatters.dart';
 import '../../domain/entities/trip_detail.dart';
-import 'trip_detail_row.dart';
+import '../../../../shared/widgets/detail_row.dart';
 import 'trip_detail_section.dart';
 
 class TripTimelineSection extends StatelessWidget {
@@ -17,7 +17,7 @@ class TripTimelineSection extends StatelessWidget {
       title: AppStrings.sectionTimeline,
       children: [
         for (final entry in trip.timeline)
-          TripDetailRow(
+          DetailRow(
             label: entry.status.label,
             value: DateFormatters.dayTime(entry.at),
           ),
