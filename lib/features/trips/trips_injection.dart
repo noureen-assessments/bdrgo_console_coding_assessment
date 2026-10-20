@@ -6,6 +6,7 @@ import 'domain/usecases/get_trip_use_case.dart';
 import 'domain/usecases/get_trips_use_case.dart';
 import 'domain/usecases/perform_trip_action_use_case.dart';
 import 'domain/usecases/watch_trip_changes_use_case.dart';
+import 'presentation/bloc/trip_action/trip_action_bloc.dart';
 import 'presentation/bloc/trips/trips_bloc.dart';
 
 void initTrips() {
@@ -19,5 +20,8 @@ void initTrips() {
     ..registerLazySingleton(() => WatchTripChangesUseCase(sl()))
     ..registerLazySingleton(() => PerformTripActionUseCase(sl()))
     ..registerFactory<TripsBloc>(() => TripsBloc(getTrips: sl(), getTrip: sl(), watchTripChanges: sl()),
+    )
+    ..registerFactory<TripActionBloc>(
+      () => TripActionBloc(performTripAction: sl()),
     );
 }
