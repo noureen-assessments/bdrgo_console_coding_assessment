@@ -13,13 +13,13 @@ void main() {
 
   test('unknown event and channel names are ignored, not thrown', () {
     expect(SseEvent.fromName('driver.rated'), isNull);
-    expect(WebSocketChannel.fromName('unknown.channel'), isNull);
+    expect(WebSocketTopic.fromName('unknown.channel'), isNull);
   });
 
-  test('WebSocketChannel maps drivers.locations', () {
+  test('WebSocketTopic maps drivers.locations', () {
     expect(
-      WebSocketChannel.fromName('drivers.locations'),
-      WebSocketChannel.driversLocations,
+      WebSocketTopic.fromName('drivers.locations'),
+      WebSocketTopic.driversLocations,
     );
   });
 }
