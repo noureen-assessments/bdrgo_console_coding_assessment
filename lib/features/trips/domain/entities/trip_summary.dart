@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../shared/entities/money.dart';
+import 'trip_action_rules.dart';
 import 'trip_status.dart';
 
 
@@ -38,15 +39,11 @@ class TripSummary extends Equatable {
   double get remainingRefund =>
       ((fare.amount - refunded.amount) * 100).round() / 100;
 
-  bool get canAssign =>
-      status == TripStatus.requested || status == TripStatus.assigned;
+  bool get canAssign => TripActionRules.assignFrom.contains(status);
 
-  bool get canCancel =>
-      status == TripStatus.requested ||
-      status == TripStatus.assigned ||
-      status == TripStatus.inProgress;
+  bool get canCancel => TripActionRules.cancelFrom.contains(status);
 
-  bool get canRefund => status == TripStatus.completed && remainingRefund > 0;
+  bool get canRefund => TripActionRules.refundFrom.contains(status) && remainingRefund > 0;
 
   @override
   List<Object?> get props => [
