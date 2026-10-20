@@ -9,6 +9,7 @@ import 'package:badrgo_console_assesment/features/auth/domain/entities/current_u
 import 'package:badrgo_console_assesment/features/auth/domain/usecases/restore_session_use_case.dart';
 import 'package:badrgo_console_assesment/features/auth/domain/usecases/sign_in_use_case.dart';
 import 'package:badrgo_console_assesment/features/auth/domain/usecases/sign_out_use_case.dart';
+import 'package:badrgo_console_assesment/features/auth/domain/usecases/watch_access_denied_use_case.dart';
 import 'package:badrgo_console_assesment/features/auth/domain/usecases/watch_session_expiry_use_case.dart';
 import 'package:badrgo_console_assesment/features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:badrgo_console_assesment/features/auth/presentation/bloc/sign_in/sign_in_bloc.dart';
@@ -26,6 +27,8 @@ import 'features/fakes.dart';
 
 class _MockWatchExpiry extends Mock implements WatchSessionExpiryUseCase {}
 
+class _MockWatchDenied extends Mock implements WatchAccessDeniedUseCase {}
+
 class _MockRestore extends Mock implements RestoreSessionUseCase {}
 
 class _MockSignIn extends Mock implements SignInUseCase {}
@@ -35,6 +38,7 @@ class _MockSignOut extends Mock implements SignOutUseCase {}
 /// The real Blocs, router and gate; only the use cases are mocked.
 void main() {
   late _MockWatchExpiry watchExpiry;
+  late _MockWatchDenied watchDenied;
   late _MockRestore restore;
   late _MockSignIn signIn;
   late _MockSignOut signOut;
@@ -50,12 +54,16 @@ void main() {
   setUp(() async {
     await sl.reset();
     watchExpiry = _MockWatchExpiry();
+    watchDenied = _MockWatchDenied();
     restore = _MockRestore();
     signIn = _MockSignIn();
     signOut = _MockSignOut();
     connectivity = FakeConnectivity();
     expired = StreamController<void>.broadcast();
     when(() => watchExpiry(any())).thenAnswer((_) => expired.stream);
+    when(
+      () => watchDenied(any()),
+    ).thenAnswer((_) => const Stream<void>.empty());
     sl.registerFactory(() => SignInBloc(signIn: signIn));
   });
 
@@ -70,6 +78,7 @@ void main() {
       restoreSession: restore,
       signOut: signOut,
       watchSessionExpiry: watchExpiry,
+      watchAccessDenied: watchDenied,
     );
     addTearDown(authBloc.close);
     await tester.pumpWidget(

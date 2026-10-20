@@ -30,3 +30,8 @@ final class AuthSignOutRequested extends AuthEvent {
 final class AuthConnectionRestored extends AuthEvent {
   const AuthConnectionRestored();
 }
+
+/// A request was rejected with a `403`; the permissions may have changed.
+final class AuthAccessDenied extends AuthEvent {
+  const AuthAccessDenied();
+}

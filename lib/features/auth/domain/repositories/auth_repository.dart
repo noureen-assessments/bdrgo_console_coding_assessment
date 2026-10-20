@@ -19,4 +19,8 @@ abstract interface class AuthRepository {
   /// Emits whenever any transport receives a `401` for this session. The
   /// token is already forgotten locally; the server is not called again.
   Stream<void> watchSessionExpiry();
+
+  /// Emits whenever any transport receives a `403` for this session, e.g.
+  /// because the user's role changed on the server.
+  Stream<void> watchAccessDenied();
 }

@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../../core/session/access_denied_notifier.dart';
 import '../../../../core/session/session_expiry_notifier.dart';
 import '../../../../core/storage/token_storage.dart';
 import '../../../../core/utils/safe_call.dart';
@@ -13,13 +14,16 @@ final class AuthRepositoryImpl implements AuthRepository {
     required AuthRemoteDataSource remote,
     required TokenStorage tokenStorage,
     required SessionExpiryNotifier sessionExpiry,
+    required AccessDeniedNotifier accessDenied,
   }) : _remote = remote,
        _tokenStorage = tokenStorage,
-       _sessionExpiry = sessionExpiry;
+       _sessionExpiry = sessionExpiry,
+       _accessDenied = accessDenied;
 
   final AuthRemoteDataSource _remote;
   final TokenStorage _tokenStorage;
   final SessionExpiryNotifier _sessionExpiry;
+  final AccessDeniedNotifier _accessDenied;
 
   @override
   Future<Either<Failure, CurrentUser>> signIn({
@@ -64,6 +68,9 @@ final class AuthRepositoryImpl implements AuthRepository {
   @override
   Stream<void> watchSessionExpiry() =>
       _sessionExpiry.onExpired.asyncMap((_) => _clearToken());
+
+  @override
+  Stream<void> watchAccessDenied() => _accessDenied.onDenied;
 
   Future<void> _clearToken() => _tokenStorage.deleteToken();
 }

@@ -14,6 +14,7 @@ import '../network/api_urls.dart';
 import '../network/dio_consumer.dart';
 import '../network/graphql_consumer.dart';
 import '../network/interceptors/api_interceptors.dart';
+import '../session/access_denied_notifier.dart';
 import '../session/session_expiry_notifier.dart';
 import '../storage/in_memory_token_storage.dart';
 import '../storage/token_storage.dart';
@@ -36,16 +37,23 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
     ..registerSingleton<FlavorConfig>(flavorConfig)
     ..registerSingleton<ApiUrls>(ApiUrls(flavorConfig.values.baseUri))
     ..registerSingleton<TokenStorage>(tokenStorage)
-    ..registerSingleton<SessionExpiryNotifier>(SessionExpiryNotifier());
+    ..registerSingleton<SessionExpiryNotifier>(SessionExpiryNotifier())
+    ..registerSingleton<AccessDeniedNotifier>(AccessDeniedNotifier());
 
   // Network
   sl
     ..registerLazySingleton<Dio>(
-      () => _createDio(sl(), sl(), sl(), withCredentials: useHttpOnlyCookie),
+      () => _createDio(
+        sl(),
+        sl(),
+        sl(),
+        sl(),
+        withCredentials: useHttpOnlyCookie,
+      ),
     )
     ..registerLazySingleton<ApiConsumer>(() => DioConsumer(sl()))
     ..registerLazySingleton<GraphQLConsumer>(
-      () => DioGraphQLConsumer(sl(), sl(), sl()),
+      () => DioGraphQLConsumer(sl(), sl(), sl(), sl()),
     );
 
   // Features
@@ -70,7 +78,8 @@ TokenStorage _createTokenStorage(bool useHttpOnlyCookie) =>
 Dio _createDio(
   ApiUrls urls,
   TokenStorage tokenStorage,
-  SessionExpiryNotifier sessionExpiry, {
+  SessionExpiryNotifier sessionExpiry,
+  AccessDeniedNotifier accessDenied, {
   required bool withCredentials,
 }) {
   final dio =
@@ -86,7 +95,9 @@ Dio _createDio(
         ..httpClientAdapter = createHttpClientAdapter(
           withCredentials: withCredentials,
         );
-  dio.interceptors.add(AuthInterceptor(tokenStorage, sessionExpiry));
+  dio.interceptors.add(
+    AuthInterceptor(tokenStorage, sessionExpiry, accessDenied),
+  );
   if (kDebugMode) dio.interceptors.add(LoggingInterceptor());
   return dio;
 }

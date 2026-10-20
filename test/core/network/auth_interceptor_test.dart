@@ -1,4 +1,5 @@
 import 'package:badrgo_console_assesment/core/network/interceptors/api_interceptors.dart';
+import 'package:badrgo_console_assesment/core/session/access_denied_notifier.dart';
 import 'package:badrgo_console_assesment/core/session/session_expiry_notifier.dart';
 import 'package:badrgo_console_assesment/core/storage/token_storage.dart';
 import 'package:dio/dio.dart';
@@ -19,26 +20,28 @@ class _PassingErrorHandler extends ErrorInterceptorHandler {
   void next(DioException err) {}
 }
 
-DioException _unauthorized({required bool withToken}) {
+DioException _rejected(int status, {required bool withToken}) {
   final options = RequestOptions(
     path: '/api/me',
     headers: {if (withToken) 'Authorization': 'Bearer jwt-1'},
   );
   return DioException(
     requestOptions: options,
-    response: Response<Object?>(requestOptions: options, statusCode: 401),
+    response: Response<Object?>(requestOptions: options, statusCode: status),
   );
 }
 
 void main() {
   late _MockTokenStorage tokenStorage;
   late SessionExpiryNotifier sessionExpiry;
+  late AccessDeniedNotifier accessDenied;
   late AuthInterceptor interceptor;
 
   setUp(() {
     tokenStorage = _MockTokenStorage();
     sessionExpiry = SessionExpiryNotifier();
-    interceptor = AuthInterceptor(tokenStorage, sessionExpiry);
+    accessDenied = AccessDeniedNotifier();
+    interceptor = AuthInterceptor(tokenStorage, sessionExpiry, accessDenied);
   });
 
   test('adds the bearer header when a token is stored', () async {
@@ -63,7 +66,10 @@ void main() {
   test('a 401 on an authenticated request reports the session expired', () {
     expectLater(sessionExpiry.onExpired, emits(null));
 
-    interceptor.onError(_unauthorized(withToken: true), _PassingErrorHandler());
+    interceptor.onError(
+      _rejected(401, withToken: true),
+      _PassingErrorHandler(),
+    );
   });
 
   test(
@@ -75,7 +81,7 @@ void main() {
       );
 
       interceptor.onError(
-        _unauthorized(withToken: false),
+        _rejected(401, withToken: false),
         _PassingErrorHandler(),
       );
       await Future<void>.delayed(Duration.zero);
@@ -84,4 +90,13 @@ void main() {
       await subscription.cancel();
     },
   );
+
+  test('a 403 on an authenticated request reports denied access', () {
+    expectLater(accessDenied.onDenied, emits(null));
+
+    interceptor.onError(
+      _rejected(403, withToken: true),
+      _PassingErrorHandler(),
+    );
+  });
 }

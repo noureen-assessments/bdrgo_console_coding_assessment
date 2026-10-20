@@ -4,6 +4,7 @@ import '../constants/app_strings.dart';
 import '../constants/graphql_endpoints.dart';
 import '../errors/api_error_parser.dart';
 import '../errors/failures.dart';
+import '../session/access_denied_notifier.dart';
 import '../session/session_expiry_notifier.dart';
 import 'api_urls.dart';
 
@@ -21,15 +22,21 @@ abstract interface class GraphQLConsumer {
   });
 }
 
-/// GraphQL answers `200` with `extensions.code: UNAUTHENTICATED` when the
-/// session is gone, so that case is reported here; HTTP `401`s are reported
-/// by the shared `AuthInterceptor`.
+/// GraphQL answers `200` with `extensions.code: UNAUTHENTICATED` or
+/// `FORBIDDEN`, so those cases are reported here; HTTP `401`s and `403`s are
+/// reported by the shared `AuthInterceptor`.
 final class DioGraphQLConsumer implements GraphQLConsumer {
-  DioGraphQLConsumer(this._dio, this._urls, this._sessionExpiry);
+  DioGraphQLConsumer(
+    this._dio,
+    this._urls,
+    this._sessionExpiry,
+    this._accessDenied,
+  );
 
   final Dio _dio;
   final ApiUrls _urls;
   final SessionExpiryNotifier _sessionExpiry;
+  final AccessDeniedNotifier _accessDenied;
 
   @override
   Future<Map<String, Object?>> query(
@@ -66,6 +73,7 @@ final class DioGraphQLConsumer implements GraphQLConsumer {
     }
     final failure = ApiErrorParser.fromGraphQLBody(body, statusCode: status);
     if (failure is UnauthenticatedFailure) _sessionExpiry.notify();
+    if (failure is ForbiddenFailure) _accessDenied.notify();
     if (failure != null) throw failure;
     final data = body[GraphQLKeys.data];
     return data is Map ? data.cast<String, Object?>() : const {};

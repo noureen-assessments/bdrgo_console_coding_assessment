@@ -1,4 +1,5 @@
 import 'package:badrgo_console_assesment/core/errors/failures.dart';
+import 'package:badrgo_console_assesment/core/session/access_denied_notifier.dart';
 import 'package:badrgo_console_assesment/core/session/session_expiry_notifier.dart';
 import 'package:badrgo_console_assesment/core/storage/token_storage.dart';
 import 'package:badrgo_console_assesment/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -18,16 +19,19 @@ void main() {
   late _MockRemote remote;
   late _MockTokenStorage tokens;
   late SessionExpiryNotifier sessionExpiry;
+  late AccessDeniedNotifier accessDenied;
   late AuthRepositoryImpl repository;
 
   setUp(() {
     remote = _MockRemote();
     tokens = _MockTokenStorage();
     sessionExpiry = SessionExpiryNotifier();
+    accessDenied = AccessDeniedNotifier();
     repository = AuthRepositoryImpl(
       remote: remote,
       tokenStorage: tokens,
       sessionExpiry: sessionExpiry,
+      accessDenied: accessDenied,
     );
     when(() => tokens.saveToken(any())).thenAnswer((_) async {});
     when(tokens.deleteToken).thenAnswer((_) async {});
@@ -138,5 +142,14 @@ void main() {
     await expiry;
 
     verify(tokens.deleteToken).called(1);
+  });
+
+  test('a 403 anywhere is reported and keeps the token', () async {
+    final denied = expectLater(repository.watchAccessDenied(), emits(null));
+
+    accessDenied.notify();
+    await denied;
+
+    verifyNever(tokens.deleteToken);
   });
 }
