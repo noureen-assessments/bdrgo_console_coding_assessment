@@ -11,12 +11,25 @@ class TripFilter extends Equatable {
     this.search,
   });
 
+  /// Cancelled trips are many and rarely needed, so with no status picked
+  /// they are left out. Picking Cancelled shows them.
+  static const defaultStatuses = {
+    TripStatus.requested,
+    TripStatus.assigned,
+    TripStatus.inProgress,
+    TripStatus.completed,
+  };
+
   final Set<TripStatus> statuses;
 
   final DateTime? from;
   final DateTime? to;
 
   final String? search;
+
+  /// The statuses the list asks for.
+  Set<TripStatus> get shownStatuses =>
+      statuses.isEmpty ? defaultStatuses : statuses;
 
   bool get isEmpty =>
       statuses.isEmpty && from == null && to == null && search == null;
@@ -32,7 +45,7 @@ class TripFilter extends Equatable {
 
   bool matches(TripSummary trip) {
     if (search != null) return false;
-    if (statuses.isNotEmpty && !statuses.contains(trip.status)) return false;
+    if (!shownStatuses.contains(trip.status)) return false;
 
     final firstDay = from;
     if (firstDay != null && trip.requestedAt.isBefore(firstDay)) return false;

@@ -73,13 +73,11 @@ static const _tripRow = r'''
   static Map<String, Object?> filterVariables(TripFilter filter) {
     final variables = <String, Object?>{};
 
-    if (filter.statuses.isNotEmpty) {
-      final statuses = <String>[];
-      for (final status in filter.statuses) {
-        statuses.add(status.value);
-      }
-      variables['status'] = statuses;
+    final statuses = <String>[];
+    for (final status in filter.shownStatuses) {
+      statuses.add(status.value);
     }
+    variables['status'] = statuses;
 
     final from = filter.from;
     if (from != null) {
