@@ -10,7 +10,7 @@ import 'presentation/bloc/trips/trips_bloc.dart';
 void initTrips() {
   sl
     ..registerLazySingleton<TripsRemoteDataSource>(
-      () => TripsRemoteDataSourceImpl(sl(), sl()),
+      () => TripsRemoteDataSourceImpl(sl(), sl(), sl()),
     )
     ..registerLazySingleton<TripsRepository>(() => TripsRepositoryImpl(sl()))
     ..registerLazySingleton(() => GetTripsUseCase(sl()))
