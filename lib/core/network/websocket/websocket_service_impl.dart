@@ -2,9 +2,13 @@ import 'dart:async';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../constants/log_constants.dart';
 import '../../constants/websocket_events.dart';
+import '../../session/session_checker.dart';
 import '../../storage/token_storage.dart';
+import '../../utils/logger.dart';
 import '../api_urls.dart';
+import '../backoff.dart';
 import 'websocket_message.dart';
 import 'websocket_service.dart';
 
@@ -14,13 +18,19 @@ final class WebSocketServiceImpl implements WebSocketService {
   WebSocketServiceImpl({
     required ApiUrls urls,
     required TokenStorage tokenStorage,
+    required SessionChecker sessionChecker,
+    Backoff backoff = const Backoff(),
     WebSocketConnector connector = WebSocketChannel.connect,
   }) : _urls = urls,
        _tokenStorage = tokenStorage,
+       _sessionChecker = sessionChecker,
+       _backoff = backoff,
        _connector = connector;
 
   final ApiUrls _urls;
   final TokenStorage _tokenStorage;
+  final SessionChecker _sessionChecker;
+  final Backoff _backoff;
   final WebSocketConnector _connector;
 
   final _topics = <WebSocketTopic, StreamController<Map<String, Object?>>>{};
@@ -29,6 +39,8 @@ final class WebSocketServiceImpl implements WebSocketService {
   var _status = WebSocketStatus.closed;
   WebSocketChannel? _channel;
   StreamSubscription<Object?>? _connection;
+  Timer? _retryTimer;
+  var _attempt = 0;
 
   @override
   Stream<Map<String, Object?>> watch(WebSocketTopic topic) {
@@ -66,8 +78,7 @@ final class WebSocketServiceImpl implements WebSocketService {
 
   void _onCancel(WebSocketTopic topic) {
     if (!_hasListeners) {
-      _closeConnection();
-      _setStatus(WebSocketStatus.closed);
+      _disconnect();
       return;
     }
     if (_status == WebSocketStatus.open) {
@@ -88,6 +99,7 @@ final class WebSocketServiceImpl implements WebSocketService {
 
   void _onOpened(WebSocketChannel channel) {
     if (channel != _channel) return;
+    _attempt = 0;
     _setStatus(WebSocketStatus.open);
     _subscribeAll();
   }
@@ -117,6 +129,37 @@ final class WebSocketServiceImpl implements WebSocketService {
   }
 
   void _onClosed() {
+    final channel = _channel;
+    int? closeCode;
+    if (channel != null) closeCode = channel.closeCode;
+    _closeConnection();
+
+    if (closeCode == WebSocketCloseCodes.unauthorized) {
+      AppLogger.warning(
+        LogMessages.webSocketUnauthorized,
+        name: LogTags.webSocket,
+      );
+      _setStatus(WebSocketStatus.closed);
+      _sessionChecker.check();
+      return;
+    }
+
+    _setStatus(WebSocketStatus.connecting);
+    _retryAfterSessionCheck();
+  }
+
+  Future<void> _retryAfterSessionCheck() async {
+    AppLogger.warning(LogMessages.webSocketDropped, name: LogTags.webSocket);
+    await _sessionChecker.check();
+    if (!_hasListeners || _channel != null) return;
+    _retryTimer = Timer(_backoff.delay(_attempt), _connect);
+    _attempt++;
+  }
+
+  void _disconnect() {
+    _retryTimer?.cancel();
+    _retryTimer = null;
+    _attempt = 0;
     _closeConnection();
     _setStatus(WebSocketStatus.closed);
   }
