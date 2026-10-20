@@ -31,9 +31,6 @@ final class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     throw const FormatException('token');
   }
 
-  /// A body with missing or wrongly typed fields fails the `as` casts in
-  /// [MeModel.fromJson]; it is reported as [FormatException] so `safeCall`
-  /// turns it into an "unexpected response" failure.
   @override
   Future<MeModel> fetchMe() async {
     final body = await _api.get(ApiEndpoints.me);

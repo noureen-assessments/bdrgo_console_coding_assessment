@@ -5,7 +5,6 @@ import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_strings.dart';
 import '../widgets/no_data_found_widget.dart';
 
-/// Shown for unknown URLs instead of a blank page or crash.
 class NotFoundPage extends StatelessWidget {
   const NotFoundPage({required this.path, super.key});
 

@@ -5,8 +5,7 @@ import '../../config/theme/app_text_styles.dart';
 import '../../core/constants/app_assets.dart';
 import '../../core/utils/responsive.dart';
 
-/// Centered icon, title, optional message and action. Used for empty,
-/// not-found and no-access states.
+
 class NoDataFoundWidget extends StatelessWidget {
   const NoDataFoundWidget({
     required this.title,

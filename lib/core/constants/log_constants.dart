@@ -4,6 +4,7 @@ abstract final class LogTags {
   static const bloc = 'bloc';
   static const http = 'http';
   static const storage = 'storage';
+  static const sse = 'sse';
 }
 
 /// Log lines. Never include tokens, passwords or request bodies.
@@ -12,6 +13,8 @@ abstract final class LogMessages {
   static const secureStorageFailed = 'Secure storage failed';
   static const redacted = '[REDACTED]';
   static const redactedPath = '/[REDACTED_PATH]/';
+  static const sseRefused = 'SSE connection refused; checking the session';
+  static const sseBadFrame = 'SSE frame skipped: data is not a JSON object';
 
   static String redactedFrame(String? file) => '$redactedPath$file:';
 

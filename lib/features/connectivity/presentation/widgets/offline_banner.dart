@@ -8,8 +8,7 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../bloc/connectivity_bloc.dart';
 
-/// Slim bar above every page while the browser is offline. Pages keep their
-/// content; their Blocs retry on their own when the connection is back.
+
 class OfflineBanner extends StatelessWidget {
   const OfflineBanner({super.key});
 

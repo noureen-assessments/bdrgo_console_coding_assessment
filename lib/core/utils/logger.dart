@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart';
 
 import '../constants/log_constants.dart';
 
-/// Debug-only logging to the browser/DevTools console. Never log tokens,
-/// passwords or request bodies.
 abstract final class AppLogger {
   static void info(String message, {String name = LogTags.app}) =>
       _log(message, name: name);

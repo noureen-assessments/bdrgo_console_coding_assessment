@@ -7,24 +7,27 @@ import '../../config/flavor/flavor_config.dart';
 import '../../config/routing/app_router.dart';
 import '../../features/auth/auth_injection.dart';
 import '../../features/connectivity/connectivity_injection.dart';
+import '../../features/dashboard/dashboard_injection.dart';
 import '../network/adapters/http_adapter.dart';
 import '../network/api_consumer.dart';
 import '../network/api_urls.dart';
 import '../network/dio_consumer.dart';
 import '../network/graphql_consumer.dart';
 import '../network/interceptors/api_interceptors.dart';
+import '../network/sse/sse_client.dart';
+import '../network/sse/sse_client_impl.dart';
+import '../network/sse/sse_transport_factory.dart';
 import '../session/access_denied_notifier.dart';
+import '../session/session_checker.dart';
 import '../session/session_expiry_notifier.dart';
 import '../storage/in_memory_token_storage.dart';
 import '../storage/token_storage.dart';
 import '../utils/secure_storage.dart';
 
-/// Service locator. Read only in the composition root (main, router, Bloc
-/// providers); every other class gets dependencies through its constructor.
+///  every other class gets dependencies through its constructor.
 final GetIt sl = GetIt.instance;
 
-/// Registers core services, then each feature's `init<Feature>()` from its
-/// `<feature>_injection.dart` as features are added.
+
 Future<void> initCore(FlavorConfig flavorConfig) async {
   final useHttpOnlyCookie = Env.usesHttpOnlyCookie;
   final tokenStorage = _createTokenStorage(useHttpOnlyCookie);
@@ -53,11 +56,23 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
     ..registerLazySingleton<ApiConsumer>(() => DioConsumer(sl()))
     ..registerLazySingleton<GraphQLConsumer>(
       () => DioGraphQLConsumer(sl(), sl(), sl(), sl()),
+    )
+    ..registerLazySingleton<SessionChecker>(() => RestSessionChecker(sl()))
+    // One SSE connection shared by every feature.
+    ..registerLazySingleton<SseClient>(
+      () => SseClientImpl(
+        transport: createSseTransport(),
+        urls: sl(),
+        tokenStorage: sl(),
+        sessionChecker: sl(),
+        withCredentials: useHttpOnlyCookie,
+      ),
     );
 
   // Features
   initConnectivity();
   initAuth();
+  initDashboard();
 
   // Routing
   sl.registerLazySingleton<AppRouter>(() => AppRouter(session: sl()));
@@ -69,8 +84,7 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
 TokenStorage _createTokenStorage(bool useHttpOnlyCookie) =>
     useHttpOnlyCookie ? InMemoryTokenStorage() : AppSecureStorage();
 
-/// One Dio for REST and GraphQL so both share the auth header, cookies and
-/// logging. No `sendTimeout`: on web it only applies to requests with a body.
+/// One Dio for REST and GraphQL
 Dio _createDio(
   ApiUrls urls,
   TokenStorage tokenStorage,

@@ -1,4 +1,3 @@
-/// User-facing text. Kept in one place so it can move to localisation later.
 abstract final class AppStrings {
   static const appName = 'badrgo Ops Console';
 
@@ -39,6 +38,48 @@ abstract final class AppStrings {
   static const liveMap = 'Live map';
   static const alerts = 'Alerts';
   static const sectionComingSoon = 'This section is on its way.';
+
+  // Dashboard
+  static const dashboardLoadFailed = "Couldn't load the dashboard";
+  static const kpiActiveTrips = 'Active trips';
+  static const kpiCompleted = 'Completed';
+  static const kpiCancellationRate = 'Cancellation rate';
+  static const kpiRevenue = 'Revenue';
+  static const kpiDrivers = 'Drivers available / on trip';
+  static const kpiOpenAlerts = 'Open alerts';
+  static const kpiLast24Hours = 'Last 24 hours';
+  static const kpiOpenAlertsDetail = 'Not acknowledged yet';
+  static const noValue = '—';
+  static const live = 'Live';
+  static const reconnecting = 'Reconnecting…';
+
+  // Trips chart
+  static const tripsOverTime = 'Trips over time';
+  static const rangeLast24Hours = 'Last 24h';
+  static const rangeLast7Days = 'Last 7 days';
+  static const seriesTotal = 'Total';
+  static const seriesCompleted = 'Completed';
+  static const seriesCancelled = 'Cancelled';
+  static const chartLoadFailed = "Couldn't load the chart";
+  static const noTripsInRange = 'No trips in this period';
+
+  static String seriesValue(String series, String count) => '$series: $count';
+
+  static String kpiActiveBreakdown(
+    String requested,
+    String assigned,
+    String inProgress,
+  ) => '$requested requested · $assigned assigned · $inProgress in progress';
+
+  static String kpiCancelled(String cancelled) =>
+      '$cancelled cancelled in 24 h';
+
+  static String kpiDriverPair(String available, String onTrip) =>
+      '$available / $onTrip';
+
+  static String kpiDriversTotal(String total) => '$total drivers in total';
+
+  static String updatedAt(String time) => 'Updated $time';
 
   // No access
   static const noAccess = "You don't have access to this page";

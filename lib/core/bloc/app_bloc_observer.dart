@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/log_constants.dart';
 import '../utils/logger.dart';
 
-/// Logs Bloc events and errors in debug builds. Transitions are not logged
-/// because live SSE/WebSocket updates would flood the console.
+
 final class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
 

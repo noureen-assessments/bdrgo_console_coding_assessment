@@ -6,7 +6,6 @@ abstract final class SseEndpoints {
 
 /// Event names on the SSE stream (the `event:` field).
 enum SseEvent {
-  /// Live KPI tile values.
   kpi('kpi'),
   tripCreated('trip.created'),
   tripUpdated('trip.updated'),

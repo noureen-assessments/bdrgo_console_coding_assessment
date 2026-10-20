@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Typography. Colors come from the theme unless a style says otherwise, so
-/// text stays readable on any background.
 abstract final class AppTextStyles {
   /// Page and card titles.
   static const headline = TextStyle(
@@ -14,6 +12,13 @@ abstract final class AppTextStyles {
   static const headlineCompact = TextStyle(
     fontSize: 20,
     height: 28 / 20,
+    fontWeight: FontWeight.w500,
+  );
+
+  /// The big number on a KPI tile.
+  static const kpiValue = TextStyle(
+    fontSize: 28,
+    height: 36 / 28,
     fontWeight: FontWeight.w500,
   );
 

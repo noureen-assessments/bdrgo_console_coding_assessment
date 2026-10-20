@@ -1,8 +1,5 @@
 import 'package:dio/dio.dart';
 
-/// REST transport used by remote data sources. Implementations throw a
-/// `Failure` on error, so data sources never see Dio types except
-/// [CancelToken].
 abstract interface class ApiConsumer {
   Future<Object?> get(
     String path, {

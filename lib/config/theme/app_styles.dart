@@ -4,7 +4,7 @@ import 'app_colors.dart';
 import 'app_dimensions.dart';
 import 'app_text_styles.dart';
 
-/// Reusable decorations and component styles.
+
 abstract final class AppStyles {
   static const animationDuration = Duration(milliseconds: 200);
 
@@ -25,6 +25,18 @@ abstract final class AppStyles {
 
   static Color noticeForeground({required bool isError}) =>
       isError ? AppColors.onErrorBackground : AppColors.onInfoBackground;
+
+  static BoxDecoration statusDot({required bool isLive}) => BoxDecoration(
+    color: isLive ? AppColors.live : AppColors.reconnecting,
+    shape: BoxShape.circle,
+  );
+
+  static BoxDecoration legendDot(Color color) =>
+      BoxDecoration(color: color, shape: BoxShape.circle);
+
+  static final chartTooltipText = AppTextStyles.caption.copyWith(
+    color: AppColors.onChartTooltip,
+  );
 
   static final snackBarText = AppTextStyles.body.copyWith(
     color: AppColors.onSnackBar,

@@ -1,6 +1,6 @@
 import '../../domain/entities/city.dart';
 
-/// The `city` object inside `GET /api/me`.
+
 class CityModel extends City {
   const CityModel({required super.id, required super.name});
 

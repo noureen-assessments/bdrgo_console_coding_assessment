@@ -9,11 +9,6 @@ enum Flavor { DEV, ALPHA, PROD }
 class FlavorValues {
   FlavorValues({required this.baseHost, required this.baseProtocol});
 
-  /// Splits an absolute URL such as `https://api.example.com` (usually
-  /// from `--dart-define=API_URL=…`) into protocol and host.
-  ///
-  /// [baseHost] keeps the port and an optional path prefix, e.g.
-  /// `localhost:8080/v1`.
   factory FlavorValues.fromApiUrl(String apiUrl) {
     final uri = Uri.tryParse(apiUrl.trim());
     final validScheme =
@@ -30,7 +25,6 @@ class FlavorValues {
   final String baseHost;
   final String baseProtocol;
 
-  /// Base URL every transport endpoint is derived from.
   Uri get baseUri =>
       Uri.parse('$baseProtocol${UrlConstants.schemeSeparator}$baseHost');
 }

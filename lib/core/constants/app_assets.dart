@@ -21,6 +21,14 @@ abstract final class AppAssets {
   static const IconData alerts = Icons.notifications_outlined;
   static const IconData noAccess = Icons.lock_person_outlined;
 
+  // Dashboard KPI tiles
+  static const IconData activeTrips = Icons.directions_car_outlined;
+  static const IconData completedTrips = Icons.check_circle_outline;
+  static const IconData cancellationRate = Icons.cancel_outlined;
+  static const IconData revenue = Icons.payments_outlined;
+  static const IconData drivers = Icons.people_outline;
+  static const IconData openAlerts = Icons.warning_amber_outlined;
+
   // Connectivity
   static const IconData offline = Icons.wifi_off;
 

@@ -16,6 +16,13 @@ import 'package:badrgo_console_assesment/features/auth/presentation/bloc/sign_in
 import 'package:badrgo_console_assesment/features/auth/presentation/services/auth_bloc_session_access.dart';
 import 'package:badrgo_console_assesment/features/connectivity/domain/usecases/watch_connectivity_use_case.dart';
 import 'package:badrgo_console_assesment/features/connectivity/presentation/bloc/connectivity_bloc.dart';
+import 'package:badrgo_console_assesment/features/dashboard/domain/entities/kpi_range.dart';
+import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/get_kpis_use_case.dart';
+import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/get_trip_series_use_case.dart';
+import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watch_kpis_use_case.dart';
+import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watch_live_status_use_case.dart';
+import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/dashboard/dashboard_bloc.dart';
+import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/trip_chart/trip_chart_bloc.dart';
 import 'package:badrgo_console_assesment/my_app.dart';
 import 'package:badrgo_console_assesment/shared/use_cases/use_case.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +43,14 @@ class _MockSignIn extends Mock implements SignInUseCase {}
 
 class _MockSignOut extends Mock implements SignOutUseCase {}
 
+class _MockGetKpis extends Mock implements GetKpisUseCase {}
+
+class _MockGetTripSeries extends Mock implements GetTripSeriesUseCase {}
+
+class _MockWatchKpis extends Mock implements WatchKpisUseCase {}
+
+class _MockWatchLiveStatus extends Mock implements WatchLiveStatusUseCase {}
+
 /// The real Blocs, router and gate; only the use cases are mocked.
 void main() {
   late _MockWatchExpiry watchExpiry;
@@ -50,6 +65,7 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(const NoParams());
+    registerFallbackValue(KpiRange.last24Hours);
     registerFallbackValue(const SignInParams(email: '', password: ''));
   });
 
@@ -66,6 +82,7 @@ void main() {
     when(() => watchExpiry(any())).thenAnswer((_) => expired.stream);
     when(() => watchDenied(any())).thenAnswer((_) => denied.stream);
     sl.registerFactory(() => SignInBloc(signIn: signIn));
+    _registerDashboard();
   });
 
   Future<void> pumpApp(
@@ -261,4 +278,31 @@ void main() {
       expect(menuItem('Live map'), findsNothing);
     });
   });
+}
+
+/// Users with `kpi:read` land on the dashboard. These tests are about the
+/// shell, so the dashboard just shows its error state (no network, no
+/// endless spinner for `pumpAndSettle`).
+void _registerDashboard() {
+  final getKpis = _MockGetKpis();
+  final watchKpis = _MockWatchKpis();
+  final watchLiveStatus = _MockWatchLiveStatus();
+  when(
+    () => getKpis(any()),
+  ).thenAnswer((_) async => const Left(NetworkFailure('offline')));
+  when(() => watchKpis(any())).thenAnswer((_) => const Stream.empty());
+  when(() => watchLiveStatus(any())).thenAnswer((_) => const Stream.empty());
+  sl.registerFactory(
+    () => DashboardBloc(
+      getKpis: getKpis,
+      watchKpis: watchKpis,
+      watchLiveStatus: watchLiveStatus,
+    ),
+  );
+
+  final getTripSeries = _MockGetTripSeries();
+  when(
+    () => getTripSeries(any()),
+  ).thenAnswer((_) async => const Left(NetworkFailure('offline')));
+  sl.registerFactory(() => TripChartBloc(getTripSeries: getTripSeries));
 }

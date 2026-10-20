@@ -8,12 +8,6 @@ import '../../session/session_expiry_notifier.dart';
 import '../../storage/token_storage.dart';
 import '../../utils/logger.dart';
 
-/// Adds the bearer token to every HTTP request (REST and GraphQL) and
-/// reports, for authenticated requests, a `401` as an expired session and a
-/// `403` as denied access (permissions may have changed).
-///
-/// Requests sent without a token (sign-in) are not reported, so a wrong
-/// password never looks like an expired session.
 final class AuthInterceptor extends Interceptor {
   AuthInterceptor(this._tokenStorage, this._sessionExpiry, this._accessDenied);
 
@@ -47,8 +41,7 @@ final class AuthInterceptor extends Interceptor {
   }
 }
 
-/// Logs method, URL and status only. Headers and bodies carry tokens and
-/// passwords, so they are never logged.
+
 final class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {

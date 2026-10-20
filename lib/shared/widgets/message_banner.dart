@@ -4,7 +4,6 @@ import '../../config/theme/app_dimensions.dart';
 import '../../config/theme/app_styles.dart';
 import '../../core/constants/app_assets.dart';
 
-/// Inline notice inside a page or form: an error, or neutral information.
 class MessageBanner extends StatelessWidget {
   const MessageBanner({
     required this.message,

@@ -1,11 +1,7 @@
 import '../../domain/entities/permission.dart';
 import '../../domain/entities/permissions.dart';
 
-/// The `permissions` object inside `GET /api/me`:
-/// `{ "trip": ["read", "assign"], "kpi": ["read"] }`.
-///
-/// Resources and actions the app does not know are skipped: nothing can ask
-/// for them, so they would never be granted anyway.
+
 class PermissionsModel extends Permissions {
   const PermissionsModel(super.granted);
 

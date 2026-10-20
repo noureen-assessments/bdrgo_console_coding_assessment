@@ -8,12 +8,7 @@ import '../session/access_denied_notifier.dart';
 import '../session/session_expiry_notifier.dart';
 import 'api_urls.dart';
 
-/// GraphQL-over-HTTP transport. The console only sends queries with
-/// variables, so a thin POST wrapper on the shared Dio beats a full client
-/// with its own cache that would fight live SSE updates.
 abstract interface class GraphQLConsumer {
-  /// Returns the `data` object, or throws a [Failure] built from the first
-  /// GraphQL error (`extensions.code`) or the HTTP error.
   Future<Map<String, Object?>> query(
     String document, {
     Map<String, Object?> variables = const {},
@@ -22,9 +17,6 @@ abstract interface class GraphQLConsumer {
   });
 }
 
-/// GraphQL answers `200` with `extensions.code: UNAUTHENTICATED` or
-/// `FORBIDDEN`, so those cases are reported here; HTTP `401`s and `403`s are
-/// reported by the shared `AuthInterceptor`.
 final class DioGraphQLConsumer implements GraphQLConsumer {
   DioGraphQLConsumer(
     this._dio,

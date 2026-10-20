@@ -1,5 +1,3 @@
-/// Every size the app uses: spacing, radii, icon and control sizes, and the
-/// window-width breakpoints. Widgets never write raw numbers.
 abstract final class AppDimensions {
   // Spacing scale
   static const double spaceXxs = 4;
@@ -22,6 +20,19 @@ abstract final class AppDimensions {
   static const double progressSm = 16;
   static const double progressMd = 20;
   static const double progressStroke = 2;
+
+  // Live status dot
+  static const double statusDot = 8;
+
+  // Dashboard KPI tiles per row
+  static const int kpiColumnsMobile = 2;
+  static const int kpiColumnsDesktop = 3;
+
+  // Trips chart
+  static const double chartHeight = 260;
+  static const double chartLineWidth = 2;
+  static const double chartLeftAxisSpace = 44;
+  static const double chartBottomAxisSpace = 28;
 
   // Dividers
   static const double dividerThin = 1;
