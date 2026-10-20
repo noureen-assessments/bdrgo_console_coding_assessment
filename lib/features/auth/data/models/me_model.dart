@@ -1,4 +1,5 @@
 import '../../domain/entities/current_user.dart';
+import '../../domain/entities/user_role.dart';
 import 'city_model.dart';
 import 'permissions_model.dart';
 
@@ -33,7 +34,7 @@ class MeModel extends CurrentUser {
       id: user['id'] as String,
       name: user['name'] as String,
       email: user['email'] as String,
-      role: json['role'] as String,
+      role: UserRole.fromValue(json['role'] as String),
       roleDescription: json['roleDescription'] as String? ?? '',
       city: city == null ? null : CityModel.fromJson(city),
       permissions: PermissionsModel.fromJson(permissions ?? {}),
@@ -49,7 +50,7 @@ class MeModel extends CurrentUser {
 
   Map<String, dynamic> toJson() => {
     'user': {'id': id, 'name': name, 'email': email},
-    'role': role,
+    'role': role.value,
     'roleDescription': roleDescription,
     'city': city?.toJson(),
     'permissions': permissions.toJson(),

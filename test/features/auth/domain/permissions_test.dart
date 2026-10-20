@@ -1,20 +1,26 @@
+import 'package:badrgo_console_assesment/features/auth/domain/entities/permission.dart';
 import 'package:badrgo_console_assesment/features/auth/domain/entities/permissions.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const permissions = Permissions({
-    'trip': {'read', 'assign'},
-    'kpi': {'read'},
+    TripPermission.read,
+    TripPermission.assign,
+    KpiPermission.read,
   });
 
-  test('grants only the listed actions on the listed resources', () {
-    expect(permissions.can('trip', 'assign'), isTrue);
-    expect(permissions.can('kpi', 'read'), isTrue);
-    expect(permissions.can('trip', 'cancel'), isFalse);
-    expect(permissions.can('driver', 'track'), isFalse);
+  test('grants only the listed permissions', () {
+    expect(permissions.can(TripPermission.assign), isTrue);
+    expect(permissions.can(KpiPermission.read), isTrue);
+    expect(permissions.can(TripPermission.cancel), isFalse);
+    expect(permissions.can(DriverPermission.track), isFalse);
+  });
+
+  test('the same action on another resource is a different permission', () {
+    expect(permissions.can(DriverPermission.read), isFalse);
   });
 
   test('none grants nothing', () {
-    expect(Permissions.none.can('trip', 'read'), isFalse);
+    expect(Permissions.none.can(TripPermission.read), isFalse);
   });
 }

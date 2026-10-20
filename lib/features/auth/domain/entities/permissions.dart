@@ -1,20 +1,20 @@
 import 'package:equatable/equatable.dart';
 
-/// The `permissions` map from `/api/me`, e.g. `{ "trip": ["read", "assign"] }`.
+import 'permission.dart';
+
+/// What the signed-in user may do, from the `permissions` map in `/api/me`.
 ///
 /// Navigation, routes and buttons ask [can]; nothing in the app branches on
-/// the role name.
+/// the role.
 class Permissions extends Equatable {
-  const Permissions(this.grants);
+  const Permissions(this.granted);
 
   static const none = Permissions({});
 
-  /// Resource name → allowed actions.
-  final Map<String, Set<String>> grants;
+  final Set<Permission> granted;
 
-  bool can(String resource, String action) =>
-      grants[resource]?.contains(action) ?? false;
+  bool can(Permission permission) => granted.contains(permission);
 
   @override
-  List<Object?> get props => [grants];
+  List<Object?> get props => [granted];
 }

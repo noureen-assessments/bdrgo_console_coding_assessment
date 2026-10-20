@@ -1,5 +1,7 @@
 import 'package:badrgo_console_assesment/features/auth/data/models/me_model.dart';
 import 'package:badrgo_console_assesment/features/auth/domain/entities/current_user.dart';
+import 'package:badrgo_console_assesment/features/auth/domain/entities/permission.dart';
+import 'package:badrgo_console_assesment/features/auth/domain/entities/user_role.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../auth_fixtures.dart';
@@ -11,13 +13,13 @@ void main() {
     expect(model.id, 'u1');
     expect(model.name, 'Dana Dispatcher');
     expect(model.email, 'dispatch.doha@demo.test');
-    expect(model.role, 'dispatcher');
+    expect(model.role, UserRole.dispatcher);
     expect(model.roleDescription, 'Assigns trips');
     expect(model.city?.id, 'city_doh');
     expect(model.city?.name, 'Doha');
-    expect(model.permissions.can('trip', 'assign'), isTrue);
-    expect(model.permissions.can('kpi', 'read'), isTrue);
-    expect(model.permissions.can('trip', 'cancel'), isFalse);
+    expect(model.permissions.can(TripPermission.assign), isTrue);
+    expect(model.permissions.can(KpiPermission.read), isTrue);
+    expect(model.permissions.can(TripPermission.cancel), isFalse);
   });
 
   test('is a CurrentUser, so the domain uses it directly', () {
@@ -35,6 +37,12 @@ void main() {
 
     expect(model.city, isNull);
     expect(model.toJson()['city'], isNull);
+  });
+
+  test('an unknown role still signs in, as unknown', () {
+    final model = MeModel.fromJson({...meJson(), 'role': 'auditor'});
+
+    expect(model.role, UserRole.unknown);
   });
 
   test('a missing user fails the cast', () {

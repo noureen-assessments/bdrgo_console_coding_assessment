@@ -120,7 +120,7 @@ void main() {
   ) async {
     await pumpApp(tester, restored: dispatcher);
 
-    expect(find.text('Dana Dispatcher · dispatcher · Doha'), findsOneWidget);
+    expect(find.text('Dana Dispatcher · Dispatcher · Doha'), findsOneWidget);
   });
 
   testWidgets('adapts to the window: icon-only sign-out on a phone', (
@@ -133,7 +133,7 @@ void main() {
 
     await pumpApp(tester, restored: dispatcher);
 
-    expect(find.text('Dana Dispatcher · dispatcher · Doha'), findsOneWidget);
+    expect(find.text('Dana Dispatcher · Dispatcher · Doha'), findsOneWidget);
     expect(find.byTooltip('Sign out'), findsOneWidget);
     expect(find.text('Sign out'), findsNothing);
 
@@ -154,7 +154,7 @@ void main() {
       find.text('Your session has ended. Please sign in again.'),
       findsOneWidget,
     );
-    expect(find.text('Dana Dispatcher · dispatcher · Doha'), findsNothing);
+    expect(find.text('Dana Dispatcher · Dispatcher · Doha'), findsNothing);
   });
 
   testWidgets('sign-out revokes and returns to sign-in', (tester) async {

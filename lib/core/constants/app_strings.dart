@@ -24,6 +24,14 @@ abstract final class AppStrings {
   static const restoreFailed = "Couldn't check your session";
   static const signOut = 'Sign out';
   static const allCities = 'All cities';
+
+  // Roles
+  static const roleSuperAdmin = 'Super admin';
+  static const roleOpsManager = 'Ops manager';
+  static const roleDispatcher = 'Dispatcher';
+  static const roleSupport = 'Support';
+  static const roleViewer = 'Viewer';
+  static const roleUnknown = 'Unknown role';
   static const consolePlaceholder = 'Your console will appear here.';
 
   static String welcome(String name) => 'Welcome, $name';
