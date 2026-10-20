@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/date_formatters.dart';
 import '../../../../core/utils/number_formatters.dart';
+import '../../domain/entities/trip_change.dart';
 import '../../domain/entities/trip_summary.dart';
 import '../bloc/trips/trips_bloc.dart';
+import 'trip_actions.dart';
 import 'trip_status_badge.dart';
 
 class TripListTile extends StatelessWidget {
@@ -37,8 +39,19 @@ class TripListTile extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing: Column(
+      trailing: Row(
         mainAxisSize: MainAxisSize.min,
+        children: [
+          TripActions(
+            trip: trip,
+            // Reload the row the same way a live SSE change does.
+            onTripChanged: () => context.read<TripsBloc>().add(
+              TripsTripChanged(TripChange(tripId: trip.id, isNew: false)),
+            ),
+          ),
+          const SizedBox(width: AppDimensions.spaceXs),
+          Column(
+            mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
@@ -47,6 +60,8 @@ class TripListTile extends StatelessWidget {
           ),
           const SizedBox(height: AppDimensions.spaceXxs),
           TripStatusBadge(status: trip.status),
+            ],
+          ),
         ],
       ),
     );
