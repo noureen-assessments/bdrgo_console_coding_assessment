@@ -4,7 +4,6 @@ abstract final class WebSocketEndpoints {
 
 abstract final class WebSocketMessageKeys {
   static const type = 'type';
-  static const id = 'id';
   static const payload = 'payload';
   static const channel = 'channel';
 }
