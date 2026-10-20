@@ -14,7 +14,7 @@ class TripDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<TripDetailBloc>()..add(TripDetailRequested(tripId)),
+      create: (_) => sl<TripDetailBloc>()..add(TripDetailStarted(tripId)),
       child: Scaffold(
         appBar: AppBar(title: const Text(AppStrings.tripDetailTitle)),
         body: TripDetailBody(tripId: tripId),
