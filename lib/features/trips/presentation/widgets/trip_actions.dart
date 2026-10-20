@@ -11,6 +11,7 @@ import '../../domain/entities/trip_summary.dart';
 import '../bloc/trip_action/trip_action_bloc.dart';
 import 'assign_driver_dialog.dart';
 import 'cancel_trip_dialog.dart';
+import 'refund_trip_dialog.dart';
 
 
 class TripActions extends StatelessWidget {
@@ -51,6 +52,19 @@ class TripActions extends StatelessWidget {
                 context,
                 CancelTripDialog(trip: trip),
                 AppStrings.tripCancelledDone,
+              ),
+            ),
+          ),
+        if (trip.canRefund)
+          PermissionGate(
+            permission: TripPermission.refund,
+            child: IconButton(
+              tooltip: AppStrings.refundTrip,
+              icon: const Icon(AppAssets.refund),
+              onPressed: () => _open(
+                context,
+                RefundTripDialog(trip: trip),
+                AppStrings.refundIssued,
               ),
             ),
           ),
