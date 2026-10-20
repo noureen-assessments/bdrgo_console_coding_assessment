@@ -5,8 +5,9 @@ sandbox API (REST, GraphQL, Server-Sent Events and WebSocket).
 
 > Status: **M1 (authentication)** and **M2 (role-aware shell)** are done, with
 > the offline part of M7 (offline banner, automatic retry). **M3 (dashboard)**
-> has its live KPI tiles and the trips-over-time chart. M4–M7 follow, each in
-> its own folder under `lib/features/`.
+> has its live KPI tiles and the trips-over-time chart. **M4 (trips)** has its
+> paginated list with filters. The rest of M4 and M5–M7 follow, each in its
+> own folder under `lib/features/`.
 
 ## Running
 
@@ -434,6 +435,53 @@ permission. The router picks each section's page (for example
 `DashboardPage` for the dashboard, a placeholder until a section is built)
 and passes it to `ShellPage.section(destination:, page:)`, so the shell never
 imports a feature.
+
+### Trips (M4)
+
+```
+features/trips/
+├── data/         TripsQueries (GraphQL document + variables), TripsRemoteDataSource,
+│                 TripSummaryModel, TripPageModel
+├── domain/       TripSummary, TripStatus, TripFilter, TripPage, TripPageRequest;
+│                 GetTrips
+└── presentation/ TripsBloc, TripsView, TripFilterBar (search, date range, status
+                  chips), TripList, TripListTile, TripStatusBadge
+```
+
+**List and paging.** The GraphQL `trips(filter, first, after)` query loads 20
+trips at a time, newest first. Scrolling near the end (or **Load more** when
+the rows don't fill the screen) asks for the page after `pageInfo.endCursor`.
+
+- **Only the row's fields.** The schema nests both ways (a driver has a
+  current trip, which has a driver …), but a query is as deep as you ask. A
+  row needs only rider, driver and city *names*, so `TripSummary` is flat
+  and the nesting never reaches the app. The detail view gets its own query.
+- **No duplicate rows.** The cursor is an offset, so trips created between
+  two pages push rows into the next page. `TripPage.append` skips ids that
+  are already shown.
+
+**Filters.** Status chips (none selected = every status), a date range and a
+search box (exact trip id, address text or rider name).
+
+- **Only set criteria are sent.** An empty string would filter to nothing,
+  so `TripsQueries.filterVariables` leaves unset fields out.
+- **Dates are whole days.** The API excludes `to` (`requestedAt < to`), so
+  a range up to Oct 20 is sent as "before Oct 21".
+- **Search runs on Enter**, not on every key press, so typing sends no
+  requests and needs no debounce.
+
+**Races.** A new filter uses `restartable()`, so a slow answer for an old
+filter never replaces the list. The next page uses `droppable()`, so a burst of
+scroll events sends one request. If the filter changes while a page is
+loading, that page is dropped, because it belongs to a list that is gone.
+
+**States.** Every state carries the filter, so the filter bar stays usable on
+loading, error and empty states.
+
+- A failed first page shows Retry.
+- A failed next page keeps the loaded rows and shows Retry under them;
+  scrolling does not retry by itself.
+- An empty result offers **Clear filters**.
 
 ### Connectivity (part of M7)
 
