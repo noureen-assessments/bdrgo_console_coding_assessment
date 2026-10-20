@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/di/injection_container.dart';
+import '../bloc/trip_detail/trip_detail_bloc.dart';
+import '../widgets/trip_detail_body.dart';
 
 class TripDetailPage extends StatelessWidget {
   const TripDetailPage({required this.tripId, super.key});
@@ -10,9 +13,12 @@ class TripDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text(AppStrings.tripDetailTitle)),
-      body: Center(child: Text(tripId, style: AppTextStyles.title)),
+    return BlocProvider(
+      create: (_) => sl<TripDetailBloc>()..add(TripDetailRequested(tripId)),
+      child: Scaffold(
+        appBar: AppBar(title: const Text(AppStrings.tripDetailTitle)),
+        body: TripDetailBody(tripId: tripId),
+      ),
     );
   }
 }
