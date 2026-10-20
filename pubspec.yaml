@@ -33,7 +33,8 @@ dependencies:
   connectivity_plus: ^7.3.2
   cupertino_icons: ^1.0.9
   dio: ^5.11.1
-  equatable: ^3.0.0
+  equatable: ^2.0.7
+  fl_chart: ^1.2.0
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
