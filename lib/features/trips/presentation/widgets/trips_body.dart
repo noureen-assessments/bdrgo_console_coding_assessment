@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../shared/widgets/no_data_found_widget.dart';
+import '../../domain/entities/trip_filter.dart';
 import '../bloc/trips/trips_bloc.dart';
 import 'trip_list.dart';
 
@@ -21,13 +22,22 @@ class TripsBody extends StatelessWidget {
         title: AppStrings.tripsLoadFailed,
         message: error.message,
         action: FilledButton(
-          onPressed: () =>
-              context.read<TripsBloc>().add(const TripsLoadRequested()),
+          onPressed: () => _showFilter(context, error.filter),
           child: const Text(AppStrings.retry),
         ),
       ),
       final TripsLoaded loaded when loaded.page.trips.isEmpty =>
-        const NoDataFoundWidget(title: AppStrings.noTrips),
+        NoDataFoundWidget(
+          title: loaded.filter.isEmpty
+              ? AppStrings.noTrips
+              : AppStrings.noTripsMatch,
+          action: loaded.filter.isEmpty
+              ? null
+              : OutlinedButton(
+                  onPressed: () => _showFilter(context, const TripFilter()),
+                  child: const Text(AppStrings.clearFilters),
+                ),
+        ),
       final TripsLoaded loaded => TripList(
         state: loaded,
         onLoadMore: () =>
@@ -35,4 +45,7 @@ class TripsBody extends StatelessWidget {
       ),
     };
   }
+
+  void _showFilter(BuildContext context, TripFilter filter) =>
+      context.read<TripsBloc>().add(TripsFilterChanged(filter));
 }

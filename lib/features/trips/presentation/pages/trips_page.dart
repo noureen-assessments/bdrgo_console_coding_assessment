@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection_container.dart';
+import '../../domain/entities/trip_filter.dart';
 import '../bloc/trips/trips_bloc.dart';
 import '../widgets/trips_view.dart';
 
@@ -11,7 +12,8 @@ class TripsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<TripsBloc>()..add(const TripsLoadRequested()),
+      create: (_) =>
+          sl<TripsBloc>()..add(const TripsFilterChanged(TripFilter())),
       child: const TripsView(),
     );
   }

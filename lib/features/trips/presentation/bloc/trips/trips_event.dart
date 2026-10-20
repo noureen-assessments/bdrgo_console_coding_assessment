@@ -4,8 +4,10 @@ sealed class TripsEvent {
   const TripsEvent();
 }
 
-final class TripsLoadRequested extends TripsEvent {
-  const TripsLoadRequested();
+final class TripsFilterChanged extends TripsEvent {
+  const TripsFilterChanged(this.filter);
+
+  final TripFilter filter;
 }
 
 final class TripsNextPageRequested extends TripsEvent {

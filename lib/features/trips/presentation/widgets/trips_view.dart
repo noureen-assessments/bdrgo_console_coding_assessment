@@ -7,6 +7,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/number_formatters.dart';
 import '../../../../core/utils/responsive.dart';
 import '../bloc/trips/trips_bloc.dart';
+import 'trip_filter_bar.dart';
 import 'trips_body.dart';
 
 class TripsView extends StatelessWidget {
@@ -42,6 +43,12 @@ class TripsView extends StatelessWidget {
                         style: AppTextStyles.body,
                       ),
                   ],
+                ),
+                const SizedBox(height: AppDimensions.spaceMd),
+                TripFilterBar(
+                  filter: state.filter,
+                  onChanged: (filter) =>
+                      context.read<TripsBloc>().add(TripsFilterChanged(filter)),
                 ),
               ],
             ),
