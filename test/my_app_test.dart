@@ -63,7 +63,6 @@ class _MockGetTrip extends Mock implements GetTripUseCase {}
 
 class _MockWatchTripChanges extends Mock implements WatchTripChangesUseCase {}
 
-/// The real Blocs, router and gate; only the use cases are mocked.
 void main() {
   late _MockWatchExpiry watchExpiry;
   late _MockWatchDenied watchDenied;
@@ -105,7 +104,6 @@ void main() {
     Flavor flavor = Flavor.PROD,
   }) async {
     when(() => restore(any())).thenAnswer((_) async => Right(restored));
-    // Built inside the test so its events run in the test's fake-async zone.
     authBloc = AuthBloc(
       restoreSession: restore,
       signOut: signOut,
@@ -294,9 +292,6 @@ void main() {
   });
 }
 
-/// Users with `kpi:read` land on the dashboard. These tests are about the
-/// shell, so the dashboard just shows its error state (no network, no
-/// endless spinner for `pumpAndSettle`).
 void _registerDashboard() {
   final getKpis = _MockGetKpis();
   final watchKpis = _MockWatchKpis();
@@ -321,7 +316,6 @@ void _registerDashboard() {
   sl.registerFactory(() => TripChartBloc(getTripSeries: getTripSeries));
 }
 
-/// Users without `kpi:read` (support) land on Trips; same error state.
 void _registerTrips() {
   final getTrips = _MockGetTrips();
   when(

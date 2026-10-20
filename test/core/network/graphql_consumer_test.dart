@@ -8,7 +8,6 @@ import 'package:badrgo_console_assesment/core/session/session_expiry_notifier.da
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Answers every request with a canned JSON body; no network involved.
 final class _FakeAdapter implements HttpClientAdapter {
   _FakeAdapter(this.status, this.body);
 

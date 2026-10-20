@@ -13,7 +13,6 @@ const dispatcher = CurrentUser(
   permissions: Permissions({TripPermission.read, TripPermission.assign}),
 );
 
-/// A `GET /api/me` body as the sandbox sends it.
 Map<String, Object?> meJson() => {
   'user': {
     'id': 'u1',
@@ -29,8 +28,6 @@ Map<String, Object?> meJson() => {
   },
 };
 
-/// Permission sets from the matrix in `/docs/roles` (reads a test does not
-/// need are left out).
 const viewerPermissions = Permissions({
   TripPermission.read,
   AlertPermission.read,
@@ -58,7 +55,6 @@ const dispatcherPermissions = Permissions({
   PiiPermission.read,
 });
 
-/// A Doha user with [permissions]; the role is only a label.
 CurrentUser userWith(Permissions permissions) => CurrentUser(
   id: 'u2',
   name: 'Vera Viewer',
