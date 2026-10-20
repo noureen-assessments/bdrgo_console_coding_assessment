@@ -38,6 +38,10 @@ abstract final class AppDimensions {
   static const double searchFieldWidth = 320;
   static const double loadMoreThreshold = 300;
 
+  // Reason field in trip action dialogs (lines)
+  static const int reasonMinLines = 2;
+  static const int reasonMaxLines = 3;
+
   // Dividers
   static const double dividerThin = 1;
 

@@ -34,6 +34,9 @@ abstract final class AppAssets {
   static const IconData clear = Icons.close;
   static const IconData dateRange = Icons.date_range_outlined;
 
+  // Trip actions
+  static const IconData cancelTrip = Icons.block;
+
   // Connectivity
   static const IconData offline = Icons.wifi_off;
 

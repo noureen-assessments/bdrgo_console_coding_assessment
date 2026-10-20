@@ -83,6 +83,13 @@ abstract final class AppStrings {
   static const tripCompleted = 'Completed';
   static const tripCancelled = 'Cancelled';
 
+  // Trip actions
+  static const cancelTrip = 'Cancel trip';
+  static const close = 'Close';
+  static const reason = 'Reason';
+  static const reasonLength = 'Enter 3 to 200 characters.';
+  static const tripCancelledDone = 'Trip cancelled';
+
   static String tripCount(int count, String formatted) =>
       count == 1 ? '$formatted trip' : '$formatted trips';
 
