@@ -5,13 +5,9 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../shared/widgets/no_data_found_widget.dart';
 
-/// Shown instead of a page the user's permissions don't include, e.g. a
-/// bookmarked `/live-map` after a role change.
 class NoAccessView extends StatelessWidget {
-  /// For one section the user may not open.
   const NoAccessView.section(String this.sectionLabel, {super.key});
 
-  /// For a user who may open no section at all.
   const NoAccessView.noSections({super.key}) : sectionLabel = null;
 
   final String? sectionLabel;

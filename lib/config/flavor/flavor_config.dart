@@ -1,4 +1,3 @@
-// Upper-case flavor names are the project convention.
 // ignore_for_file: constant_identifier_names
 
 import '../../core/constants/url_constants.dart';

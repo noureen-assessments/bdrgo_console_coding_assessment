@@ -8,7 +8,6 @@ import 'app_text_styles.dart';
 abstract final class AppStyles {
   static const animationDuration = Duration(milliseconds: 200);
 
-  /// Full-width primary action (sign in, retry).
   static final primaryButton = FilledButton.styleFrom(
     minimumSize: const Size.fromHeight(AppDimensions.buttonHeight),
   );

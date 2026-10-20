@@ -2,9 +2,7 @@ abstract final class WebSocketEndpoints {
   static const path = '/ws';
 }
 
-/// Channels the client subscribes to over the WebSocket.
 enum WebSocketChannel {
-  /// Live driver positions and status for the map.
   driversLocations('drivers.locations');
 
   const WebSocketChannel(this.name);

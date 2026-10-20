@@ -8,8 +8,6 @@ import '../bloc/auth/auth_bloc.dart';
 import '../bloc/sign_in/sign_in_bloc.dart';
 import '../widgets/sign_in_card.dart';
 
-/// Provides a fresh [SignInBloc] per visit and hands a successful sign-in to
-/// the app-wide [AuthBloc], which then routes into the console.
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
 

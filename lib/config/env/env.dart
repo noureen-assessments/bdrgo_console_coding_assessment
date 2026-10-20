@@ -1,20 +1,11 @@
 import 'package:flutter/foundation.dart';
 
-/// How the web build keeps the session. Mobile always uses the platform's
-/// secure storage.
 enum WebAuthMode {
-  /// The server's `HttpOnly` cookie is the credential; requests are sent
-  /// with credentials and the token lives in memory only. Only works when
-  /// the app and API share a site: the sandbox cookie is `SameSite=Lax`.
   cookie,
 
-  /// Default: the token is encrypted in sessionStorage via
-  /// flutter_secure_storage, so the session survives a refresh.
   storage,
 }
 
-/// Build-time values passed with `--dart-define`. No URL or secret is
-/// hard-coded: the API URL must be passed at build time.
 abstract final class Env {
   static const apiUrlKey = 'API_URL';
   static const missingApiUrl =
@@ -28,17 +19,13 @@ abstract final class Env {
   static const _apiUrl = String.fromEnvironment(apiUrlKey);
   static const _webAuthMode = String.fromEnvironment(webAuthModeKey);
 
-  /// The `API_URL` define. Throws at startup when it is missing, so a build
-  /// can never silently talk to the wrong server.
   static String get apiUrl {
     if (_apiUrl.isEmpty) throw StateError(missingApiUrl);
     return _apiUrl;
   }
 
-  /// The `WEB_AUTH_MODE` define; [WebAuthMode.storage] when not passed.
   static WebAuthMode get webAuthMode => parseWebAuthMode(_webAuthMode);
 
-  /// True on web in cookie mode: send credentials, keep nothing in storage.
   static bool get usesHttpOnlyCookie =>
       kIsWeb && webAuthMode == WebAuthMode.cookie;
 

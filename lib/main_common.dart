@@ -13,7 +13,7 @@ import 'my_app.dart';
 
 Future<void> mainCommon(FlavorConfig config) async {
   WidgetsFlutterBinding.ensureInitialized();
-  usePathUrlStrategy();  // Clean URLs (`/trips/42`) instead of `/#/trips/42`.
+  usePathUrlStrategy();
   if (!FlavorConfig.isProduction() && kDebugMode) {
     Bloc.observer = const AppBlocObserver();
   }
@@ -29,8 +29,3 @@ Future<void> mainCommon(FlavorConfig config) async {
     ),
   );
 }
-
-// Dev:   flutter run -d chrome -t lib/main_dev.dart
-// Alpha: flutter run -d chrome -t lib/main_alpha.dart
-// Prod:  flutter build web --release -t lib/main_prod.dart
-// Any flavor: --dart-define=API_URL=https://… (defaults to the sandbox)

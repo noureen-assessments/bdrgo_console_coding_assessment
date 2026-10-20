@@ -15,7 +15,6 @@ final class SignInInProgress extends SignInState {
   const SignInInProgress();
 }
 
-/// [message] is the server's own text (wrong password, banned user).
 final class SignInFailed extends SignInState {
   const SignInFailed(this.message);
 

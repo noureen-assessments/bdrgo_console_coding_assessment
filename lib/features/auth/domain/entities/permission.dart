@@ -1,11 +1,3 @@
-/// Every permission the API grants, from the matrix in `/docs/roles`.
-///
-/// Each resource has its own enum of actions, so only real pairs exist:
-/// `TripPermission.assign` compiles, "ban a KPI" does not. A new resource is
-/// a new enum here plus a [PermissionResource] entry; nothing else changes.
-library;
-
-/// A resource key in the `permissions` map from `/api/me`.
 enum PermissionResource {
   user('user', UserPermission.values),
   session('session', SessionPermission.values),
@@ -20,26 +12,20 @@ enum PermissionResource {
 
   const PermissionResource(this.value, this.actions);
 
-  /// The name the API uses.
   final String value;
 
-  /// Every action this resource has.
   final List<Permission> actions;
 
-  /// Null for a resource this app does not use.
   static PermissionResource? fromValue(String value) =>
       values.where((resource) => resource.value == value).firstOrNull;
 
-  /// Null for an action this resource does not have.
   Permission? action(String value) =>
       actions.where((action) => action.value == value).firstOrNull;
 }
 
-/// One action on one resource, e.g. `trip:assign`.
 sealed class Permission {
   PermissionResource get resource;
 
-  /// The action name the API uses.
   String get value;
 }
 
@@ -97,10 +83,8 @@ enum DriverPermission implements Permission {
   create('create'),
   update('update'),
 
-  /// Live map.
   track('track'),
 
-  /// Chat.
   message('message');
 
   const DriverPermission(this.value);
@@ -167,7 +151,6 @@ enum KpiPermission implements Permission {
   PermissionResource get resource => PermissionResource.kpi;
 }
 
-/// Unmasked phone and email.
 enum PiiPermission implements Permission {
   read('read');
 

@@ -2,10 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import 'permission.dart';
 
-/// What the signed-in user may do, from the `permissions` map in `/api/me`.
-///
-/// Navigation, routes and buttons ask [can]; nothing in the app branches on
-/// the role.
 class Permissions extends Equatable {
   const Permissions(this.granted);
 

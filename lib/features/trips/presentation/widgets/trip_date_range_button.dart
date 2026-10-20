@@ -15,7 +15,6 @@ class TripDateRangeButton extends StatelessWidget {
   final DateTime? from;
   final DateTime? to;
 
-  /// Both null when the dates are cleared.
   final void Function(DateTime? from, DateTime? to) onChanged;
 
   @override

@@ -47,7 +47,6 @@ class AppSecureStorage implements TokenStorage {
     await _delete(StorageKeys.token);
   }
 
-  /// Clears everything this app stored, e.g. on sign-out or account switch.
   Future<void> deleteAll() async {
     _cachedToken = null;
     try {
@@ -57,8 +56,6 @@ class AppSecureStorage implements TokenStorage {
     }
   }
 
-  /// Writes [value]; if the platform reports a stale entry (seen on iOS
-  /// Keychain), deletes it and writes again. Returns whether it was stored.
   Future<bool> _write(String key, String value) async {
     try {
       await _storage.write(key: key, value: value);
@@ -109,7 +106,6 @@ class AppSecureStorage implements TokenStorage {
     );
   }
 
-  /// Masks values that must never reach logs or crash reports.
   static Object sanitizeError(Object error) {
     var errorString = error.toString();
     for (final pattern in SensitiveDataPatterns.inErrors) {

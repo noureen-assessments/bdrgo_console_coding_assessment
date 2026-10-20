@@ -2,8 +2,6 @@ import '../../domain/entities/permission.dart';
 import '../../domain/services/session_access.dart';
 import '../bloc/auth/auth_bloc.dart';
 
-/// Adapter: answers [SessionAccess] from [AuthBloc]'s current state, so the
-/// router never reads the Bloc itself.
 final class AuthBlocSessionAccess implements SessionAccess {
   const AuthBlocSessionAccess(this._authBloc);
 

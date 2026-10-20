@@ -3,7 +3,6 @@ import '../../../../core/network/api_consumer.dart';
 import '../models/me_model.dart';
 
 abstract interface class AuthRemoteDataSource {
-  /// Returns the session token.
   Future<String> signIn({required String email, required String password});
 
   Future<MeModel> fetchMe();

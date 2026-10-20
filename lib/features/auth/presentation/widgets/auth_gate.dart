@@ -5,13 +5,6 @@ import '../../../connectivity/presentation/widgets/connection_restored_listener.
 import '../bloc/auth/auth_bloc.dart';
 import 'session_restore_view.dart';
 
-/// Wraps the app's navigator.
-///
-/// Until the stored session is known, the navigator is not built at all, so
-/// the first route (e.g. a refreshed `/trips/42`) is resolved with the real
-/// session. Afterwards it calls [onSignedIn] / [onSignedOut] on every
-/// session change; the signed-out callback clears the page stack, which also
-/// closes page-scoped Blocs and their realtime connections.
 class AuthGate extends StatelessWidget {
   const AuthGate({
     required this.onSignedIn,

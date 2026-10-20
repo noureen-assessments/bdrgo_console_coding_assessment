@@ -11,14 +11,6 @@ import '../backoff.dart';
 import 'sse_client.dart';
 import 'sse_transport.dart';
 
-/// One shared SSE connection, opened by the first listener and closed by
-/// the last, so there are never duplicate connections.
-///
-/// - A dropped connection is re-established by the browser itself.
-/// - A refused one (`401`, `503`, …) is not: the browser gives up and hides
-///   the status. The [SessionChecker] lets the REST layer handle a `401`
-///   (sign-out closes every page, so nobody listens any more); otherwise
-///   the connection is retried with [Backoff].
 final class SseClientImpl implements SseClient {
   SseClientImpl({
     required SseTransport transport,
@@ -64,7 +56,6 @@ final class SseClientImpl implements SseClient {
   Future<void> _connect() async {
     _setStatus(SseStatus.connecting);
     final token = await _tokenStorage.getToken();
-    // The last listener left, or a connection opened, while reading.
     if (!_messages.hasListener || _connection != null) return;
     _connection = _transport
         .connect(
@@ -110,7 +101,6 @@ final class SseClientImpl implements SseClient {
   Future<void> _retryAfterSessionCheck() async {
     AppLogger.warning(LogMessages.sseRefused, name: LogTags.sse);
     await _sessionChecker.check();
-    // The last listener left, or a connection opened, while checking.
     if (!_messages.hasListener || _connection != null) return;
     _retryTimer = Timer(_backoff.delay(_attempt), _connect);
     _attempt++;
@@ -122,15 +112,11 @@ final class SseClientImpl implements SseClient {
     _statusChanges.add(status);
   }
 
-  /// Every `data:` is one line of JSON. A bad frame is skipped, so one
-  /// broken event never ends the stream.
   static Map<String, Object?>? _decode(String data) {
     try {
       final json = jsonDecode(data);
       if (json is Map<String, Object?>) return json;
-    } on FormatException {
-      // Logged below.
-    }
+    } on FormatException catch (_) {}
     AppLogger.warning(LogMessages.sseBadFrame, name: LogTags.sse);
     return null;
   }

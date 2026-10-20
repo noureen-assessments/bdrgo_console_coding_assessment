@@ -8,8 +8,6 @@ import '../bloc/sign_in/sign_in_bloc.dart';
 import '../validators/sign_in_validators.dart';
 import 'password_field.dart';
 
-/// Email and password fields and the submit button. Validates locally,
-/// then hands the values to [SignInBloc].
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
 

@@ -27,8 +27,6 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     on<TripsStarted>(_onStarted);
     on<TripsFilterChanged>(_onFilterChanged, transformer: restartable());
     on<TripsNextPageRequested>(_onNextPageRequested, transformer: droppable());
-    // Concurrent (the default): every change fetches at once, with no queue.
-    // A slow answer that lands after a newer one is dropped in the handler.
     on<TripsTripChanged>(_onTripChanged);
   }
 

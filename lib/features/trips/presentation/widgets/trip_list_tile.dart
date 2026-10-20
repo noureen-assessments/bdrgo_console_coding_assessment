@@ -44,7 +44,6 @@ class TripListTile extends StatelessWidget {
         children: [
           TripActions(
             trip: trip,
-            // Reload the row the same way a live SSE change does.
             onTripChanged: () => context.read<TripsBloc>().add(
               TripsTripChanged(TripChange(tripId: trip.id, isNew: false)),
             ),

@@ -2,8 +2,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../../auth/domain/entities/permission.dart';
 
-/// One console section: its URL, how it looks in the menu and the one
-/// permission it needs.
 final class NavDestination {
   const NavDestination({
     required this.route,

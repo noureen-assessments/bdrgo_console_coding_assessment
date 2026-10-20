@@ -12,16 +12,6 @@ import '../../../domain/usecases/watch_session_expiry_use_case.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
-/// App-wide session state. The app shows sign-in, the console or a restore
-/// screen from this state alone.
-///
-/// A `401` from any transport is handled once: the first one leaves
-/// [AuthAuthenticated], so later ones from requests still in flight are
-/// ignored and nothing calls the server again.
-///
-/// A `403` re-fetches `/api/me`, because the role may have changed on the
-/// server; the console then rebuilds from the new permissions. A burst of
-/// `403`s causes one re-fetch.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required RestoreSessionUseCase restoreSession,
@@ -48,15 +38,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final WatchSessionExpiryUseCase _watchSessionExpiry;
   final WatchAccessDeniedUseCase _watchAccessDenied;
 
-  /// Checks the stored session, then listens for `401`s and `403`s until
-  /// the Bloc closes (Bloc cancels the streams on close).
   Future<void> _onStarted(AuthStarted event, Emitter<AuthState> emit) {
     add(const AuthRestoreRequested());
     return Future.wait([
       emit.onEach(
         _watchSessionExpiry(const NoParams()),
         onData: (_) {
-          // A sign-out in progress already ends the session.
           if (_isActiveSession) {
             emit(const AuthUnauthenticated(sessionExpired: true));
           }
@@ -69,15 +56,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ]);
   }
 
-  /// Re-reads the user's permissions. If that fails (offline, maintenance)
-  /// the current ones stay; the next `403` tries again.
   Future<void> _onAccessDenied(
     AuthAccessDenied event,
     Emitter<AuthState> emit,
   ) async {
     if (!_isActiveSession) return;
     final result = await _restoreSession(const NoParams());
-    // Signed out meanwhile: there is nothing left to refresh.
     if (!_isActiveSession) return;
     result.fold((_) {}, (user) {
       if (user == null) {

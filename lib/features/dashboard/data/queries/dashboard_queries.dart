@@ -30,7 +30,6 @@ abstract final class DashboardQueries {
     }
   ''';
 
-  /// chart for the last 7 days.
   static const tripSeries = r'''
     query DashboardTripSeries($range: KpiRange!) {
       kpis(range: $range) {

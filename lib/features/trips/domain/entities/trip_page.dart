@@ -35,7 +35,6 @@ class TripPage extends Equatable {
     );
   }
 
-  /// The loaded row with [tripId], or null.
   TripSummary? find(String tripId) {
     for (final trip in trips) {
       if (trip.id == tripId) return trip;

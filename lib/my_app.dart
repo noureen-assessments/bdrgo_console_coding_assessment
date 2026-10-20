@@ -45,7 +45,6 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  /// Offline bar above every page, the session gate around the navigator.
   Widget _wrapNavigator(BuildContext context, Widget? navigator) {
     final app = Column(
       children: [

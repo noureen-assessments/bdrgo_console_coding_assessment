@@ -13,23 +13,13 @@ import '../widgets/no_access_view.dart';
 import '../widgets/shell_app_bar.dart';
 import '../widgets/web_navigation.dart';
 
-/// The signed-in frame around every section: app bar, menu and the section.
-///
-/// The menu lists only the sections the user's permissions allow, and the
-/// section [page] is wrapped in a [PermissionGate] that shows [NoAccessView]
-/// without the permission. Both rebuild when the permissions change.
-///
-/// The shell renders whatever [page] the router gives it, so it never
-/// depends on a feature.
 class ShellPage extends StatelessWidget {
-  /// One open section showing [page].
   const ShellPage.section({
     required NavDestination this.destination,
     required Widget this.page,
     super.key,
   });
 
-  /// For a user who may open no section at all.
   const ShellPage.noSections({super.key}) : destination = null, page = null;
 
   final NavDestination? destination;
@@ -42,7 +32,6 @@ class ShellPage extends StatelessWidget {
       if (state is AuthAuthenticated) return state.user;
       return null;
     });
-    // Briefly null while signing out, before the page is replaced.
     if (user == null) return const Scaffold();
 
     final destinations = NavDestinations.allowedFor(user.permissions);
@@ -104,7 +93,6 @@ class ShellPage extends StatelessWidget {
     );
   }
 
-  /// Null when the open section is not in the menu (no access).
   int? _selectedIndex(List<NavDestination> destinations) {
     final destination = this.destination;
     if (destination == null) return null;
@@ -113,8 +101,6 @@ class ShellPage extends StatelessWidget {
     return index;
   }
 
-  /// Replaces the page, so switching sections never piles up old sections
-  /// (and their realtime connections) on the back stack.
   void _open(BuildContext context, NavDestination selected) {
     if (selected == destination) return;
     Navigator.of(context).pushNamedAndRemoveUntil(selected.route, (_) => false);

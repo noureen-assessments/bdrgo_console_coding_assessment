@@ -55,8 +55,6 @@ static const _tripRow = r'''
   ''' +
       _tripRow;
 
-  /// One trip, for a live update. Null when it is not in the user's city.
-  /// Variables: `$id`.
   static const trip =
       r'''
     query Trip($id: ID!) {
@@ -91,7 +89,6 @@ static const _tripRow = r'''
 
     final to = filter.to;
     if (to != null) {
-      // The API excludes `to`, so "up to Oct 20" is sent as "before Oct 21".
       final dayAfter = DateTime(to.year, to.month, to.day + 1);
       variables['to'] = dayAfter.toUtc().toIso8601String();
     }

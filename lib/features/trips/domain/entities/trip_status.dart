@@ -1,7 +1,6 @@
 import '../../../../core/constants/app_strings.dart';
 
 
-/// In lifecycle order: a trip only moves down this list, never back up.
 enum TripStatus {
   requested('REQUESTED', AppStrings.tripRequested),
   assigned('ASSIGNED', AppStrings.tripAssigned),

@@ -1,7 +1,5 @@
 import '../../../../core/constants/app_strings.dart';
 
-/// Client-side checks so obviously incomplete forms never reach the server.
-/// Credential errors come from the server and are shown as-is.
 abstract final class SignInValidators {
   static final _email = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 

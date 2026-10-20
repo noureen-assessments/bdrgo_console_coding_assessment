@@ -16,7 +16,6 @@ final class AppRouter {
   AppRouter({required SessionAccess session}) : _session = session;
 
   final SessionAccess _session;
-  /// Lets non-widget code (e.g. the session listener on 401) navigate.
   final navigatorKey = GlobalKey<NavigatorState>();
 
   Route<void> onGenerateRoute(RouteSettings settings) {

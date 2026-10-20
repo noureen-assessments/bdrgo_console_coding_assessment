@@ -1,5 +1,4 @@
 abstract final class AppDimensions {
-  // Spacing scale
   static const double spaceXxs = 4;
   static const double spaceXs = 8;
   static const double spaceSm = 12;
@@ -7,48 +6,37 @@ abstract final class AppDimensions {
   static const double spaceLg = 24;
   static const double spaceXl = 32;
 
-  // Corners
   static const double radiusSm = 8;
 
-  // Icons
   static const double iconSm = 18;
   static const double iconMd = 20;
   static const double iconXl = 48;
 
-  // Controls
   static const double buttonHeight = 48;
   static const double progressSm = 16;
   static const double progressMd = 20;
   static const double progressStroke = 2;
 
-  // Live status dot
   static const double statusDot = 8;
 
-  // Dashboard KPI tiles per row
   static const int kpiColumnsMobile = 2;
   static const int kpiColumnsDesktop = 3;
 
-  // Trips chart
   static const double chartHeight = 260;
   static const double chartLineWidth = 2;
   static const double chartLeftAxisSpace = 44;
   static const double chartBottomAxisSpace = 28;
 
-  // Trips list
   static const double searchFieldWidth = 320;
   static const double loadMoreThreshold = 300;
 
-  // Reason field in trip action dialogs (lines)
   static const int reasonMinLines = 2;
   static const int reasonMaxLines = 3;
 
-  // Dividers
   static const double dividerThin = 1;
 
-  // Content widths
   static const double formMaxWidth = 420;
 
-  // Window-width breakpoints
   static const double tabletMinWidth = 600;
   static const double desktopMinWidth = 1024;
 }

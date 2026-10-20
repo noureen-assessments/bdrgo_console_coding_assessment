@@ -11,8 +11,6 @@ class TripFilter extends Equatable {
     this.search,
   });
 
-  /// Cancelled trips are many and rarely needed, so with no status picked
-  /// they are left out. Picking Cancelled shows them.
   static const defaultStatuses = {
     TripStatus.requested,
     TripStatus.assigned,
@@ -27,7 +25,6 @@ class TripFilter extends Equatable {
 
   final String? search;
 
-  /// The statuses the list asks for.
   Set<TripStatus> get shownStatuses =>
       statuses.isEmpty ? defaultStatuses : statuses;
 

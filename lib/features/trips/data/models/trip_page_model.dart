@@ -2,7 +2,6 @@ import '../../domain/entities/trip_page.dart';
 import 'trip_summary_model.dart';
 
 
-/// A GraphQL `TripConnection`.
 class TripPageModel extends TripPage {
   const TripPageModel({
     required List<TripSummaryModel> super.trips,

@@ -33,7 +33,6 @@ class TripSummary extends Equatable {
   final Money refunded;
   final DateTime requestedAt;
 
-  // status number.
   bool isOlderThan(TripSummary other) => status.index < other.status.index;
 
   double get remainingRefund =>

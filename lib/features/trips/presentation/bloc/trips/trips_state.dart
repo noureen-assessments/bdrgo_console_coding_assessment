@@ -1,6 +1,5 @@
 part of 'trips_bloc.dart';
 
-/// A row that arrived or changed live, with its background color.
 enum TripMark {
   added(AppColors.newRow),
   updated(AppColors.updatedRow);

@@ -7,8 +7,6 @@ import '../../../domain/usecases/sign_in_use_case.dart';
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';
 
-/// The sign-in form. Scoped to the sign-in page, so the typed password is
-/// dropped as soon as the page closes.
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
   SignInBloc({required SignInUseCase signIn})
     : _signIn = signIn,
