@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'trip_status.dart';
+import 'trip_summary.dart';
 
 class TripFilter extends Equatable {
   const TripFilter({
@@ -28,6 +29,21 @@ class TripFilter extends Equatable {
 
   TripFilter withSearch(String? search) =>
       TripFilter(statuses: statuses, from: from, to: to, search: search);
+
+  bool matches(TripSummary trip) {
+    if (search != null) return false;
+    if (statuses.isNotEmpty && !statuses.contains(trip.status)) return false;
+
+    final firstDay = from;
+    if (firstDay != null && trip.requestedAt.isBefore(firstDay)) return false;
+
+    final lastDay = to;
+    if (lastDay != null) {
+      final dayAfter = DateTime(lastDay.year, lastDay.month, lastDay.day + 1);
+      if (!trip.requestedAt.isBefore(dayAfter)) return false;
+    }
+    return true;
+  }
 
   @override
   List<Object?> get props => [statuses, from, to, search];

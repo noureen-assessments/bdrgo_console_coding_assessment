@@ -35,6 +35,36 @@ class TripPage extends Equatable {
     );
   }
 
+  /// The loaded row with [tripId], or null.
+  TripSummary? find(String tripId) {
+    for (final trip in trips) {
+      if (trip.id == tripId) return trip;
+    }
+    return null;
+  }
+
+  bool contains(String tripId) => find(tripId) != null;
+
+  TripPage replace(TripSummary trip) {
+    final updated = <TripSummary>[];
+    for (final row in trips) {
+      updated.add(row.id == trip.id ? trip : row);
+    }
+    return TripPage(
+      trips: updated,
+      totalCount: totalCount,
+      endCursor: endCursor,
+      hasNextPage: hasNextPage,
+    );
+  }
+
+  TripPage addOnTop(TripSummary trip) => TripPage(
+    trips: [trip, ...trips],
+    totalCount: totalCount + 1,
+    endCursor: endCursor,
+    hasNextPage: hasNextPage,
+  );
+
   @override
   List<Object?> get props => [trips, totalCount, endCursor, hasNextPage];
 }
