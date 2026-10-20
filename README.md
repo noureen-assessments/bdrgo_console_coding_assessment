@@ -4,8 +4,9 @@ A Flutter web dashboard for the badrgo city operations team, built on the badrgo
 sandbox API (REST, GraphQL, Server-Sent Events and WebSocket).
 
 > Status: **M1 (authentication)** and **M2 (role-aware shell)** are done, with
-> the offline part of M7 (offline banner, automatic retry). M3–M7 follow, each
-> in its own folder under `lib/features/`.
+> the offline part of M7 (offline banner, automatic retry). **M3 (dashboard)**
+> has its live KPI tiles; the trips chart is next. M4–M7 follow, each in its
+> own folder under `lib/features/`.
 
 ## Running
 
@@ -213,9 +214,11 @@ features/auth/
   `SessionExpiryNotifier` (in `core/session`). REST and GraphQL HTTP `401`s
   report through `AuthInterceptor`, and only for requests that carried a
   token, so a wrong password never counts. GraphQL `200` responses with
-  `extensions.code: UNAUTHENTICATED` report through `DioGraphQLConsumer`. The
-  SSE and WebSocket clients (M3/M5) will call `notify()` on their own `401` /
-  refused handshake.
+  `extensions.code: UNAUTHENTICATED` report through `DioGraphQLConsumer`. A
+  refused SSE connection hides its status, so the SSE client asks
+  `SessionChecker` (`GET /api/me`) and the `401` reports through
+  `AuthInterceptor` (see [Dashboard (M3)](#dashboard-m3)). The WebSocket
+  client (M5) will report its `4001` close code.
 - **No loop.** The repository forgets the token as soon as a `401` is
   reported, and `AuthBloc` only reacts while it is `AuthAuthenticated`. Later
   `401`s from requests still in flight hit a signed-out state and are ignored,
@@ -303,6 +306,107 @@ Nothing branches on the role name; the role is only a label.
   stay. A banned user's `401` signs them out as in M1.
 - **No ShellBloc.** The shell's only state is the signed-in user, which
   `AuthBloc` already holds. A second Bloc would just copy it.
+
+### Dashboard (M3)
+
+```
+core/network/sse/
+├── sse_client.dart                  SseClient interface, SseMessage, SseStatus
+├── sse_client_impl.dart             Shared connection, JSON decoding, retry with backoff
+├── sse_transport.dart               SseTransport interface (adapter over the browser)
+├── event_source_transport_web.dart  Native EventSource (package:web)
+└── sse_transport_io.dart            Stub for mobile and VM tests
+core/network/backoff.dart            Exponential backoff, injected
+core/session/session_checker.dart    SessionChecker: "is the session still valid?" over REST
+core/utils/app_formatters.dart       Numbers, money and times (intl)
+features/dashboard/
+├── data/         DashboardQueries (GraphQL documents), DashboardRemoteDataSource
+│                 (GraphQL kpis + SSE kpi), KpisModel
+├── domain/       Kpis, TripKpis, DriverKpis, KpiRange; GetKpis / WatchKpis / WatchLiveStatus
+└── presentation/ DashboardBloc, KpiTileGrid, KpiTile, LiveStatus
+```
+
+**KPI tiles.** The tiles are:
+
+- active trips (with requested / assigned / in progress)
+- completed trips
+- cancellation rate
+- revenue
+- drivers available / on trip
+- open alerts
+
+They load once with the GraphQL `kpis` query (`DashboardQueries.kpis`). The
+range is the domain enum `KpiRange`, passed from the Bloc down to the data
+source and sent as the `$range` variable, so no range string is hard-coded
+outside the enum. The tiles ask for `KpiRange.last24Hours`, the same window as
+the SSE `kpi` event. There is no `cityId`, so the server scopes them to the
+user's city. The SSE `kpi` event
+then replaces them every 5 s. Both payloads have the same shape, so one
+`KpisModel` parses both.
+
+- **Races.** The GraphQL answer and the first SSE event can arrive in any
+  order. `DashboardBloc` only shows a value that is not older than the one
+  on screen (`Kpis.generatedAt`).
+- **Revenue** is a list with one `Money` per currency. Each currency gets its
+  own line, and amounts are never added across currencies. `intl` picks the
+  number of decimals from the currency code.
+- **Live status.** A chip shows "Live · Updated 14:05:09", or "Reconnecting…"
+  while the SSE connection is down, so stale numbers are marked.
+- **Errors.** If the first load fails but a live event arrives, the tiles show.
+  Otherwise the page shows an error with Retry.
+
+**SSE: why native `EventSource`.** Dio's web adapter and `package:http`'s
+`BrowserClient` read an XHR response as a whole, so an SSE response that
+never ends delivers nothing (the "events arrive in bulk" problem). A common
+fix is a raw XHR that reads `responseText` on each `progress` event. It was
+rejected because:
+
+- `responseText` keeps growing for the whole session.
+- A hand-written parser can lose events that are split across two chunks.
+- It has no reconnect and no `Last-Event-ID`.
+- It needs the deprecated `dart:html`.
+
+That approach mainly exists to send an `Authorization` header, which this
+API does not need (`?token=` works). `EventSource` streams each event, parses
+the format, and reconnects with `Last-Event-ID` by itself, with no extra
+package. If headers were ever needed, `fetch` with a `ReadableStream` would be
+the next choice, behind the same `SseTransport` interface.
+
+**SSE lifecycle.**
+
+- **One shared connection (observer).** `SseClient.messages` is a broadcast
+  stream. The first listener opens the connection and the last one closes
+  it. Each feature filters the events it needs; the dashboard keeps `kpi`.
+  The server sends every topic the role may read.
+  - Today only the dashboard listens, so the connection lives while the
+    dashboard is open.
+  - Once the alerts feed (M6) listens for the whole session, the same
+    connection stays open from sign-in to sign-out.
+- **Clean-up.** Page Blocs cancel their subscriptions on close. Sign-out
+  clears the page stack, so no connection outlives a session, and a new
+  account always connects with its own token.
+- **Dropped connection.** The browser reconnects by itself; the status shows
+  `connecting`.
+- **Refused connection.** A `401` or `503` closes `EventSource` for good, and
+  the browser hides the status.
+  - `SessionChecker.check()` makes one REST call, so `AuthInterceptor`
+    handles a `401` exactly as for any request. The user is signed out and
+    the pages close, which cancels the listeners, so there is no retry and
+    no loop.
+  - Otherwise (maintenance, network) the client retries with exponential
+    `Backoff`: 1 s, doubling up to 30 s.
+  - The SSE client depends only on the `SessionChecker` interface, not on
+    REST or `/api/me`.
+- **Testing (adapter).** `SseClientImpl` is pure Dart. `EventSource` sits
+  behind `SseTransport`, so the reconnect logic can be unit-tested with a
+  fake transport and a fake `SessionChecker`. The web adapter is picked by a
+  conditional export, as with the Dio adapter.
+
+**Section pages.** `NavDestination` is plain data: route, label, icon and
+permission. The router picks each section's page (for example
+`DashboardPage` for the dashboard, a placeholder until a section is built)
+and passes it to `ShellPage.section(destination:, page:)`, so the shell never
+imports a feature.
 
 ### Connectivity (part of M7)
 
@@ -398,6 +502,8 @@ gets dependencies through its constructor. Blocs are registered with
 | `flutter_secure_storage` | Token storage for web and mobile (see [Token storage](#token-storage)). Used through `AppSecureStorage` behind the `TokenStorage` interface. |
 | `connectivity_plus` | Online/offline status behind `ConnectivityRepository`. On web it listens to the browser's `online`/`offline` events, and the same code works on mobile. |
 | `flutter_web_plugins` (SDK) | `usePathUrlStrategy()` for clean URLs (`/trips/…` instead of `/#/trips/…`). |
+| `web` | Typed browser APIs (`EventSource`) for SSE, from the Dart team; replaces the deprecated `dart:html`. See [Dashboard (M3)](#dashboard-m3). |
+| `intl` | Number, currency and time formats (thousands separators, decimals per currency code). |
 | `bloc_concurrency` | `droppable()` for the `403` re-fetch, so a burst of `403`s sends one `/api/me`. |
 | `bloc_test`, `mocktail` (dev) | Bloc and mock testing without codegen. |
 
@@ -406,14 +512,23 @@ variables. `DioGraphQLConsumer` (POST to the GraphQL endpoint, parse `data`/`err
 reuses the same Dio and auth interceptor, and avoids a second HTTP stack and a
 normalised cache that would fight live SSE updates.
 
+Packages like `graphql_flutter` mostly add a normalized cache, fetch policies,
+mutations and subscriptions. This brief sends every write over REST and all
+live data over SSE/WebSocket, so none of those would be used. These GraphQL
+practices are followed:
+
+- Each query asks only for the fields its screen shows.
+- Documents are constants in `data/queries/` (e.g. `DashboardQueries.kpis`),
+  never built in widgets or by string interpolation.
+- Dynamic values go in `variables` (`$range: KpiRange!`).
+- Responses are parsed into typed models at the data layer.
+- A repository hides GraphQL from the Bloc.
+- Errors are mapped from `extensions.code` to typed `Failure`s.
+
 ### Planned for the milestones
 
 Added when the feature that needs them is built, so nothing unused ships:
 
-- **SSE:** the browser's native `EventSource` through `package:web`. It
-  reconnects on its own, sends `Last-Event-ID` on reconnect, and needs no extra
-  dependency. The token goes in `?token=` because `EventSource` cannot set
-  headers.
 - **WebSocket:** `web_socket_channel`, a stream API that is easy to wrap with
   reconnect/backoff and to fake in tests.
 - **Map:** `flutter_map` + `latlong2` with OpenStreetMap tiles.
@@ -440,6 +555,10 @@ Added when the feature that needs them is built, so nothing unused ships:
 - **GraphQL answers `200` without a token** for introspection-level queries
   (`{ __typename }`), so a missing session only shows up as
   `extensions.code: UNAUTHENTICATED` on real fields. That case is handled.
+- **SSE hides the HTTP status.** A refused `EventSource` (for example
+  `401 UNAUTHENTICATED` on `/api/events`) only fires `error`, so the app
+  calls `GET /api/me` to learn why. An `event: error` frame before closing
+  would let browser clients react directly.
 - **Build cache (tooling):** after adding a web plugin, `flutter build web`
   reused a cached plugin registrant without it, and `connectivity_plus`
   failed at runtime with `MissingPluginException`. Fix: delete
