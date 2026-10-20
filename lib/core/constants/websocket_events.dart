@@ -33,11 +33,12 @@ enum WebSocketMessageType {
 }
 
 enum WebSocketTopic {
-  driversLocations('drivers.locations');
+  driversLocations('drivers.locations', WebSocketMessageType.driversLocations);
 
-  const WebSocketTopic(this.name);
+  const WebSocketTopic(this.name, this.messageType);
 
   final String name;
+  final WebSocketMessageType messageType;
 
   static WebSocketTopic? fromName(String name) {
     for (final topic in values) {
