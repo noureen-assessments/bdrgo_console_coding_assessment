@@ -34,6 +34,15 @@ abstract final class AppStyles {
   static BoxDecoration legendDot(Color color) =>
       BoxDecoration(color: color, shape: BoxShape.circle);
 
+  static final statusBadge = BoxDecoration(
+    border: Border.all(color: AppColors.primary),
+    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+  );
+
+  static final statusBadgeText = AppTextStyles.caption.copyWith(
+    color: AppColors.primary,
+  );
+
   static final chartTooltipText = AppTextStyles.caption.copyWith(
     color: AppColors.onChartTooltip,
   );

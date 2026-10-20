@@ -34,6 +34,10 @@ abstract final class AppDimensions {
   static const double chartLeftAxisSpace = 44;
   static const double chartBottomAxisSpace = 28;
 
+  // Trips list
+  static const double searchFieldWidth = 320;
+  static const double loadMoreThreshold = 300;
+
   // Dividers
   static const double dividerThin = 1;
 

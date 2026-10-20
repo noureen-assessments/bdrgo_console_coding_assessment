@@ -29,6 +29,11 @@ abstract final class AppAssets {
   static const IconData drivers = Icons.people_outline;
   static const IconData openAlerts = Icons.warning_amber_outlined;
 
+  // Trips list
+  static const IconData search = Icons.search;
+  static const IconData clear = Icons.close;
+  static const IconData dateRange = Icons.date_range_outlined;
+
   // Connectivity
   static const IconData offline = Icons.wifi_off;
 

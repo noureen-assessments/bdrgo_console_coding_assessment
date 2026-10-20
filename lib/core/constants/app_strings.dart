@@ -65,6 +65,39 @@ abstract final class AppStrings {
 
   static String seriesValue(String series, String count) => '$series: $count';
 
+  // Trips list
+  static const tripsLoadFailed = "Couldn't load trips";
+  static const noTrips = 'No trips yet';
+  static const noTripsMatch = 'No trips match these filters';
+  static const clearFilters = 'Clear filters';
+  static const searchTrips = 'Search trip id, address or rider';
+  static const clearSearch = 'Clear search';
+  static const anyDate = 'Any date';
+  static const clearDates = 'Clear dates';
+  static const loadMore = 'Load more';
+  static const loadMoreFailed = "Couldn't load more trips";
+  static const noDriverYet = 'No driver yet';
+  static const tripRequested = 'Requested';
+  static const tripAssigned = 'Assigned';
+  static const tripInProgress = 'In progress';
+  static const tripCompleted = 'Completed';
+  static const tripCancelled = 'Cancelled';
+
+  static String tripCount(int count, String formatted) =>
+      count == 1 ? '$formatted trip' : '$formatted trips';
+
+  static String tripRoute(String pickup, String dropoff) =>
+      '$pickup → $dropoff';
+
+  static String tripDetails(
+    String rider,
+    String driver,
+    String city,
+    String requestedAt,
+  ) => '$rider · $driver · $city · $requestedAt';
+
+  static String dateRange(String from, String to) => '$from – $to';
+
   static String kpiActiveBreakdown(
     String requested,
     String assigned,
