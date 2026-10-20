@@ -6,4 +6,6 @@ abstract final class RouteNames {
   static const kTrips = '/trips';
   static const kLiveMap = '/live-map';
   static const kAlerts = '/alerts';
+
+  static const kTripDetail = '/trip-detail';
 }
