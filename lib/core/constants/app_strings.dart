@@ -127,6 +127,10 @@ abstract final class AppStrings {
   static const amountInvalid = 'Enter an amount above 0.';
   static const refundIssued = 'Refund issued';
 
+  static const driverAvailable = 'Available';
+  static const driverOnTrip = 'On trip';
+  static const driverOffline = 'Offline';
+
   static String refundable(String amount) => 'Refundable: $amount';
 
   static String amountTooHigh(String remaining) =>
