@@ -1,4 +1,3 @@
-
 abstract interface class SseTransport {
 
   Stream<SseTransportEvent> connect(
@@ -23,13 +22,10 @@ final class SseTransportMessage extends SseTransportEvent {
   final String data;
 }
 
-/// The connection dropped and the browser is reconnecting by itself.
 final class SseTransportRetrying extends SseTransportEvent {
   const SseTransportRetrying();
 }
 
-/// refused the connection (any non-`200` such as `401`, `403` or
-/// `503`),
 final class SseTransportRefused extends SseTransportEvent {
   const SseTransportRefused();
 }

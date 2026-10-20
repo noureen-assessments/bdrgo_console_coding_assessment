@@ -96,7 +96,6 @@ class TripLineChart extends StatelessWidget {
     return (points.length / _maxBottomLabels).ceilToDouble();
   }
 
-  /// The x value is the bucket's index in [points].
   Widget _bottomTitle(double value, TitleMeta meta) {
     final index = value.toInt();
     if (index != value || index < 0 || index >= points.length) {
@@ -112,8 +111,6 @@ class TripLineChart extends StatelessWidget {
       ? DateFormatters.hour(point.bucket)
       : DateFormatters.day(point.bucket);
 
-  /// One line per series, e.g. "Completed: 106"; the first one starts with
-  /// the bucket's time.
   List<LineTooltipItem> _tooltipItems(List<LineBarSpot> spots) {
     final items = <LineTooltipItem>[];
     for (final spot in spots) {

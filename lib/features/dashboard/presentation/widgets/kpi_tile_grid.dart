@@ -87,7 +87,6 @@ class KpiTileGrid extends StatelessWidget {
     );
   }
 
-  /// One line per currency
   static String _revenue(List<Money> revenue) {
     if (revenue.isEmpty) return AppStrings.noValue;
     return revenue

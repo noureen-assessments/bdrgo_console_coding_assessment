@@ -8,8 +8,6 @@ import '../../../../core/utils/app_snack_bar.dart';
 import '../../../../core/utils/responsive.dart';
 import '../bloc/auth/auth_bloc.dart';
 
-/// Revokes the session on the server. If that fails (offline, maintenance)
-/// the user stays signed in and sees why. Icon-only on narrow windows.
 class SignOutButton extends StatelessWidget {
   const SignOutButton({super.key});
 

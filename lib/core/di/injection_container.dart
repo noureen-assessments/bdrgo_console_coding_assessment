@@ -8,6 +8,7 @@ import '../../config/routing/app_router.dart';
 import '../../features/auth/auth_injection.dart';
 import '../../features/connectivity/connectivity_injection.dart';
 import '../../features/dashboard/dashboard_injection.dart';
+import '../../features/trips/trips_injection.dart';
 import '../network/adapters/http_adapter.dart';
 import '../network/api_consumer.dart';
 import '../network/api_urls.dart';
@@ -24,17 +25,14 @@ import '../storage/in_memory_token_storage.dart';
 import '../storage/token_storage.dart';
 import '../utils/secure_storage.dart';
 
-///  every other class gets dependencies through its constructor.
 final GetIt sl = GetIt.instance;
 
 
 Future<void> initCore(FlavorConfig flavorConfig) async {
   final useHttpOnlyCookie = Env.usesHttpOnlyCookie;
   final tokenStorage = _createTokenStorage(useHttpOnlyCookie);
-  // Secure storage decrypts once here; later reads come from memory.
   await tokenStorage.getToken();
 
-  // Config & storage
   sl
     ..registerSingleton<FlavorConfig>(flavorConfig)
     ..registerSingleton<ApiUrls>(ApiUrls(flavorConfig.values.baseUri))
@@ -42,7 +40,6 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
     ..registerSingleton<SessionExpiryNotifier>(SessionExpiryNotifier())
     ..registerSingleton<AccessDeniedNotifier>(AccessDeniedNotifier());
 
-  // Network
   sl
     ..registerLazySingleton<Dio>(
       () => _createDio(
@@ -58,7 +55,6 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
       () => DioGraphQLConsumer(sl(), sl(), sl(), sl()),
     )
     ..registerLazySingleton<SessionChecker>(() => RestSessionChecker(sl()))
-    // One SSE connection shared by every feature.
     ..registerLazySingleton<SseClient>(
       () => SseClientImpl(
         transport: createSseTransport(),
@@ -69,22 +65,17 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
       ),
     );
 
-  // Features
   initConnectivity();
   initAuth();
   initDashboard();
+  initTrips();
 
-  // Routing
   sl.registerLazySingleton<AppRouter>(() => AppRouter(session: sl()));
 }
 
-/// Web cookie mode keeps nothing in browser storage (the server's HttpOnly
-/// cookie is the credential). Mobile, and web storage mode, use the
-/// platform's secure storage.
 TokenStorage _createTokenStorage(bool useHttpOnlyCookie) =>
     useHttpOnlyCookie ? InMemoryTokenStorage() : AppSecureStorage();
 
-/// One Dio for REST and GraphQL
 Dio _createDio(
   ApiUrls urls,
   TokenStorage tokenStorage,

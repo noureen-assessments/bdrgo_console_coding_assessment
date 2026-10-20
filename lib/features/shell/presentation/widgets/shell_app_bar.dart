@@ -7,8 +7,6 @@ import '../../../auth/domain/entities/current_user.dart';
 import '../../../auth/presentation/widgets/sign_out_button.dart';
 import 'signed_in_user_label.dart';
 
-/// App name, the signed-in user (name, role, city) and sign-out. Phones show
-/// the user under the title; web beside the sign-out button.
 class ShellAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ShellAppBar({required this.user, super.key});
 

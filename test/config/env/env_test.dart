@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('fails fast with a clear message when API_URL is not defined', () {
-    // Tests run without --dart-define, so API_URL is empty here.
     expect(
       () => Env.apiUrl,
       throwsA(
@@ -31,7 +30,6 @@ void main() {
     });
 
     test('never uses cookie mode off the web', () {
-      // flutter test runs on the VM, where kIsWeb is false.
       expect(Env.usesHttpOnlyCookie, isFalse);
     });
   });

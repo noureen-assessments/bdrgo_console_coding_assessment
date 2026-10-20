@@ -16,8 +16,6 @@ final class RestSessionChecker implements SessionChecker {
   Future<void> check() async {
     try {
       await _api.get(ApiEndpoints.me);
-    } on Failure {
-      //
-    }
+    } on Failure catch (_) {}
   }
 }

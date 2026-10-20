@@ -3,4 +3,8 @@ abstract final class ApiEndpoints {
   static const signOut = '/api/auth/sign-out';
   static const me = '/api/me';
   static const health = '/api/health';
+
+  static String assignTrip(String tripId) => '/api/trips/$tripId/assign';
+  static String cancelTrip(String tripId) => '/api/trips/$tripId/cancel';
+  static String refundTrip(String tripId) => '/api/trips/$tripId/refund';
 }

@@ -12,6 +12,5 @@ void initConnectivity() {
       () => ConnectivityRepositoryImpl(Connectivity()),
     )
     ..registerLazySingleton(() => WatchConnectivityUseCase(sl()))
-    // App-wide: one status for the whole session.
     ..registerLazySingleton<ConnectivityBloc>(() => ConnectivityBloc(sl()));
 }

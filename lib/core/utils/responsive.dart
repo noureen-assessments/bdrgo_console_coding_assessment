@@ -9,7 +9,6 @@ extension ResponsiveContext on BuildContext {
 
   bool get isDesktop => windowWidth >= AppDimensions.desktopMinWidth;
 
-  /// Padding around page content: tighter on phones.
   double get pagePadding =>
       isMobile ? AppDimensions.spaceMd : AppDimensions.spaceLg;
 }

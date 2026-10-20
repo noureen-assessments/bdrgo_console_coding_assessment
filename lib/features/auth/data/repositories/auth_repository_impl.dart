@@ -35,13 +35,10 @@ final class AuthRepositoryImpl implements AuthRepository {
       await _tokenStorage.saveToken(token);
       return _remote.fetchMe();
     });
-    // A token without a profile is not a usable session.
     if (result.isLeft()) await _clearToken();
     return result;
   }
 
-  /// Always asks the server: in web cookie mode there is no token to check
-  /// locally. A `401` here just means "signed out", not an error.
   @override
   Future<Either<Failure, CurrentUser?>> restoreSession() async {
     final result = await safeCall(_remote.fetchMe);
@@ -52,9 +49,6 @@ final class AuthRepositoryImpl implements AuthRepository {
     return result;
   }
 
-  /// Offline or in maintenance the token stays, so the user stays signed in
-  /// and can retry; the server must revoke it. A `401` means it is already
-  /// revoked.
   @override
   Future<Either<Failure, Unit>> signOut() async {
     final result = await safeCall(_remote.signOut);

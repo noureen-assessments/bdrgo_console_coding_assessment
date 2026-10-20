@@ -26,7 +26,6 @@ class _MockWatchExpiry extends Mock implements WatchSessionExpiryUseCase {}
 
 class _MockWatchDenied extends Mock implements WatchAccessDeniedUseCase {}
 
-/// The dispatcher after a super_admin re-roled them to viewer.
 const _reRoled = CurrentUser(
   id: 'u1',
   name: 'Dana Dispatcher',
@@ -146,8 +145,6 @@ void main() {
   });
 
   group('access denied (any 403)', () {
-    /// Restores [dispatcher] on start, then answers [afterDenied] after a
-    /// short delay, like a real request.
     void restoreThen(Either<Failure, CurrentUser?> afterDenied) {
       var calls = 0;
       when(() => restore(any())).thenAnswer((_) async {

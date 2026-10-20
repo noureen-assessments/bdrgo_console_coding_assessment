@@ -23,6 +23,12 @@ import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watc
 import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watch_live_status_use_case.dart';
 import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/dashboard/dashboard_bloc.dart';
 import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/trip_chart/trip_chart_bloc.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/entities/trip_filter.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/entities/trip_page_request.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/usecases/get_trip_use_case.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/usecases/get_trips_use_case.dart';
+import 'package:badrgo_console_assesment/features/trips/domain/usecases/watch_trip_changes_use_case.dart';
+import 'package:badrgo_console_assesment/features/trips/presentation/bloc/trips/trips_bloc.dart';
 import 'package:badrgo_console_assesment/my_app.dart';
 import 'package:badrgo_console_assesment/shared/use_cases/use_case.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +57,12 @@ class _MockWatchKpis extends Mock implements WatchKpisUseCase {}
 
 class _MockWatchLiveStatus extends Mock implements WatchLiveStatusUseCase {}
 
-/// The real Blocs, router and gate; only the use cases are mocked.
+class _MockGetTrips extends Mock implements GetTripsUseCase {}
+
+class _MockGetTrip extends Mock implements GetTripUseCase {}
+
+class _MockWatchTripChanges extends Mock implements WatchTripChangesUseCase {}
+
 void main() {
   late _MockWatchExpiry watchExpiry;
   late _MockWatchDenied watchDenied;
@@ -66,6 +77,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(const NoParams());
     registerFallbackValue(KpiRange.last24Hours);
+    registerFallbackValue(const TripPageRequest(filter: TripFilter()));
     registerFallbackValue(const SignInParams(email: '', password: ''));
   });
 
@@ -83,6 +95,7 @@ void main() {
     when(() => watchDenied(any())).thenAnswer((_) => denied.stream);
     sl.registerFactory(() => SignInBloc(signIn: signIn));
     _registerDashboard();
+    _registerTrips();
   });
 
   Future<void> pumpApp(
@@ -91,7 +104,6 @@ void main() {
     Flavor flavor = Flavor.PROD,
   }) async {
     when(() => restore(any())).thenAnswer((_) async => Right(restored));
-    // Built inside the test so its events run in the test's fake-async zone.
     authBloc = AuthBloc(
       restoreSession: restore,
       signOut: signOut,
@@ -280,9 +292,6 @@ void main() {
   });
 }
 
-/// Users with `kpi:read` land on the dashboard. These tests are about the
-/// shell, so the dashboard just shows its error state (no network, no
-/// endless spinner for `pumpAndSettle`).
 void _registerDashboard() {
   final getKpis = _MockGetKpis();
   final watchKpis = _MockWatchKpis();
@@ -305,4 +314,22 @@ void _registerDashboard() {
     () => getTripSeries(any()),
   ).thenAnswer((_) async => const Left(NetworkFailure('offline')));
   sl.registerFactory(() => TripChartBloc(getTripSeries: getTripSeries));
+}
+
+void _registerTrips() {
+  final getTrips = _MockGetTrips();
+  when(
+    () => getTrips(any()),
+  ).thenAnswer((_) async => const Left(NetworkFailure('offline')));
+  final watchTripChanges = _MockWatchTripChanges();
+  when(
+    () => watchTripChanges(any()),
+  ).thenAnswer((_) => const Stream.empty());
+  sl.registerFactory(
+    () => TripsBloc(
+      getTrips: getTrips,
+      getTrip: _MockGetTrip(),
+      watchTripChanges: watchTripChanges,
+    ),
+  );
 }

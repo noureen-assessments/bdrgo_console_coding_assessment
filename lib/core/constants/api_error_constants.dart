@@ -9,7 +9,6 @@ abstract final class ApiErrorKeys {
   static const since = 'since';
 }
 
-/// Error codes the server sends in `error.code` / `extensions.code`.
 abstract final class ApiErrorCodes {
   static const unauthenticated = 'UNAUTHENTICATED';
   static const forbidden = 'FORBIDDEN';
@@ -19,7 +18,6 @@ abstract final class ApiErrorCodes {
   static const maintenance = 'MAINTENANCE';
 }
 
-/// HTTP statuses used as a fallback when the body carries no error code.
 abstract final class ApiStatusCodes {
   static const unauthorized = 401;
   static const forbidden = 403;

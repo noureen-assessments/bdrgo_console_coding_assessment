@@ -5,7 +5,6 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../auth/domain/entities/current_user.dart';
 import '../../../auth/presentation/extensions/user_role_label.dart';
 
-/// "Name · role · city".
 class SignedInUserLabel extends StatelessWidget {
   const SignedInUserLabel({required this.user, super.key});
 

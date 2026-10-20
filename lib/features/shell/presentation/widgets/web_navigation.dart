@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../navigation/nav_destination.dart';
 
-/// Side menu for web (wider than phone) windows: each icon with its label
-/// beside it.
 class WebNavigation extends StatelessWidget {
   const WebNavigation({
     required this.destinations,
@@ -12,10 +10,8 @@ class WebNavigation extends StatelessWidget {
     super.key,
   });
 
-  /// Only the sections the user may open.
   final List<NavDestination> destinations;
 
-  /// Null when the open page is not in [destinations] (e.g. no access).
   final int? selectedIndex;
   final ValueChanged<NavDestination> onSelected;
 

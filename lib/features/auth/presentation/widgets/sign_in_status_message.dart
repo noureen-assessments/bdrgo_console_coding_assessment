@@ -7,7 +7,6 @@ import '../../../../shared/widgets/message_banner.dart';
 import '../bloc/auth/auth_bloc.dart';
 import '../bloc/sign_in/sign_in_bloc.dart';
 
-/// The server's sign-in error, or why the previous session ended.
 class SignInStatusMessage extends StatelessWidget {
   const SignInStatusMessage({super.key});
 

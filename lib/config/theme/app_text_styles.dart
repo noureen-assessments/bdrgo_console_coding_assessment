@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppTextStyles {
-  /// Page and card titles.
   static const headline = TextStyle(
     fontSize: 24,
     height: 32 / 24,
     fontWeight: FontWeight.w400,
   );
 
-  /// Smaller title for narrow (mobile) windows.
   static const headlineCompact = TextStyle(
     fontSize: 20,
     height: 28 / 20,
     fontWeight: FontWeight.w500,
   );
 
-  /// The big number on a KPI tile.
   static const kpiValue = TextStyle(
     fontSize: 28,
     height: 36 / 28,
@@ -40,7 +37,6 @@ abstract final class AppTextStyles {
     fontWeight: FontWeight.w400,
   );
 
-  /// Material text theme built from the styles above.
   static const textTheme = TextTheme(
     headlineSmall: headline,
     titleMedium: title,

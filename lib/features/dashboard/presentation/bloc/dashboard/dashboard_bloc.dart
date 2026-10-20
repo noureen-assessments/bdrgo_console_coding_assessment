@@ -61,7 +61,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     if (state is! DashboardLoaded) emit(const DashboardLoading());
-    // same 24 h as the live SSE `kpi` event.
     final result = await _getKpis(KpiRange.last24Hours);
     result.fold((failure) {
       if (state is! DashboardLoaded) emit(DashboardError(failure.message));

@@ -4,7 +4,6 @@ import 'city.dart';
 import 'permissions.dart';
 import 'user_role.dart';
 
-/// The signed-in user as returned by `GET /api/me`.
 class CurrentUser extends Equatable {
   const CurrentUser({
     required this.id,
@@ -20,11 +19,9 @@ class CurrentUser extends Equatable {
   final String name;
   final String email;
 
-  /// Shown to the user only; access checks use [permissions].
   final UserRole role;
   final String roleDescription;
 
-  /// Null for `super_admin`, who sees every city.
   final City? city;
   final Permissions permissions;
 

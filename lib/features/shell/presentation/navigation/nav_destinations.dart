@@ -5,11 +5,6 @@ import '../../../auth/domain/entities/permission.dart';
 import '../../../auth/domain/entities/permissions.dart';
 import 'nav_destination.dart';
 
-/// Registry of every console section, in menu order. Adding a section is
-/// one entry in [all]; the router, the menus and the no-access page all
-/// read from here.
-///
-/// Access comes from each entry's permission, never from the role.
 abstract final class NavDestinations {
   static const dashboard = NavDestination(
     route: RouteNames.kDashboard,
@@ -41,7 +36,6 @@ abstract final class NavDestinations {
 
   static const all = [dashboard, trips, liveMap, alerts];
 
-  /// The section at [route], or null when [route] is not a section.
   static NavDestination? findByRoute(String route) {
     for (final destination in all) {
       if (destination.route == route) return destination;
@@ -49,7 +43,6 @@ abstract final class NavDestinations {
     return null;
   }
 
-  /// The sections [permissions] allow, in menu order.
   static List<NavDestination> allowedFor(Permissions permissions) {
     final allowed = <NavDestination>[];
     for (final destination in all) {

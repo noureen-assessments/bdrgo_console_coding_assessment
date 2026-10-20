@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../domain/entities/kpi_range.dart';
 
-/// Last 24h / Last 7 days.
 class TripRangeSwitch extends StatelessWidget {
   const TripRangeSwitch({
     required this.selected,

@@ -4,7 +4,6 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../validators/sign_in_validators.dart';
 
-/// Password input with a show/hide toggle. The toggle is view-only state.
 class PasswordField extends StatefulWidget {
   const PasswordField({
     required this.controller,

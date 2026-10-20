@@ -30,7 +30,6 @@ void initAuth() {
     ..registerLazySingleton(() => RestoreSessionUseCase(sl()))
     ..registerLazySingleton(() => WatchSessionExpiryUseCase(sl()))
     ..registerLazySingleton(() => WatchAccessDeniedUseCase(sl()))
-    // App-wide: the router and every page read the same session.
     ..registerLazySingleton<AuthBloc>(
       () => AuthBloc(
         restoreSession: sl(),

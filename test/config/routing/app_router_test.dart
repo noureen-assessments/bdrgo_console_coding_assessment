@@ -7,7 +7,6 @@ import '../../features/auth/auth_fixtures.dart';
 import '../../features/fakes.dart';
 
 void main() {
-  /// The URL the router shows for [path]; null [permissions] = signed out.
   String? urlFor(String path, Permissions? permissions) {
     final router = AppRouter(session: FakeSessionAccess(permissions));
     return router.onGenerateRoute(RouteSettings(name: path)).settings.name;

@@ -6,13 +6,9 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../shared/widgets/no_data_found_widget.dart';
 import '../bloc/auth/auth_bloc.dart';
 
-/// Shown instead of the app while the stored session is checked, or when
-/// that check failed. A failed check retries by itself once the browser is
-/// back online.
 class SessionRestoreView extends StatelessWidget {
   const SessionRestoreView({this.errorMessage, super.key});
 
-  /// Null while still checking.
   final String? errorMessage;
 
   @override
