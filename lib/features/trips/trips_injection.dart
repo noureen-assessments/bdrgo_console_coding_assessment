@@ -10,6 +10,7 @@ import 'domain/usecases/perform_trip_action_use_case.dart';
 import 'domain/usecases/watch_trip_changes_use_case.dart';
 import 'presentation/bloc/available_drivers/available_drivers_bloc.dart';
 import 'presentation/bloc/trip_action/trip_action_bloc.dart';
+import 'presentation/bloc/trip_detail/trip_detail_bloc.dart';
 import 'presentation/bloc/trips/trips_bloc.dart';
 
 void initTrips() {
@@ -31,5 +32,8 @@ void initTrips() {
     )
     ..registerFactory<AvailableDriversBloc>(
       () => AvailableDriversBloc(getAvailableDrivers: sl()),
+    )
+    ..registerFactory<TripDetailBloc>(
+      () => TripDetailBloc(getTripDetail: sl()),
     );
 }
