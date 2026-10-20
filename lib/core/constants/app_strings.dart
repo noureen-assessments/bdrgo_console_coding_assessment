@@ -39,6 +39,36 @@ abstract final class AppStrings {
   static const alerts = 'Alerts';
   static const sectionComingSoon = 'This section is on its way.';
 
+  // Dashboard
+  static const dashboardLoadFailed = "Couldn't load the dashboard";
+  static const kpiActiveTrips = 'Active trips';
+  static const kpiCompleted = 'Completed';
+  static const kpiCancellationRate = 'Cancellation rate';
+  static const kpiRevenue = 'Revenue';
+  static const kpiDrivers = 'Drivers available / on trip';
+  static const kpiOpenAlerts = 'Open alerts';
+  static const kpiLast24Hours = 'Last 24 hours';
+  static const kpiOpenAlertsDetail = 'Not acknowledged yet';
+  static const noValue = '—';
+  static const live = 'Live';
+  static const reconnecting = 'Reconnecting…';
+
+  static String kpiActiveBreakdown(
+    String requested,
+    String assigned,
+    String inProgress,
+  ) => '$requested requested · $assigned assigned · $inProgress in progress';
+
+  static String kpiCancelled(String cancelled) =>
+      '$cancelled cancelled in 24 h';
+
+  static String kpiDriverPair(String available, String onTrip) =>
+      '$available / $onTrip';
+
+  static String kpiDriversTotal(String total) => '$total drivers in total';
+
+  static String updatedAt(String time) => 'Updated $time';
+
   // No access
   static const noAccess = "You don't have access to this page";
   static const noSections =

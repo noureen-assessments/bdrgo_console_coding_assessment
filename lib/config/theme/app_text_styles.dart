@@ -15,6 +15,13 @@ abstract final class AppTextStyles {
     fontWeight: FontWeight.w500,
   );
 
+  /// The big number on a KPI tile.
+  static const kpiValue = TextStyle(
+    fontSize: 28,
+    height: 36 / 28,
+    fontWeight: FontWeight.w500,
+  );
+
   static const title = TextStyle(
     fontSize: 16,
     height: 24 / 16,

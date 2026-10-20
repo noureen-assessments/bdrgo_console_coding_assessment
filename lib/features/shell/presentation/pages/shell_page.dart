@@ -10,20 +10,30 @@ import '../navigation/nav_destination.dart';
 import '../navigation/nav_destinations.dart';
 import '../widgets/mobile_navigation.dart';
 import '../widgets/no_access_view.dart';
-import '../widgets/section_placeholder.dart';
 import '../widgets/shell_app_bar.dart';
 import '../widgets/web_navigation.dart';
 
 /// The signed-in frame around every section: app bar, menu and the section.
 ///
 /// The menu lists only the sections the user's permissions allow, and the
-/// section is wrapped in a [PermissionGate] that shows [NoAccessView]
+/// section [page] is wrapped in a [PermissionGate] that shows [NoAccessView]
 /// without the permission. Both rebuild when the permissions change.
+///
+/// The shell renders whatever [page] the router gives it, so it never
+/// depends on a feature.
 class ShellPage extends StatelessWidget {
-  const ShellPage({this.destination, super.key});
+  /// One open section showing [page].
+  const ShellPage.section({
+    required NavDestination this.destination,
+    required Widget this.page,
+    super.key,
+  });
 
-  /// The open section; null when the user may open no section at all.
+  /// For a user who may open no section at all.
+  const ShellPage.noSections({super.key}) : destination = null, page = null;
+
   final NavDestination? destination;
+  final Widget? page;
 
   @override
   Widget build(BuildContext context) {
@@ -83,11 +93,14 @@ class ShellPage extends StatelessWidget {
 
   Widget _buildSection() {
     final destination = this.destination;
-    if (destination == null) return const NoAccessView.noSections();
+    final page = this.page;
+    if (destination == null || page == null) {
+      return const NoAccessView.noSections();
+    }
     return PermissionGate(
       permission: destination.permission,
       fallback: NoAccessView.section(destination.label),
-      child: SectionPlaceholder(destination: destination),
+      child: page,
     );
   }
 

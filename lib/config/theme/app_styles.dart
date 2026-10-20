@@ -26,6 +26,11 @@ abstract final class AppStyles {
   static Color noticeForeground({required bool isError}) =>
       isError ? AppColors.onErrorBackground : AppColors.onInfoBackground;
 
+  static BoxDecoration statusDot({required bool isLive}) => BoxDecoration(
+    color: isLive ? AppColors.live : AppColors.reconnecting,
+    shape: BoxShape.circle,
+  );
+
   static final snackBarText = AppTextStyles.body.copyWith(
     color: AppColors.onSnackBar,
   );

@@ -21,6 +21,13 @@ abstract final class AppDimensions {
   static const double progressMd = 20;
   static const double progressStroke = 2;
 
+  // Live status dot
+  static const double statusDot = 8;
+
+  // Dashboard KPI tiles per row
+  static const int kpiColumnsMobile = 2;
+  static const int kpiColumnsDesktop = 3;
+
   // Dividers
   static const double dividerThin = 1;
 
