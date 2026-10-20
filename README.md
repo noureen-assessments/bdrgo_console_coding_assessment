@@ -21,7 +21,7 @@ its own entry point. Each one builds a `FlavorConfig` and passes it to
 
 | Flavor | Entry point | Differences |
 | --- | --- | --- |
-| DEV | `lib/main_dev.dart` (also `lib/main.dart`) | "DEV" corner banner, Bloc event logging |
+| DEV | `lib/main_dev.dart` | "DEV" corner banner, Bloc event logging |
 | ALPHA | `lib/main_alpha.dart` | "ALPHA" corner banner, Bloc event logging in debug |
 | PROD | `lib/main_prod.dart` | No banner, no Bloc logging |
 
@@ -36,9 +36,6 @@ flutter run -d chrome -t lib/main_alpha.dart --profile --dart-define=API_URL=<AP
 ```bash
 flutter run -d chrome -t lib/main_prod.dart --release --dart-define=API_URL=<API_BASE_URL>
 ```
-
-`lib/main.dart` also starts DEV, so `flutter run -d chrome --dart-define=API_URL=…`
-works without `-t`.
 
 **Web auth mode.** `--dart-define=WEB_AUTH_MODE=storage` (default) or `cookie`;
 see [Token storage](#token-storage).
