@@ -53,6 +53,18 @@ abstract final class AppStrings {
   static const live = 'Live';
   static const reconnecting = 'Reconnecting…';
 
+  // Trips chart
+  static const tripsOverTime = 'Trips over time';
+  static const rangeLast24Hours = 'Last 24h';
+  static const rangeLast7Days = 'Last 7 days';
+  static const seriesTotal = 'Total';
+  static const seriesCompleted = 'Completed';
+  static const seriesCancelled = 'Cancelled';
+  static const chartLoadFailed = "Couldn't load the chart";
+  static const noTripsInRange = 'No trips in this period';
+
+  static String seriesValue(String series, String count) => '$series: $count';
+
   static String kpiActiveBreakdown(
     String requested,
     String assigned,

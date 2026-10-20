@@ -5,11 +5,13 @@ import '../../../../core/network/sse/sse_client.dart';
 import '../../../../core/utils/logger.dart';
 import '../../domain/entities/kpi_range.dart';
 import '../models/kpis_model.dart';
+import '../models/trip_series_point_model.dart';
 import '../queries/dashboard_queries.dart';
 
 
 abstract interface class DashboardRemoteDataSource {
   Future<KpisModel> fetchKpis(KpiRange range);
+  Future<List<TripSeriesPointModel>> fetchTripSeries(KpiRange range);
   Stream<KpisModel> watchKpis();
   Stream<bool> watchLive();
 }
@@ -25,12 +27,27 @@ final class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
   Future<KpisModel> fetchKpis(KpiRange range) async {
     final data = await _graphql.query(
       DashboardQueries.kpis,
-      variables: DashboardQueries.kpisVariables(range),
+      variables: DashboardQueries.rangeVariables(range),
     );
     try {
       return KpisModel.fromJson(data['kpis'] as Map<String, dynamic>);
     } on TypeError {
       throw const FormatException('kpis');
+    }
+  }
+
+  @override
+  Future<List<TripSeriesPointModel>> fetchTripSeries(KpiRange range) async {
+    final data = await _graphql.query(
+      DashboardQueries.tripSeries,
+      variables: DashboardQueries.rangeVariables(range),
+    );
+    try {
+
+      final kpis = data['kpis'] as Map<String, dynamic>;
+      return TripSeriesPointModel.listFromJson(kpis['series'] as List<dynamic>);
+    } on TypeError {
+      throw const FormatException('series');
     }
   }
 

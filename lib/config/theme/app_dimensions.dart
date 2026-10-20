@@ -28,6 +28,12 @@ abstract final class AppDimensions {
   static const int kpiColumnsMobile = 2;
   static const int kpiColumnsDesktop = 3;
 
+  // Trips chart
+  static const double chartHeight = 260;
+  static const double chartLineWidth = 2;
+  static const double chartLeftAxisSpace = 44;
+  static const double chartBottomAxisSpace = 28;
+
   // Dividers
   static const double dividerThin = 1;
 

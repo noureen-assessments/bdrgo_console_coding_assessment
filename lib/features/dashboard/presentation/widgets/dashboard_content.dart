@@ -7,6 +7,7 @@ import '../../../../core/utils/responsive.dart';
 import '../../domain/entities/kpis.dart';
 import 'kpi_tile_grid.dart';
 import 'live_status.dart';
+import 'trip_chart_card.dart';
 
 class DashboardContent extends StatelessWidget {
   const DashboardContent({required this.kpis, required this.isLive, super.key});
@@ -38,6 +39,8 @@ class DashboardContent extends StatelessWidget {
           ),
           const SizedBox(height: AppDimensions.spaceMd),
           KpiTileGrid(kpis: kpis),
+          const SizedBox(height: AppDimensions.spaceLg),
+          const TripChartCard(),
         ],
       ),
     );

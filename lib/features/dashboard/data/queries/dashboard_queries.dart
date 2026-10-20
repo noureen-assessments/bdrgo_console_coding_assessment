@@ -30,7 +30,21 @@ abstract final class DashboardQueries {
     }
   ''';
 
-  static Map<String, Object?> kpisVariables(KpiRange range) => {
+  /// chart for the last 7 days.
+  static const tripSeries = r'''
+    query DashboardTripSeries($range: KpiRange!) {
+      kpis(range: $range) {
+        series {
+          bucket
+          total
+          completed
+          cancelled
+        }
+      }
+    }
+  ''';
+
+  static Map<String, Object?> rangeVariables(KpiRange range) => {
     'range': range.value,
   };
 }

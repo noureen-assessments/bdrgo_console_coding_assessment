@@ -5,8 +5,8 @@ sandbox API (REST, GraphQL, Server-Sent Events and WebSocket).
 
 > Status: **M1 (authentication)** and **M2 (role-aware shell)** are done, with
 > the offline part of M7 (offline banner, automatic retry). **M3 (dashboard)**
-> has its live KPI tiles; the trips chart is next. M4–M7 follow, each in its
-> own folder under `lib/features/`.
+> has its live KPI tiles and the trips-over-time chart. M4–M7 follow, each in
+> its own folder under `lib/features/`.
 
 ## Running
 
@@ -318,12 +318,15 @@ core/network/sse/
 └── sse_transport_io.dart            Stub for mobile and VM tests
 core/network/backoff.dart            Exponential backoff, injected
 core/session/session_checker.dart    SessionChecker: "is the session still valid?" over REST
-core/utils/app_formatters.dart       Numbers, money and times (intl)
+core/utils/number_formatters.dart    Counts, percentages, money (intl)
+core/utils/date_formatters.dart      Times, hours, days (intl)
 features/dashboard/
 ├── data/         DashboardQueries (GraphQL documents), DashboardRemoteDataSource
 │                 (GraphQL kpis + SSE kpi), KpisModel
-├── domain/       Kpis, TripKpis, DriverKpis, KpiRange; GetKpis / WatchKpis / WatchLiveStatus
-└── presentation/ DashboardBloc, KpiTileGrid, KpiTile, LiveStatus
+├── domain/       Kpis, TripKpis, DriverKpis, TripSeriesPoint, KpiRange;
+│                 GetKpis / WatchKpis / WatchLiveStatus / GetTripSeries
+└── presentation/ DashboardBloc, TripChartBloc, KpiTileGrid, KpiTile, LiveStatus,
+                  TripChartCard, TripRangeSwitch, TripLineChart
 ```
 
 **KPI tiles.** The tiles are:
@@ -354,6 +357,30 @@ then replaces them every 5 s. Both payloads have the same shape, so one
   while the SSE connection is down, so stale numbers are marked.
 - **Errors.** If the first load fails but a live event arrives, the tiles show.
   Otherwise the page shows an error with Retry.
+
+**Trips-over-time chart.** A card under the tiles with a **Last 24h / Last 7
+days** switch and a line chart (`fl_chart`) of total, completed and cancelled
+trips, plus a legend and a tooltip per bucket.
+
+- **Data.** The GraphQL query `DashboardQueries.tripSeries` asks only for
+  `kpis(range: $range) { series { bucket total completed cancelled } }`. It
+  shares `rangeVariables` with the tiles query. The server returns hourly
+  buckets for 24 h and daily buckets for 7 days.
+- **Separate Bloc.** `TripChartBloc` has its own loading, error and empty
+  states, so a chart failure never hides the tiles. The tiles always show
+  24 h; only the chart switches.
+  - One event, `TripChartRangeSelected(range)`, covers the first load, the
+    switch and Retry.
+  - Every state carries the selected range, so the switch always shows it.
+- **Fast switching.** The event uses `restartable()`, so picking a new range
+  cancels the older request. A slow 24 h answer can never replace the 7 days
+  chart.
+- **Time labels.** Hours show in the browser's local time. Days are read in
+  UTC, because daily buckets start at 00:00 UTC and local time would shift
+  them to the day before west of UTC. About six labels fit on the axis
+  whatever the bucket count.
+- **Not live.** The chart is loaded with GraphQL only. The brief asks for live
+  tiles, and the 7 days view would not change within minutes anyway.
 
 **SSE: why native `EventSource`.** Dio's web adapter and `package:http`'s
 `BrowserClient` read an XHR response as a whole, so an SSE response that
@@ -495,7 +522,8 @@ gets dependencies through its constructor. Blocs are registered with
 | Package | Why |
 | --- | --- |
 | `flutter_bloc` / `bloc` | Required. Event-based `Bloc`s give a traceable event log and transformers for live streams. |
-| `equatable` | Value equality for states, events, entities and failures without codegen. |
+| `equatable` | Value equality for states, events, entities and failures without codegen. Pinned to `^2.0.7`: every `fl_chart` release (up to 1.2.0) requires `equatable ^2`, and the app only uses `Equatable` and `props`, which are the same in 2.x and 3.x. |
+| `fl_chart` | The trips-over-time line chart. Pure Flutter (no JS chart library), well maintained, with tooltips and custom axis labels. |
 | `fpdart` | Typed `Either<Failure, T>` results from repositories and use cases; actively maintained. |
 | `dio` | Interceptors (auth header, logging), cancel tokens, typed errors; works on web through the browser XHR adapter. |
 | `get_it` | Simple service locator; manual registration keeps wiring explicit. |
@@ -532,7 +560,6 @@ Added when the feature that needs them is built, so nothing unused ships:
 - **WebSocket:** `web_socket_channel`, a stream API that is easy to wrap with
   reconnect/backoff and to fake in tests.
 - **Map:** `flutter_map` + `latlong2` with OpenStreetMap tiles.
-- **Charts:** `fl_chart`.
 
 ## Sandbox rules followed
 

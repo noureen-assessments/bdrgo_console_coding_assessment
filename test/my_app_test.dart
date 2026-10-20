@@ -18,9 +18,11 @@ import 'package:badrgo_console_assesment/features/connectivity/domain/usecases/w
 import 'package:badrgo_console_assesment/features/connectivity/presentation/bloc/connectivity_bloc.dart';
 import 'package:badrgo_console_assesment/features/dashboard/domain/entities/kpi_range.dart';
 import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/get_kpis_use_case.dart';
+import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/get_trip_series_use_case.dart';
 import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watch_kpis_use_case.dart';
 import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watch_live_status_use_case.dart';
 import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/dashboard/dashboard_bloc.dart';
+import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/trip_chart/trip_chart_bloc.dart';
 import 'package:badrgo_console_assesment/my_app.dart';
 import 'package:badrgo_console_assesment/shared/use_cases/use_case.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +44,8 @@ class _MockSignIn extends Mock implements SignInUseCase {}
 class _MockSignOut extends Mock implements SignOutUseCase {}
 
 class _MockGetKpis extends Mock implements GetKpisUseCase {}
+
+class _MockGetTripSeries extends Mock implements GetTripSeriesUseCase {}
 
 class _MockWatchKpis extends Mock implements WatchKpisUseCase {}
 
@@ -295,4 +299,10 @@ void _registerDashboard() {
       watchLiveStatus: watchLiveStatus,
     ),
   );
+
+  final getTripSeries = _MockGetTripSeries();
+  when(
+    () => getTripSeries(any()),
+  ).thenAnswer((_) async => const Left(NetworkFailure('offline')));
+  sl.registerFactory(() => TripChartBloc(getTripSeries: getTripSeries));
 }

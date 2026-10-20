@@ -31,6 +31,13 @@ abstract final class AppStyles {
     shape: BoxShape.circle,
   );
 
+  static BoxDecoration legendDot(Color color) =>
+      BoxDecoration(color: color, shape: BoxShape.circle);
+
+  static final chartTooltipText = AppTextStyles.caption.copyWith(
+    color: AppColors.onChartTooltip,
+  );
+
   static final snackBarText = AppTextStyles.body.copyWith(
     color: AppColors.onSnackBar,
   );
