@@ -67,6 +67,21 @@ static const _tripRow = r'''
 
   static Map<String, Object?> tripVariables(String id) => {'id': id};
 
+  static const availableDrivers = r'''
+    query AvailableDrivers($cityId: ID!) {
+      drivers(filter: { cityId: $cityId, status: [AVAILABLE] }, first: 100) {
+        nodes {
+          id
+          name
+        }
+      }
+    }
+  ''';
+
+  static Map<String, Object?> availableDriversVariables(String cityId) => {
+    'cityId': cityId,
+  };
+
   static Map<String, Object?> tripsVariables(TripPageRequest request) => {
     'first': pageSize,
     'filter': filterVariables(request.filter),

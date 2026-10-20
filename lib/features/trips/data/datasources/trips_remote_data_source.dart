@@ -7,6 +7,7 @@ import '../../../../core/network/sse/sse_client.dart';
 import '../../../../core/utils/logger.dart';
 import '../../domain/entities/trip_action.dart';
 import '../../domain/entities/trip_page_request.dart';
+import '../models/available_driver_model.dart';
 import '../models/trip_change_model.dart';
 import '../models/trip_page_model.dart';
 import '../models/trip_summary_model.dart';
@@ -18,6 +19,7 @@ abstract interface class TripsRemoteDataSource {
   Future<TripSummaryModel?> fetchTrip(String id);
   Stream<TripChangeModel> watchTripChanges();
   Future<void> perform(TripAction action);
+  Future<List<AvailableDriverModel>> fetchAvailableDrivers(String cityId);
 }
 
 final class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
@@ -89,5 +91,21 @@ final class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
         body = {'amount': action.amount, 'reason': action.reason};
     }
     await _api.post(path, data: body);
+  }
+
+  @override
+  Future<List<AvailableDriverModel>> fetchAvailableDrivers(
+    String cityId,
+  ) async {
+    final data = await _graphql.query(
+      TripsQueries.availableDrivers,
+      variables: TripsQueries.availableDriversVariables(cityId),
+    );
+    try {
+      final drivers = data['drivers'] as Map<String, dynamic>;
+      return AvailableDriverModel.listFromJson(drivers['nodes'] as List<dynamic>);
+    } on TypeError {
+      throw const FormatException('drivers');
+    }
   }
 }
