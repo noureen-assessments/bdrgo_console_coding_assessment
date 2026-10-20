@@ -6,7 +6,35 @@ abstract final class TripsQueries {
   static const pageSize = 20;
 
 
-  static const trips = r'''
+static const _tripRow = r'''
+    fragment TripRow on Trip {
+      id
+      status
+      requestedAt
+      fare {
+        amount
+        currency
+      }
+      city {
+        name
+      }
+      rider {
+        name
+      }
+      driver {
+        name
+      }
+      pickup {
+        address
+      }
+      dropoff {
+        address
+      }
+    }
+  ''';
+
+  static const trips =
+      r'''
     query Trips($filter: TripFilter, $first: Int, $after: String) {
       trips(filter: $filter, first: $first, after: $after) {
         totalCount
@@ -15,32 +43,26 @@ abstract final class TripsQueries {
           hasNextPage
         }
         nodes {
-          id
-          status
-          requestedAt
-          fare {
-            amount
-            currency
-          }
-          city {
-            name
-          }
-          rider {
-            name
-          }
-          driver {
-            name
-          }
-          pickup {
-            address
-          }
-          dropoff {
-            address
-          }
+          ...TripRow
         }
       }
     }
-  ''';
+  ''' +
+      _tripRow;
+
+  /// One trip, for a live update. Null when it is not in the user's city.
+  /// Variables: `$id`.
+  static const trip =
+      r'''
+    query Trip($id: ID!) {
+      trip(id: $id) {
+        ...TripRow
+      }
+    }
+  ''' +
+      _tripRow;
+
+  static Map<String, Object?> tripVariables(String id) => {'id': id};
 
   static Map<String, Object?> tripsVariables(TripPageRequest request) => {
     'first': pageSize,
