@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:badrgo_console_assesment/core/errors/failures.dart';
 import 'package:badrgo_console_assesment/core/network/api_urls.dart';
 import 'package:badrgo_console_assesment/core/network/graphql_consumer.dart';
+import 'package:badrgo_console_assesment/core/session/access_denied_notifier.dart';
+import 'package:badrgo_console_assesment/core/session/session_expiry_notifier.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -36,9 +38,20 @@ final class _FakeAdapter implements HttpClientAdapter {
 
 void main() {
   final urls = ApiUrls(Uri.parse('https://api.test'));
+  late SessionExpiryNotifier sessionExpiry;
+  late AccessDeniedNotifier accessDenied;
 
-  DioGraphQLConsumer consumerWith(_FakeAdapter adapter) =>
-      DioGraphQLConsumer(Dio()..httpClientAdapter = adapter, urls);
+  setUp(() {
+    sessionExpiry = SessionExpiryNotifier();
+    accessDenied = AccessDeniedNotifier();
+  });
+
+  DioGraphQLConsumer consumerWith(_FakeAdapter adapter) => DioGraphQLConsumer(
+    Dio()..httpClientAdapter = adapter,
+    urls,
+    sessionExpiry,
+    accessDenied,
+  );
 
   test('returns data and posts query with variables to /graphql', () async {
     final adapter = _FakeAdapter(200, {
@@ -104,5 +117,43 @@ void main() {
       consumerWith(adapter).query('query { me { id } }'),
       throwsA(isA<MaintenanceFailure>()),
     );
+  });
+
+  test('reports UNAUTHENTICATED on a 200 as an expired session', () async {
+    final adapter = _FakeAdapter(200, {
+      'data': null,
+      'errors': [
+        {
+          'message': 'Sign in first',
+          'extensions': {'code': 'UNAUTHENTICATED'},
+        },
+      ],
+    });
+    final expired = expectLater(sessionExpiry.onExpired, emits(null));
+
+    await expectLater(
+      consumerWith(adapter).query('query { kpis { activeTrips } }'),
+      throwsA(isA<UnauthenticatedFailure>()),
+    );
+    await expired;
+  });
+
+  test('reports FORBIDDEN on a 200 as denied access', () async {
+    final adapter = _FakeAdapter(200, {
+      'data': null,
+      'errors': [
+        {
+          'message': 'Not allowed',
+          'extensions': {'code': 'FORBIDDEN'},
+        },
+      ],
+    });
+    final denied = expectLater(accessDenied.onDenied, emits(null));
+
+    await expectLater(
+      consumerWith(adapter).query('query { kpis { activeTrips } }'),
+      throwsA(isA<ForbiddenFailure>()),
+    );
+    await denied;
   });
 }

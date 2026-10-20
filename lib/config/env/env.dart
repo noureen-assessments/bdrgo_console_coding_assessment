@@ -4,11 +4,12 @@ import 'package:flutter/foundation.dart';
 /// secure storage.
 enum WebAuthMode {
   /// The server's `HttpOnly` cookie is the credential; requests are sent
-  /// with credentials and the token lives in memory only.
+  /// with credentials and the token lives in memory only. Only works when
+  /// the app and API share a site: the sandbox cookie is `SameSite=Lax`.
   cookie,
 
-  /// Fallback when the API does not issue cookies: the token is encrypted
-  /// in sessionStorage via flutter_secure_storage.
+  /// Default: the token is encrypted in sessionStorage via
+  /// flutter_secure_storage, so the session survives a refresh.
   storage,
 }
 
@@ -34,7 +35,7 @@ abstract final class Env {
     return _apiUrl;
   }
 
-  /// The `WEB_AUTH_MODE` define; [WebAuthMode.cookie] when not passed.
+  /// The `WEB_AUTH_MODE` define; [WebAuthMode.storage] when not passed.
   static WebAuthMode get webAuthMode => parseWebAuthMode(_webAuthMode);
 
   /// True on web in cookie mode: send credentials, keep nothing in storage.
@@ -43,7 +44,7 @@ abstract final class Env {
 
   @visibleForTesting
   static WebAuthMode parseWebAuthMode(String value) {
-    if (value.isEmpty) return WebAuthMode.cookie;
+    if (value.isEmpty) return WebAuthMode.storage;
     final mode = WebAuthMode.values.asNameMap()[value];
     if (mode == null) throw StateError(invalidWebAuthMode);
     return mode;

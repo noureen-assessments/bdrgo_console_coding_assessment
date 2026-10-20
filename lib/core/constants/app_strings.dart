@@ -3,9 +3,57 @@ abstract final class AppStrings {
   static const appName = 'badrgo Ops Console';
 
   // Pages
-  static const setupComplete = 'Project setup complete';
   static const pageNotFound = 'Page not found';
   static const goHome = 'Go home';
+  static const retry = 'Retry';
+
+  // Sign-in
+  static const signIn = 'Sign in';
+  static const signInSubtitle = 'Use your operations account.';
+  static const email = 'Email';
+  static const password = 'Password';
+  static const showPassword = 'Show password';
+  static const hidePassword = 'Hide password';
+  static const emailRequired = 'Enter your email.';
+  static const emailInvalid = 'Enter a valid email address.';
+  static const passwordRequired = 'Enter your password.';
+  static const sessionExpired = 'Your session has ended. Please sign in again.';
+
+  // Session
+  static const restoringSession = 'Checking your session…';
+  static const restoreFailed = "Couldn't check your session";
+  static const signOut = 'Sign out';
+  static const allCities = 'All cities';
+
+  // Roles
+  static const roleSuperAdmin = 'Super admin';
+  static const roleOpsManager = 'Ops manager';
+  static const roleDispatcher = 'Dispatcher';
+  static const roleSupport = 'Support';
+  static const roleViewer = 'Viewer';
+  static const roleUnknown = 'Unknown role';
+
+  // Console sections
+  static const dashboard = 'Dashboard';
+  static const trips = 'Trips';
+  static const liveMap = 'Live map';
+  static const alerts = 'Alerts';
+  static const sectionComingSoon = 'This section is on its way.';
+
+  // No access
+  static const noAccess = "You don't have access to this page";
+  static const noSections =
+      'Your account has no console pages yet. Ask an administrator for '
+      'access.';
+
+  static String noAccessTo(String section) =>
+      "Your role doesn't include $section. Ask an administrator if you need "
+      'it.';
+
+  // Connectivity
+  static const offline =
+      "You're offline. We'll reconnect automatically when the connection is "
+      'back.';
 
   // Errors
   static const unexpectedError = 'Something went wrong. Please try again.';

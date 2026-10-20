@@ -3,8 +3,9 @@
 A Flutter web dashboard for the badrgo city operations team, built on the badrgo
 sandbox API (REST, GraphQL, Server-Sent Events and WebSocket).
 
-> Status: **project setup and architecture**. Feature milestones (M1–M7) are not
-> implemented yet; each gets its own folder under `lib/features/` when built.
+> Status: **M1 (authentication)** and **M2 (role-aware shell)** are done, with
+> the offline part of M7 (offline banner, automatic retry). M3–M7 follow, each
+> in its own folder under `lib/features/`.
 
 ## Running
 
@@ -20,7 +21,7 @@ its own entry point. Each one builds a `FlavorConfig` and passes it to
 
 | Flavor | Entry point | Differences |
 | --- | --- | --- |
-| DEV | `lib/main_dev.dart` (also `lib/main.dart`) | "DEV" corner banner, Bloc event logging |
+| DEV | `lib/main_dev.dart` | "DEV" corner banner, Bloc event logging |
 | ALPHA | `lib/main_alpha.dart` | "ALPHA" corner banner, Bloc event logging in debug |
 | PROD | `lib/main_prod.dart` | No banner, no Bloc logging |
 
@@ -36,10 +37,7 @@ flutter run -d chrome -t lib/main_alpha.dart --profile --dart-define=API_URL=<AP
 flutter run -d chrome -t lib/main_prod.dart --release --dart-define=API_URL=<API_BASE_URL>
 ```
 
-`lib/main.dart` also starts DEV, so `flutter run -d chrome --dart-define=API_URL=…`
-works without `-t`.
-
-**Web auth mode.** `--dart-define=WEB_AUTH_MODE=cookie` (default) or `storage`;
+**Web auth mode.** `--dart-define=WEB_AUTH_MODE=storage` (default) or `cookie`;
 see [Token storage](#token-storage).
 
 **API URL (required).** No URL is hard-coded anywhere in the code. It comes
@@ -101,12 +99,13 @@ lib/
 │   ├── di/injection_container.dart   # sl + initCore()
 │   ├── errors/                   # sealed Failure hierarchy, ApiErrorParser
 │   ├── network/                  # ApiUrls, ApiConsumer/DioConsumer, GraphQLConsumer, interceptors
+│   ├── session/                  # SessionExpiryNotifier: every transport reports 401 here
 │   ├── storage/                  # TokenStorage interface, StorageKeys
 │   └── utils/                    # safeCall, AppLogger, AppSecureStorage
 └── shared/                       # reused across features
     ├── use_cases/use_case.dart   # UseCase<T, Params> → Either<Failure, T>
-    ├── pages/                    # not found, setup placeholder
-    └── widgets/                  # NoDataFoundWidget (empty / not found / no access)
+    ├── pages/                    # not found
+    └── widgets/                  # NoDataFoundWidget, MessageBanner
 ```
 
 Features live in `lib/features/<feature>/` and are added with the milestone
@@ -139,6 +138,27 @@ features/<feature>/
 | Domain | Entities, repository interfaces, use cases. No Flutter, Dio or JSON. |
 | Data | Repository implementations, transport calls, DTO ↔ entity mapping. |
 
+### Styling and responsive layout
+
+Widgets never write raw colors, sizes, text styles or icons:
+
+| File | Holds |
+| --- | --- |
+| `config/theme/app_colors.dart` | Every color |
+| `config/theme/app_text_styles.dart` | Typography (`headline`, `headlineCompact`, `title`, `body`, `caption`) and the Material `textTheme` |
+| `config/theme/app_dimensions.dart` | Spacing scale, radii, icon and control sizes, content widths, breakpoints |
+| `config/theme/app_styles.dart` | Decorations and component styles (notices, primary button, animation duration) |
+| `config/theme/app_theme.dart` | `ThemeData` assembled from the four files above |
+| `core/constants/app_assets.dart` | Every icon (and later image) |
+
+**One layout for phone and web, no layout package.** `core/utils/responsive.dart`
+adds `context.isMobile` / `context.isDesktop` / `context.pagePadding`, built on
+`MediaQuery.sizeOf`, so a widget rebuilds when the browser window is resized.
+Below 600 px the app uses tighter padding and smaller titles, the sign-out
+button shows only its icon, and the user's name, role and city move under the
+app-bar title. Forms and empty states are capped at `formMaxWidth` and
+centered on wide windows.
+
 ### Error handling
 
 - `DioConsumer` and `DioGraphQLConsumer` throw a `Failure`. REST `error.code`
@@ -158,9 +178,146 @@ features/<feature>/
 maps a route name to a page, and unknown names get `NotFoundPage`. On web the
 route name is the browser URL (path strategy, no `#`), so refresh and deep
 links work. `onGenerateInitialRoutes` opens only the requested page instead of
-stacking every parent segment. Auth and permission guards will go in
-`onGenerateRoute`. A `navigatorKey` lets the session layer send the user to
-sign-in on a 401.
+stacking every parent segment.
+
+**Guards.** The router depends only on the `SessionAccess` interface
+(`isSignedIn`, `can(permission)`), not on `AuthBloc`. Signed out, every URL
+shows `/sign-in`. Signed in, `/` and `/sign-in` open the first section the
+user may open, a section URL opens the shell for that section, and anything
+else is not found. See [Role-aware shell](#role-aware-shell-m2).
+
+### Authentication (M1)
+
+```
+features/auth/
+├── data/          AuthRemoteDataSource (REST), MeModel / CityModel / PermissionsModel, AuthRepositoryImpl
+├── domain/        CurrentUser, City, Permissions, AuthRepository, 4 use cases
+└── presentation/  AuthBloc (app-wide), SignInBloc (sign-in page), AuthGate, widgets
+```
+
+- **Sign-in** posts to `/api/auth/sign-in/email`, stores `token`, then loads
+  `GET /api/me`. The sign-in page shows the server's own `message` (wrong
+  password, banned user). Better Auth answers `{ code, message }` without the
+  `error` envelope, and `ApiErrorParser` reads both shapes.
+- **Refresh.** `AuthGate` keeps the navigator out of the tree until
+  `AuthBloc` has checked the stored session with `GET /api/me`. The first route
+  (say a refreshed `/trips/42`) is then built with the real session, so there
+  is no flash of sign-in. If the check fails because the user is offline, in
+  maintenance or the server errors, the token is kept and a Retry screen
+  shows. The check runs again by itself when the browser is back online.
+- **Sign-out** calls `/api/auth/sign-out` (revokes the token, checked with
+  curl: the old token then gets `401`). If the server cannot be reached the
+  user stays signed in and sees why, because forgetting the token locally
+  would leave it valid on the server.
+- **Any 401, any transport.** Everything reports to one
+  `SessionExpiryNotifier` (in `core/session`). REST and GraphQL HTTP `401`s
+  report through `AuthInterceptor`, and only for requests that carried a
+  token, so a wrong password never counts. GraphQL `200` responses with
+  `extensions.code: UNAUTHENTICATED` report through `DioGraphQLConsumer`. The
+  SSE and WebSocket clients (M3/M5) will call `notify()` on their own `401` /
+  refused handshake.
+- **No loop.** The repository forgets the token as soon as a `401` is
+  reported, and `AuthBloc` only reacts while it is `AuthAuthenticated`. Later
+  `401`s from requests still in flight hit a signed-out state and are ignored,
+  and the server is never called again to sign out (that would only `401`
+  again).
+- **Closing realtime connections.** On sign-out or expiry, `AppRouter.showSignIn`
+  clears the whole page stack. Realtime Blocs are page-scoped
+  (`BlocProvider` under signed-in pages), so their `close()` runs and tears
+  down SSE and WebSocket subscriptions. Nothing survives into the next
+  account.
+- **States are `sealed`** (`AuthRestoring`, `AuthRestoreFailed`,
+  `AuthAuthenticated`, `AuthUnauthenticated`), so the gate and widgets switch
+  on them exhaustively.
+- **Blocs only call use cases** (`RestoreSession`, `SignIn`, `SignOut`,
+  `WatchSessionExpiry`). No feature Bloc depends on another feature:
+  connectivity reaches `AuthBloc` as a plain `AuthConnectionRestored` event
+  sent by `ConnectionRestoredListener` in the view.
+
+### Role-aware shell (M2)
+
+```
+features/auth/
+├── domain/services/session_access.dart              SessionAccess interface
+└── presentation/
+    ├── services/auth_bloc_session_access.dart       Adapter: SessionAccess over AuthBloc
+    └── widgets/permission_gate.dart                 Guard widget for buttons and pages
+features/shell/presentation/
+├── navigation/nav_destination(s).dart               Registry of sections + permission
+├── pages/shell_page.dart                            App bar, menu, guarded section
+└── widgets/                                         WebNavigation, MobileNavigation, NoAccessView, ShellAppBar
+```
+
+Nothing branches on the role name; the role is only a label.
+
+| Section | URL | Needs |
+| --- | --- | --- |
+| Dashboard | `/dashboard` | `kpi:read` |
+| Trips | `/trips` | `trip:read` |
+| Live map | `/live-map` | `driver:track` |
+| Alerts | `/alerts` | `alert:read` |
+
+**Patterns used, and why**
+
+- **Registry (open/closed).** `NavDestinations.all` lists every section
+  as one `NavDestination` (route, label, icon, permission). The router, both
+  menus and the no-access page read from it, so a new section is one new
+  entry and no other code changes.
+- **Dependency inversion + adapter.** The router needs two answers: "signed
+  in?" and "may they do X?". It gets them from the `SessionAccess` interface
+  (auth domain). `AuthBlocSessionAccess` adapts `AuthBloc` to it and is
+  registered in `initAuth()`. The router never reads the Bloc or the
+  service locator, and tests pass a `FakeSessionAccess`.
+- **Guard.** `PermissionGate(permission, child, fallback)` is the one place
+  the UI checks a permission. It hides action buttons (M4–M6:
+  `PermissionGate(permission: TripPermission.assign, child: …)`), and the
+  shell wraps each section in it with `NoAccessView` as the fallback. It
+  listens to `AuthBloc`, so it rebuilds when the permissions change.
+
+**Behaviour**
+
+- **Menu** lists `NavDestinations.allowedFor(user.permissions)`:
+  `WebNavigation` (side menu, icon then label) on web, `MobileNavigation` (drawer) on phones.
+  With the sandbox matrix, `support` has no Dashboard and no Live map, and
+  `viewer` has no Live map.
+- **Home.** `/` opens the first section the user may open, so `support`
+  lands on Trips, not on an empty dashboard. A user with no section gets
+  the no-access page without a "Go home" button.
+- **No access.** A section URL the user may not open (a bookmark, a typed
+  URL) still opens the shell, with `NoAccessView` in place of the content,
+  not a crash or an empty page.
+- **Switching sections** replaces the page without a transition, so the
+  content swaps at once and old sections (and later their realtime
+  connections) never pile up on the back stack.
+- **The shell shows** the user's name, role label and city ("All cities"
+  for `super_admin`) in the app bar.
+- **Role changed on the server.** The docs say to re-fetch `/api/me` after
+  any `403`. Every transport reports a `403` to one `AccessDeniedNotifier`
+  (in `core/session`, next to `SessionExpiryNotifier`): HTTP `403`s through
+  `AuthInterceptor`, and GraphQL `FORBIDDEN` on a `200` through
+  `DioGraphQLConsumer`. The SSE and WebSocket clients will call `notify()`
+  themselves. `AuthBloc` re-fetches the profile with a `droppable`
+  transformer, so a burst of `403`s sends one request. The menu, the open
+  section and every `PermissionGate` then rebuild from the new permissions.
+  If the re-fetch fails (offline, maintenance) the current permissions
+  stay. A banned user's `401` signs them out as in M1.
+- **No ShellBloc.** The shell's only state is the signed-in user, which
+  `AuthBloc` already holds. A second Bloc would just copy it.
+
+### Connectivity (part of M7)
+
+`features/connectivity`: `ConnectivityRepository` (wraps `connectivity_plus`,
+which follows the browser's `online`/`offline` events), `WatchConnectivityUseCase`,
+and an app-wide
+`ConnectivityBloc` with `sealed` `ConnectivityOnline` / `ConnectivityOffline`
+states.
+
+- `OfflineBanner` sits above every page (in `MaterialApp.builder`).
+- A failed session check retries by itself when the connection comes back
+  (`ConnectionRestoredListener` in `AuthGate` sends `AuthConnectionRestored`).
+  Sign-in is not retried: the user submits again.
+- Maintenance (`503`, health polling with backoff) is the rest of M7 and is
+  built with the realtime features it has to reconnect.
 
 ### Token storage
 
@@ -171,19 +328,27 @@ implementation:
 
 | Platform | Mode | Credential | Token in the client |
 | --- | --- | --- | --- |
-| Web | `cookie` (default) | Server's `HttpOnly; Secure; SameSite=None` cookie, sent with `withCredentials` | Memory only (`InMemoryTokenStorage`), never in browser storage |
-| Web | `storage` (fallback) | `Authorization: Bearer` | AES-GCM via WebCrypto in sessionStorage (`AppSecureStorage`) |
+| Web | `storage` (default) | `Authorization: Bearer` | AES-GCM via WebCrypto in sessionStorage (`AppSecureStorage`) |
+| Web | `cookie` (opt-in) | Server's `HttpOnly` cookie, sent with `withCredentials` | Memory only (`InMemoryTokenStorage`), never in browser storage |
 | Android | n/a | `Authorization: Bearer` | AES-GCM, key in the Android Keystore (`AppSecureStorage`) |
 | iOS | n/a | `Authorization: Bearer` | Keychain, `first_unlock_this_device` (`AppSecureStorage`) |
 
 Select the web mode with `--dart-define=WEB_AUTH_MODE=cookie|storage`. An
 unknown value stops the app at startup.
 
-**Why cookie mode is the default on web.** `flutter_secure_storage` on web
-writes to browser storage, and page scripts can always read browser storage,
-even when the value is encrypted (the key is stored next to it). Only an
-`HttpOnly` cookie is out of reach of JavaScript. Cookie mode does three
-things:
+**Why storage mode is the default (decided in M1).** The sandbox sets
+`__Secure-better-auth.session_token` with **`SameSite=Lax`**. An app on
+`localhost` is a different site from `sandbox.badrgo.com`, so the browser never
+sends that cookie on the app's XHR calls. Cookie mode would lose the session
+on every refresh, and the brief requires the session to survive one. SSE and
+WebSocket need `?token=` anyway. Storage mode keeps the token encrypted in
+sessionStorage, so it survives a refresh but not closing the tab, and two tabs
+never share a session.
+
+**Cookie mode (opt-in, for a same-site deployment).** `flutter_secure_storage`
+on web writes to browser storage, which page scripts can always read even when
+encrypted. Only an `HttpOnly` cookie is out of reach of JavaScript. Cookie
+mode does three things:
 
 - Dio uses `BrowserHttpClientAdapter(withCredentials: true)`, so the browser
   stores the server's cookie and sends it on every REST and GraphQL call.
@@ -194,8 +359,8 @@ things:
   `withCredentials: true`, and the WebSocket handshake sends the cookie
   itself.
 
-**What the server must support for cookie mode** (to confirm with the API
-documentation in M1, not assumed here):
+**What the server must support for cookie mode** (checked against the sandbox
+in M1: items 2 and 3 work, item 1 does not, because of `SameSite=Lax`):
 
 1. Set the cookie on sign-in (`HttpOnly; Secure; SameSite=None`) and expire it
    on sign-out.
@@ -205,10 +370,8 @@ documentation in M1, not assumed here):
 4. Optionally issue an anti-CSRF token for a request header, as the article
    recommends.
 
-If the sandbox does not support this, build with `WEB_AUTH_MODE=storage`.
-That keeps the session across a refresh using encrypted sessionStorage, which
-protects the token at rest but not against XSS. Closing the tab ends the
-session, and two tabs never share one session. In both modes XSS prevention
+Storage mode protects the token at rest but not against XSS. In both modes XSS
+prevention
 still matters: no HTML rendering of server strings, and no third-party
 scripts.
 
@@ -233,7 +396,9 @@ gets dependencies through its constructor. Blocs are registered with
 | `dio` | Interceptors (auth header, logging), cancel tokens, typed errors; works on web through the browser XHR adapter. |
 | `get_it` | Simple service locator; manual registration keeps wiring explicit. |
 | `flutter_secure_storage` | Token storage for web and mobile (see [Token storage](#token-storage)). Used through `AppSecureStorage` behind the `TokenStorage` interface. |
+| `connectivity_plus` | Online/offline status behind `ConnectivityRepository`. On web it listens to the browser's `online`/`offline` events, and the same code works on mobile. |
 | `flutter_web_plugins` (SDK) | `usePathUrlStrategy()` for clean URLs (`/trips/…` instead of `/#/trips/…`). |
+| `bloc_concurrency` | `droppable()` for the `403` re-fetch, so a burst of `403`s sends one `/api/me`. |
 | `bloc_test`, `mocktail` (dev) | Bloc and mock testing without codegen. |
 
 **GraphQL without a GraphQL package.** The console only sends queries with
@@ -262,4 +427,20 @@ Added when the feature that needs them is built, so nothing unused ships:
 
 ## Known issues / API feedback
 
-None yet.
+- **Auth endpoints use a different error shape.** `/api/auth/sign-in/email`
+  answers `401 { "code": "INVALID_EMAIL_OR_PASSWORD", "message": … }`, not
+  the documented `{ "error": { code, message } }` envelope. The app reads both.
+- **Session cookie is `SameSite=Lax`**, so cross-site apps (the brief's
+  `localhost` setup) cannot use it. The app uses the bearer token instead (see
+  [Token storage](#token-storage)).
+- **Demo accounts drift.** On 2026-10-20, `viewer.doha@demo.test` signed in as
+  `ops_manager` in Al Rayyan and `dispatch.doha@demo.test` as `support`.
+  Another candidate had probably re-roled them. The UI follows `/api/me`, so
+  it adapts, but the brief's role table may not match what reviewers see.
+- **GraphQL answers `200` without a token** for introspection-level queries
+  (`{ __typename }`), so a missing session only shows up as
+  `extensions.code: UNAUTHENTICATED` on real fields. That case is handled.
+- **Build cache (tooling):** after adding a web plugin, `flutter build web`
+  reused a cached plugin registrant without it, and `connectivity_plus`
+  failed at runtime with `MissingPluginException`. Fix: delete
+  `.dart_tool/flutter_build` (or `flutter clean`) and rebuild.

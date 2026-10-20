@@ -17,8 +17,8 @@ void main() {
   });
 
   group('WEB_AUTH_MODE', () {
-    test('defaults to the HttpOnly cookie mode', () {
-      expect(Env.parseWebAuthMode(''), WebAuthMode.cookie);
+    test('defaults to storage mode', () {
+      expect(Env.parseWebAuthMode(''), WebAuthMode.storage);
     });
 
     test('accepts cookie and storage', () {

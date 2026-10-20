@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../config/routing/route_names.dart';
+import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_strings.dart';
 import '../widgets/no_data_found_widget.dart';
 
@@ -14,7 +15,7 @@ class NotFoundPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: NoDataFoundWidget(
-        icon: Icons.search_off,
+        icon: AppAssets.notFound,
         title: AppStrings.pageNotFound,
         message: path,
         action: FilledButton(
