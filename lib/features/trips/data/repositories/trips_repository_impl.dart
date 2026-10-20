@@ -2,6 +2,7 @@ import 'package:fpdart/fpdart.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/utils/safe_call.dart';
+import '../../domain/entities/trip_action.dart';
 import '../../domain/entities/trip_change.dart';
 import '../../domain/entities/trip_page.dart';
 import '../../domain/entities/trip_page_request.dart';
@@ -24,4 +25,10 @@ final class TripsRepositoryImpl implements TripsRepository {
 
   @override
   Stream<TripChange> watchTripChanges() => _remote.watchTripChanges();
+
+  @override
+  Future<Either<Failure, Unit>> perform(TripAction action) async {
+    final result = await safeCall(() => _remote.perform(action));
+    return result.map((_) => unit);
+  }
 }
