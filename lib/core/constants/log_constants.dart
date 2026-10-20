@@ -18,6 +18,8 @@ abstract final class LogMessages {
       'WebSocket closed; checking the session, then reconnecting';
   static const webSocketUnauthorized =
       'WebSocket closed with 4001; not reconnecting';
+  static const webSocketBadMessage =
+      'WebSocket message skipped: payload has an unexpected shape';
 
   static String redactedFrame(String? file) => '$redactedPath$file:';
 
