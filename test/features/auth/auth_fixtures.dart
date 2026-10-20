@@ -28,3 +28,42 @@ Map<String, Object?> meJson() => {
     'kpi': ['read'],
   },
 };
+
+/// Permission sets from the matrix in `/docs/roles` (reads a test does not
+/// need are left out).
+const viewerPermissions = Permissions({
+  TripPermission.read,
+  AlertPermission.read,
+  KpiPermission.read,
+});
+
+const supportPermissions = Permissions({
+  TripPermission.read,
+  TripPermission.refund,
+  AlertPermission.read,
+  AlertPermission.acknowledge,
+  PiiPermission.read,
+});
+
+const dispatcherPermissions = Permissions({
+  TripPermission.read,
+  TripPermission.create,
+  TripPermission.assign,
+  TripPermission.cancel,
+  DriverPermission.track,
+  DriverPermission.message,
+  AlertPermission.read,
+  AlertPermission.acknowledge,
+  KpiPermission.read,
+  PiiPermission.read,
+});
+
+/// A Doha user with [permissions]; the role is only a label.
+CurrentUser userWith(Permissions permissions) => CurrentUser(
+  id: 'u2',
+  name: 'Vera Viewer',
+  email: 'viewer.doha@demo.test',
+  role: UserRole.viewer,
+  city: const City(id: 'city_doh', name: 'Doha'),
+  permissions: permissions,
+);

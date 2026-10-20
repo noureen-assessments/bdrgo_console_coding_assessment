@@ -2,6 +2,7 @@ import '../../core/di/injection_container.dart';
 import 'data/datasources/auth_remote_data_source.dart';
 import 'data/repositories/auth_repository_impl.dart';
 import 'domain/repositories/auth_repository.dart';
+import 'domain/services/session_access.dart';
 import 'domain/usecases/restore_session_use_case.dart';
 import 'domain/usecases/sign_in_use_case.dart';
 import 'domain/usecases/sign_out_use_case.dart';
@@ -9,6 +10,7 @@ import 'domain/usecases/watch_access_denied_use_case.dart';
 import 'domain/usecases/watch_session_expiry_use_case.dart';
 import 'presentation/bloc/auth/auth_bloc.dart';
 import 'presentation/bloc/sign_in/sign_in_bloc.dart';
+import 'presentation/services/auth_bloc_session_access.dart';
 
 void initAuth() {
   sl
@@ -37,5 +39,6 @@ void initAuth() {
         watchAccessDenied: sl(),
       ),
     )
+    ..registerLazySingleton<SessionAccess>(() => AuthBlocSessionAccess(sl()))
     ..registerFactory<SignInBloc>(() => SignInBloc(signIn: sl()));
 }
