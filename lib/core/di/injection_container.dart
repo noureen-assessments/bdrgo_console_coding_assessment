@@ -8,6 +8,7 @@ import '../../config/routing/app_router.dart';
 import '../../features/auth/auth_injection.dart';
 import '../../features/connectivity/connectivity_injection.dart';
 import '../../features/dashboard/dashboard_injection.dart';
+import '../../features/trips/trips_injection.dart';
 import '../network/adapters/http_adapter.dart';
 import '../network/api_consumer.dart';
 import '../network/api_urls.dart';
@@ -73,6 +74,7 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
   initConnectivity();
   initAuth();
   initDashboard();
+  initTrips();
 
   // Routing
   sl.registerLazySingleton<AppRouter>(() => AppRouter(session: sl()));

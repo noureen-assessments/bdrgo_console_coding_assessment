@@ -7,6 +7,7 @@ import '../../features/shell/presentation/navigation/nav_destination.dart';
 import '../../features/shell/presentation/navigation/nav_destinations.dart';
 import '../../features/shell/presentation/pages/shell_page.dart';
 import '../../features/shell/presentation/widgets/section_placeholder.dart';
+import '../../features/trips/presentation/pages/trips_page.dart';
 import '../../shared/pages/not_found_page.dart';
 import 'route_names.dart';
 
@@ -64,6 +65,7 @@ final class AppRouter {
 
   static Widget _sectionPage(NavDestination destination) {
     if (destination == NavDestinations.dashboard) return const DashboardPage();
+    if (destination == NavDestinations.trips) return const TripsPage();
     return SectionPlaceholder(destination: destination);
   }
 
