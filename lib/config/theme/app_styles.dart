@@ -42,14 +42,13 @@ abstract final class AppStyles {
     ),
   );
 
-  static final statusBadge = BoxDecoration(
-    border: Border.all(color: AppColors.primary),
+  static BoxDecoration statusBadge(Color color) => BoxDecoration(
+    border: Border.all(color: color),
     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
   );
 
-  static final statusBadgeText = AppTextStyles.caption.copyWith(
-    color: AppColors.primary,
-  );
+  static TextStyle statusBadgeText(Color color) =>
+      AppTextStyles.caption.copyWith(color: color);
 
   static BoxDecoration severityBadge(Color color) => BoxDecoration(
     border: Border.all(color: color),
