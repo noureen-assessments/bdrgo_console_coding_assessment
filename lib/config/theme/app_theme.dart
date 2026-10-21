@@ -13,7 +13,7 @@ abstract final class AppTheme {
       onPrimary: AppColors.onPrimary,
       surface: AppColors.surface,
     ),
-    scaffoldBackgroundColor: AppColors.surface,
+    scaffoldBackgroundColor: AppColors.appBackground,
     cardTheme: const CardThemeData(color: AppColors.surface),
     dialogTheme: const DialogThemeData(backgroundColor: AppColors.surface),
     fontFamily: AppTextStyles.fontFamily,

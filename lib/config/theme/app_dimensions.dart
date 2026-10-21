@@ -18,6 +18,7 @@ abstract final class AppDimensions {
   static const double progressStroke = 2;
 
   static const double statusDot = 8;
+  static const double tripStatusBadgeWidth = 96;
 
   static const double logoAppBar = 32;
   static const double logoAppBarCompact = 24;
