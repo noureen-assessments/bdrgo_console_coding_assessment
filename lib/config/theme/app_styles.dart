@@ -90,6 +90,10 @@ abstract final class AppStyles {
     fontWeight: FontWeight.w700,
   );
 
+  static final dialogTitle = AppTextStyles.title.copyWith(
+    color: AppColors.onPrimary,
+  );
+
   static final chartTooltipText = AppTextStyles.caption.copyWith(
     color: AppColors.onChartTooltip,
   );
