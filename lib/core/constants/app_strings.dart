@@ -160,6 +160,7 @@ abstract final class AppStrings {
 
   static const maintenancePlanned = 'Planned maintenance';
   static const maintenanceUnavailable = 'Service unavailable';
+  static const maintenanceMessage = 'The service is under maintenance.';
   static const maintenanceAutoRecover =
       "You're still signed in. The console comes back by itself when the "
       'service is up.';

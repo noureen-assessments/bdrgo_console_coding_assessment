@@ -29,7 +29,7 @@ abstract final class ApiErrorParser {
     final envelope = body is Map ? body[ApiErrorKeys.error] : null;
     final error = envelope is Map ? envelope : body;
     if (error is! Map) {
-      return _build(null, AppStrings.unexpectedResponse, const {}, statusCode);
+      return _build(null, _noBodyMessage(statusCode), const {}, statusCode);
     }
     return _build(
       error[ApiErrorKeys.code],
@@ -108,6 +108,13 @@ abstract final class ApiErrorParser {
 
   static Duration? _seconds(Object? value) =>
       value is num ? Duration(seconds: value.toInt()) : null;
+
+  static String _noBodyMessage(int? status) {
+    if (status == ApiStatusCodes.serviceUnavailable) {
+      return AppStrings.maintenanceMessage;
+    }
+    return AppStrings.unexpectedResponse;
+  }
 
   static String _message(Object? value) =>
       value is String && value.isNotEmpty ? value : AppStrings.unexpectedError;
