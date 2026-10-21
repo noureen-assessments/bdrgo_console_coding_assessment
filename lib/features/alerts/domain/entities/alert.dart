@@ -30,6 +30,8 @@ class Alert extends Equatable {
 
   bool get isAcknowledged => acknowledgedAt != null;
 
+  bool get isCritical => severity == AlertSeverity.critical;
+
   @override
   List<Object?> get props => [
     id,
