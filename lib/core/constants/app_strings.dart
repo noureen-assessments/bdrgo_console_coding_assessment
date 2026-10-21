@@ -150,8 +150,11 @@ abstract final class AppStrings {
   static const alertAcknowledged = 'Acknowledged';
   static const acknowledge = 'Acknowledge';
   static const alertAcknowledgedDone = 'Alert acknowledged';
+  static const criticalAlert = 'Critical alert';
   static const alertsLoadFailed = "Couldn't load alerts";
   static const noAlerts = 'No alerts right now';
+
+  static String criticalAlerts(int count) => '$count critical alerts';
 
   static String refundable(String amount) => 'Refundable: $amount';
 
