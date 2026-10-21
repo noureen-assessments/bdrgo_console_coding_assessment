@@ -38,6 +38,12 @@ abstract final class AppColors {
   static const newRow = Color(0xFFE3F4E8);
   static const updatedRow = Color(0xFFFFF4D6);
 
+  static const tripRequested = Color(0xFFB26A00);
+  static const tripAssigned = Color(0xFF6A4BC4);
+  static const tripInProgress = Color(0xFF1A73E8);
+  static const tripCompleted = Color(0xFF1E8E3E);
+  static const tripCancelled = Color(0xFFD93025);
+
   static const driverAvailable = Color(0xFF1E8E3E);
   static const driverOnTrip = Color(0xFF1A73E8);
   static const driverOffline = Color(0xFF80868B);
