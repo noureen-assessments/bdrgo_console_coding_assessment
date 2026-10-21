@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppAssets {
+  static const String logo = 'assets/images/badrgo_logo.svg';
+
   static const IconData email = Icons.email_outlined;
   static const IconData password = Icons.lock_outline;
   static const IconData showPassword = Icons.visibility;
