@@ -10,9 +10,14 @@ import 'alert_acknowledge_button.dart';
 import 'alert_severity_badge.dart';
 
 class AlertListTile extends StatelessWidget {
-  const AlertListTile({required this.alert, super.key});
+  const AlertListTile({
+    required this.alert,
+    required this.onAcknowledged,
+    super.key,
+  });
 
   final Alert alert;
+  final ValueChanged<Alert> onAcknowledged;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +36,10 @@ class AlertListTile extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (!alert.isAcknowledged) ...[
-              AlertAcknowledgeButton(alertId: alert.id),
+              AlertAcknowledgeButton(
+                alertId: alert.id,
+                onAcknowledged: onAcknowledged,
+              ),
               const SizedBox(width: AppDimensions.spaceXs),
             ],
             Column(

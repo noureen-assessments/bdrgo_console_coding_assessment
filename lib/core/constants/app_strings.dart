@@ -149,6 +149,7 @@ abstract final class AppStrings {
   static const alertRefundIssued = 'Refund issued';
   static const alertAcknowledged = 'Acknowledged';
   static const acknowledge = 'Acknowledge';
+  static const alertAcknowledgedDone = 'Alert acknowledged';
   static const alertsLoadFailed = "Couldn't load alerts";
   static const noAlerts = 'No alerts right now';
 

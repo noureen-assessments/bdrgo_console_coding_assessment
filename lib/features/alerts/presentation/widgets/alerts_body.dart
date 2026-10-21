@@ -35,6 +35,8 @@ class AlertsBody extends StatelessWidget {
         state: current,
         onLoadMore: () =>
             context.read<AlertsBloc>().add(const AlertsNextPageRequested()),
+        onAcknowledged: (alert) =>
+            context.read<AlertsBloc>().add(AlertsAlertReceived(alert)),
       );
     }
     return const Center(child: CircularProgressIndicator());
