@@ -31,4 +31,7 @@ final class MaintenanceRepositoryImpl implements MaintenanceRepository {
       wait = _backoff.delay(attempt);
     }
   }
+
+  @override
+  void reconnectRealtime() => _remote.reconnectRealtime();
 }

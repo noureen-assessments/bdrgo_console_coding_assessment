@@ -9,7 +9,7 @@ import 'presentation/bloc/maintenance_bloc.dart';
 void initMaintenance() {
   sl
     ..registerLazySingleton<MaintenanceRemoteDataSource>(
-      () => MaintenanceRemoteDataSourceImpl(sl(), sl()),
+      () => MaintenanceRemoteDataSourceImpl(sl(), sl(), sl(), sl()),
     )
     ..registerLazySingleton<MaintenanceRepository>(
       () => MaintenanceRepositoryImpl(sl()),
