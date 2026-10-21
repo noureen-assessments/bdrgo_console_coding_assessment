@@ -10,6 +10,7 @@ import 'features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'features/auth/presentation/widgets/auth_gate.dart';
 import 'features/connectivity/presentation/bloc/connectivity_bloc.dart';
 import 'features/connectivity/presentation/widgets/offline_banner.dart';
+import 'features/maintenance/presentation/bloc/maintenance_bloc.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
     required this.flavorConfig,
     required this.authBloc,
     required this.connectivityBloc,
+    required this.maintenanceBloc,
     super.key,
   });
 
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
   final FlavorConfig flavorConfig;
   final AuthBloc authBloc;
   final ConnectivityBloc connectivityBloc;
+  final MaintenanceBloc maintenanceBloc;
 
   bool get _showBanner => flavorConfig.flavor != Flavor.PROD;
 
@@ -33,6 +36,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider.value(value: authBloc),
         BlocProvider.value(value: connectivityBloc),
+        BlocProvider.value(value: maintenanceBloc),
       ],
       child: MaterialApp(
         title: AppStrings.appName,

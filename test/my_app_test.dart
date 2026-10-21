@@ -23,6 +23,10 @@ import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watc
 import 'package:badrgo_console_assesment/features/dashboard/domain/usecases/watch_live_status_use_case.dart';
 import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/dashboard/dashboard_bloc.dart';
 import 'package:badrgo_console_assesment/features/dashboard/presentation/bloc/trip_chart/trip_chart_bloc.dart';
+import 'package:badrgo_console_assesment/features/maintenance/domain/usecases/poll_until_up_use_case.dart';
+import 'package:badrgo_console_assesment/features/maintenance/domain/usecases/reconnect_realtime_use_case.dart';
+import 'package:badrgo_console_assesment/features/maintenance/domain/usecases/watch_maintenance_use_case.dart';
+import 'package:badrgo_console_assesment/features/maintenance/presentation/bloc/maintenance_bloc.dart';
 import 'package:badrgo_console_assesment/features/trips/domain/entities/trip_filter.dart';
 import 'package:badrgo_console_assesment/features/trips/domain/entities/trip_page_request.dart';
 import 'package:badrgo_console_assesment/features/trips/domain/usecases/get_trip_use_case.dart';
@@ -62,6 +66,12 @@ class _MockGetTrips extends Mock implements GetTripsUseCase {}
 class _MockGetTrip extends Mock implements GetTripUseCase {}
 
 class _MockWatchTripChanges extends Mock implements WatchTripChangesUseCase {}
+
+class _MockWatchMaintenance extends Mock implements WatchMaintenanceUseCase {}
+
+class _MockPollUntilUp extends Mock implements PollUntilUpUseCase {}
+
+class _MockReconnectRealtime extends Mock implements ReconnectRealtimeUseCase {}
 
 void main() {
   late _MockWatchExpiry watchExpiry;
@@ -111,6 +121,14 @@ void main() {
       watchAccessDenied: watchDenied,
     );
     addTearDown(authBloc.close);
+    final watchMaintenance = _MockWatchMaintenance();
+    when(() => watchMaintenance(any())).thenAnswer((_) => const Stream.empty());
+    final maintenanceBloc = MaintenanceBloc(
+      watchMaintenance: watchMaintenance,
+      pollUntilUp: _MockPollUntilUp(),
+      reconnectRealtime: _MockReconnectRealtime(),
+    );
+    addTearDown(maintenanceBloc.close);
     await tester.pumpWidget(
       MyApp(
         router: AppRouter(session: AuthBlocSessionAccess(authBloc)),
@@ -122,6 +140,7 @@ void main() {
         connectivityBloc: ConnectivityBloc(
           WatchConnectivityUseCase(connectivity),
         )..add(const ConnectivityStarted()),
+        maintenanceBloc: maintenanceBloc..add(const MaintenanceStarted()),
       ),
     );
     await tester.pumpAndSettle();

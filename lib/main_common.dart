@@ -9,6 +9,7 @@ import 'core/bloc/app_bloc_observer.dart';
 import 'core/di/injection_container.dart';
 import 'features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'features/connectivity/presentation/bloc/connectivity_bloc.dart';
+import 'features/maintenance/presentation/bloc/maintenance_bloc.dart';
 import 'my_app.dart';
 
 Future<void> mainCommon(FlavorConfig config) async {
@@ -26,6 +27,7 @@ Future<void> mainCommon(FlavorConfig config) async {
       authBloc: sl<AuthBloc>()..add(const AuthStarted()),
       connectivityBloc: sl<ConnectivityBloc>()
         ..add(const ConnectivityStarted()),
+      maintenanceBloc: sl<MaintenanceBloc>()..add(const MaintenanceStarted()),
     ),
   );
 }
