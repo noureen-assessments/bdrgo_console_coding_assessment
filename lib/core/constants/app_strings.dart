@@ -67,7 +67,7 @@ abstract final class AppStrings {
   static const anyDate = 'Any date';
   static const clearDates = 'Clear dates';
   static const loadMore = 'Load more';
-  static const loadMoreFailed = "Couldn't load more trips";
+  static const loadMoreFailed = "Couldn't load more";
   static const noDriverYet = 'No driver yet';
   static const tripDetailTitle = 'Trip details';
   static const tripNotFound = 'Trip not found';
