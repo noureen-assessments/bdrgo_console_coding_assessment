@@ -78,4 +78,6 @@ abstract final class AppStyles {
   );
 
   static const snackBarDuration = Duration(seconds: 4);
+
+  static const elapsedTick = Duration(seconds: 30);
 }
