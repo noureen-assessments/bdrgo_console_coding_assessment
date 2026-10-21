@@ -23,6 +23,7 @@ import '../network/sse/sse_transport_factory.dart';
 import '../network/websocket/websocket_service.dart';
 import '../network/websocket/websocket_service_impl.dart';
 import '../session/access_denied_notifier.dart';
+import '../session/maintenance_notifier.dart';
 import '../session/session_checker.dart';
 import '../session/session_expiry_notifier.dart';
 import '../storage/in_memory_token_storage.dart';
@@ -42,11 +43,13 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
     ..registerSingleton<ApiUrls>(ApiUrls(flavorConfig.values.baseUri))
     ..registerSingleton<TokenStorage>(tokenStorage)
     ..registerSingleton<SessionExpiryNotifier>(SessionExpiryNotifier())
-    ..registerSingleton<AccessDeniedNotifier>(AccessDeniedNotifier());
+    ..registerSingleton<AccessDeniedNotifier>(AccessDeniedNotifier())
+    ..registerSingleton<MaintenanceNotifier>(MaintenanceNotifier());
 
   sl
     ..registerLazySingleton<Dio>(
       () => _createDio(
+        sl(),
         sl(),
         sl(),
         sl(),
@@ -93,7 +96,8 @@ Dio _createDio(
   ApiUrls urls,
   TokenStorage tokenStorage,
   SessionExpiryNotifier sessionExpiry,
-  AccessDeniedNotifier accessDenied, {
+  AccessDeniedNotifier accessDenied,
+  MaintenanceNotifier maintenance, {
   required bool withCredentials,
 }) {
   final dio =
@@ -112,6 +116,7 @@ Dio _createDio(
   dio.interceptors.add(
     AuthInterceptor(tokenStorage, sessionExpiry, accessDenied),
   );
+  dio.interceptors.add(MaintenanceInterceptor(maintenance));
   if (kDebugMode) dio.interceptors.add(LoggingInterceptor());
   return dio;
 }
