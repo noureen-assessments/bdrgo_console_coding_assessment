@@ -6,8 +6,10 @@ import 'domain/usecases/acknowledge_alert_use_case.dart';
 import 'domain/usecases/get_alerts_use_case.dart';
 import 'domain/usecases/watch_alerts_live_status_use_case.dart';
 import 'domain/usecases/watch_alerts_use_case.dart';
+import 'domain/usecases/watch_critical_alerts_use_case.dart';
 import 'presentation/bloc/acknowledge_alert/acknowledge_alert_bloc.dart';
 import 'presentation/bloc/alerts/alerts_bloc.dart';
+import 'presentation/bloc/critical_alerts/critical_alerts_bloc.dart';
 
 void initAlerts() {
   sl
@@ -21,6 +23,7 @@ void initAlerts() {
     ..registerLazySingleton(() => WatchAlertsUseCase(sl()))
     ..registerLazySingleton(() => WatchAlertsLiveStatusUseCase(sl()))
     ..registerLazySingleton(() => AcknowledgeAlertUseCase(sl()))
+    ..registerLazySingleton(() => WatchCriticalAlertsUseCase(sl()))
     ..registerFactory<AlertsBloc>(
       () => AlertsBloc(
         getAlerts: sl(),
@@ -30,5 +33,8 @@ void initAlerts() {
     )
     ..registerFactory<AcknowledgeAlertBloc>(
       () => AcknowledgeAlertBloc(acknowledgeAlert: sl()),
+    )
+    ..registerFactory<CriticalAlertsBloc>(
+      () => CriticalAlertsBloc(watchCriticalAlerts: sl()),
     );
 }
