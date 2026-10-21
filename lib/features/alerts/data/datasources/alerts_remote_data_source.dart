@@ -12,6 +12,7 @@ abstract interface class AlertsRemoteDataSource {
   Future<AlertPageModel> fetchAlerts(AlertPageRequest request);
   Stream<AlertModel> watchAlerts();
   Stream<bool> watchLive();
+  Future<AlertModel> acknowledge(String alertId);
 }
 
 final class AlertsRemoteDataSourceImpl implements AlertsRemoteDataSource {
@@ -45,6 +46,17 @@ final class AlertsRemoteDataSourceImpl implements AlertsRemoteDataSource {
   @override
   Stream<bool> watchLive() =>
       _sse.status.map((status) => status == SseStatus.open).distinct();
+
+  @override
+  Future<AlertModel> acknowledge(String alertId) async {
+    final path = ApiEndpoints.acknowledgeAlert(alertId);
+    final body = await _api.post(path, data: const {});
+    try {
+      return AlertModel.fromJson(body as Map<String, dynamic>);
+    } on TypeError {
+      throw FormatException(path);
+    }
+  }
 
   static Map<String, Object?> _queryParameters(AlertPageRequest request) => {
     'page': request.page,
