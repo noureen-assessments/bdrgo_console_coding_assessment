@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
-import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/number_formatters.dart';
 import '../../../../core/utils/responsive.dart';
@@ -22,7 +22,7 @@ class KpiTileGrid extends StatelessWidget {
     final tiles = [
       KpiTile(
         label: AppStrings.kpiActiveTrips,
-        icon: AppAssets.activeTrips,
+        accent: AppColors.kpiActiveTrips,
         value: NumberFormatters.count(trips.active),
         detail: AppStrings.kpiActiveBreakdown(
           NumberFormatters.count(trips.requested),
@@ -32,13 +32,13 @@ class KpiTileGrid extends StatelessWidget {
       ),
       KpiTile(
         label: AppStrings.kpiCompleted,
-        icon: AppAssets.completedTrips,
+        accent: AppColors.kpiCompleted,
         value: NumberFormatters.count(trips.completed),
         detail: AppStrings.kpiLast24Hours,
       ),
       KpiTile(
         label: AppStrings.kpiCancellationRate,
-        icon: AppAssets.cancellationRate,
+        accent: AppColors.kpiCancellation,
         value: NumberFormatters.percent(trips.cancellationRate),
         detail: AppStrings.kpiCancelled(
           NumberFormatters.count(trips.cancelled),
@@ -46,13 +46,13 @@ class KpiTileGrid extends StatelessWidget {
       ),
       KpiTile(
         label: AppStrings.kpiRevenue,
-        icon: AppAssets.revenue,
+        accent: AppColors.revenueValue,
         value: _revenue(kpis.revenue),
         detail: AppStrings.kpiLast24Hours,
       ),
       KpiTile(
         label: AppStrings.kpiDrivers,
-        icon: AppAssets.drivers,
+        accent: AppColors.kpiDrivers,
         value: AppStrings.kpiDriverPair(
           NumberFormatters.count(drivers.available),
           NumberFormatters.count(drivers.onTrip),
@@ -63,7 +63,7 @@ class KpiTileGrid extends StatelessWidget {
       ),
       KpiTile(
         label: AppStrings.kpiOpenAlerts,
-        icon: AppAssets.openAlerts,
+        accent: AppColors.kpiOpenAlerts,
         value: NumberFormatters.count(kpis.openAlerts),
         detail: AppStrings.kpiOpenAlertsDetail,
       ),
