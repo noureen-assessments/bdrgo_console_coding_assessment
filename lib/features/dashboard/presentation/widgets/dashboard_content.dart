@@ -40,7 +40,7 @@ class DashboardContent extends StatelessWidget {
           const SizedBox(height: AppDimensions.spaceMd),
           KpiTileGrid(kpis: kpis),
           const SizedBox(height: AppDimensions.spaceLg),
-          const TripChartCard(),
+          TripChartCard(revenue: kpis.revenue),
         ],
       ),
     );

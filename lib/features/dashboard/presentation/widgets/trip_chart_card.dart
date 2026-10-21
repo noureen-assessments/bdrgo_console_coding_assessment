@@ -2,50 +2,75 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/theme/app_dimensions.dart';
+import '../../../../config/theme/app_styles.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/responsive.dart';
+import '../../../../shared/entities/money.dart';
 import '../../domain/entities/kpi_range.dart';
 import '../bloc/trip_chart/trip_chart_bloc.dart';
+import 'revenue_summary.dart';
 import 'trip_line_chart.dart';
 import 'trip_range_switch.dart';
 
 class TripChartCard extends StatelessWidget {
-  const TripChartCard({super.key});
+  const TripChartCard({required this.revenue, super.key});
+
+  final List<Money> revenue;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.spaceMd),
-        child: BlocBuilder<TripChartBloc, TripChartState>(
-          builder: (context, state) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    final summary = RevenueSummary(revenue: revenue);
+    Widget content;
+    if (context.isDesktop) {
+      content = Row(
+        children: [
+          Expanded(flex: AppDimensions.chartFlex, child: _chart()),
+          const SizedBox(width: AppDimensions.spaceLg),
+          Expanded(child: summary),
+        ],
+      );
+    } else {
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _chart(),
+          const SizedBox(height: AppDimensions.spaceLg),
+          summary,
+        ],
+      );
+    }
+    return Container(
+      padding: const EdgeInsets.all(AppDimensions.spaceLg),
+      decoration: AppStyles.dashboardCard,
+      child: content,
+    );
+  }
+
+  Widget _chart() {
+    return BlocBuilder<TripChartBloc, TripChartState>(
+      builder: (context, state) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: AppDimensions.spaceMd,
+            runSpacing: AppDimensions.spaceXs,
             children: [
-              Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: AppDimensions.spaceMd,
-                runSpacing: AppDimensions.spaceXs,
-                children: [
-                  const Text(
-                    AppStrings.tripsOverTime,
-                    style: AppTextStyles.title,
-                  ),
-                  TripRangeSwitch(
-                    selected: state.range,
-                    onChanged: (range) => _select(context, range),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppDimensions.spaceMd),
-              SizedBox(
-                height: AppDimensions.chartHeight,
-                child: _body(context, state),
+              const Text(AppStrings.tripsOverTime, style: AppTextStyles.title),
+              TripRangeSwitch(
+                selected: state.range,
+                onChanged: (range) => _select(context, range),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: AppDimensions.spaceMd),
+          SizedBox(
+            height: AppDimensions.chartHeight,
+            child: _body(context, state),
+          ),
+        ],
       ),
     );
   }

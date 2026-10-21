@@ -32,6 +32,7 @@ abstract final class AppDimensions {
   static const double cardShadowBlur = 12;
   static const double cardShadowOffset = 4;
 
+  static const int chartFlex = 3;
   static const double chartHeight = 260;
   static const double chartLineWidth = 2;
   static const double chartLeftAxisSpace = 44;
