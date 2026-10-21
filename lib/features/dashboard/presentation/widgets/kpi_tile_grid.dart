@@ -5,7 +5,6 @@ import '../../../../config/theme/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/number_formatters.dart';
 import '../../../../core/utils/responsive.dart';
-import '../../../../shared/entities/money.dart';
 import '../../domain/entities/kpis.dart';
 import 'kpi_tile.dart';
 
@@ -45,12 +44,6 @@ class KpiTileGrid extends StatelessWidget {
         ),
       ),
       KpiTile(
-        label: AppStrings.kpiRevenue,
-        accent: AppColors.revenueValue,
-        value: _revenue(kpis.revenue),
-        detail: AppStrings.kpiLast24Hours,
-      ),
-      KpiTile(
         label: AppStrings.kpiDrivers,
         accent: AppColors.kpiDrivers,
         value: AppStrings.kpiDriverPair(
@@ -85,12 +78,5 @@ class KpiTileGrid extends StatelessWidget {
         );
       },
     );
-  }
-
-  static String _revenue(List<Money> revenue) {
-    if (revenue.isEmpty) return AppStrings.noValue;
-    return revenue
-        .map((money) => NumberFormatters.currency(money.amount, money.currency))
-        .join('\n');
   }
 }

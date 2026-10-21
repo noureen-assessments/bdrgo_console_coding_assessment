@@ -26,7 +26,7 @@ abstract final class AppDimensions {
   static const double driverPanelMaxHeight = 360;
 
   static const int kpiColumnsMobile = 2;
-  static const int kpiColumnsDesktop = 3;
+  static const int kpiColumnsDesktop = 5;
   static const double kpiAccentBar = 4;
 
   static const double cardShadowBlur = 12;
