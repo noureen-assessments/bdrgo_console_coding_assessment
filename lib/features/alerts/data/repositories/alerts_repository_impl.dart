@@ -22,4 +22,8 @@ final class AlertsRepositoryImpl implements AlertsRepository {
 
   @override
   Stream<bool> watchLive() => _remote.watchLive();
+
+  @override
+  Future<Either<Failure, Alert>> acknowledge(String alertId) =>
+      safeCall(() => _remote.acknowledge(alertId));
 }

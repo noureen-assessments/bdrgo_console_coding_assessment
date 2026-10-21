@@ -9,4 +9,5 @@ abstract interface class AlertsRepository {
   Future<Either<Failure, AlertPage>> getAlerts(AlertPageRequest request);
   Stream<Alert> watchAlerts();
   Stream<bool> watchLive();
+  Future<Either<Failure, Alert>> acknowledge(String alertId);
 }
