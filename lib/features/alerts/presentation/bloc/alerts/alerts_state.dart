@@ -45,6 +45,13 @@ final class AlertsLoaded extends AlertsState {
   bool get canLoadMore =>
       page.hasNextPage && !isLoadingMore && nextPageError == null;
 
+  AlertsLoaded withPage(AlertPage page) => AlertsLoaded(
+    page,
+    isLive: isLive,
+    isLoadingMore: isLoadingMore,
+    nextPageError: nextPageError,
+  );
+
   @override
   AlertsLoaded withLive(bool isLive) => AlertsLoaded(
     page,

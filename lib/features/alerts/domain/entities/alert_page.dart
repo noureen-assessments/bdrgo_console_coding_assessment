@@ -31,12 +31,14 @@ class AlertPage extends Equatable {
     );
   }
 
-  bool contains(String alertId) {
+  Alert? find(String alertId) {
     for (final alert in alerts) {
-      if (alert.id == alertId) return true;
+      if (alert.id == alertId) return alert;
     }
-    return false;
+    return null;
   }
+
+  bool contains(String alertId) => find(alertId) != null;
 
   AlertPage replace(Alert alert) {
     final updated = <Alert>[];
