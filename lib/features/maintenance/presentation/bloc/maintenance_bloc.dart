@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/use_cases/use_case.dart';
 import '../../domain/entities/maintenance_info.dart';
 import '../../domain/usecases/poll_until_up_use_case.dart';
+import '../../domain/usecases/reconnect_realtime_use_case.dart';
 import '../../domain/usecases/watch_maintenance_use_case.dart';
 
 part 'maintenance_event.dart';
@@ -14,8 +15,10 @@ class MaintenanceBloc extends Bloc<MaintenanceEvent, MaintenanceState> {
   MaintenanceBloc({
     required WatchMaintenanceUseCase watchMaintenance,
     required PollUntilUpUseCase pollUntilUp,
+    required ReconnectRealtimeUseCase reconnectRealtime,
   }) : _watchMaintenance = watchMaintenance,
        _pollUntilUp = pollUntilUp,
+       _reconnectRealtime = reconnectRealtime,
        super(const MaintenanceOff()) {
     on<MaintenanceStarted>(_onStarted);
     on<MaintenanceDetected>(_onDetected, transformer: droppable());
@@ -23,6 +26,7 @@ class MaintenanceBloc extends Bloc<MaintenanceEvent, MaintenanceState> {
 
   final WatchMaintenanceUseCase _watchMaintenance;
   final PollUntilUpUseCase _pollUntilUp;
+  final ReconnectRealtimeUseCase _reconnectRealtime;
 
   Future<void> _onStarted(
     MaintenanceStarted event,
@@ -44,6 +48,7 @@ class MaintenanceBloc extends Bloc<MaintenanceEvent, MaintenanceState> {
       onData: MaintenanceOn.new,
     );
     if (emit.isDone) return;
+    _reconnectRealtime(const NoParams());
     emit(const MaintenanceOff());
   }
 }
