@@ -9,3 +9,7 @@ final class TripChartRangeSelected extends TripChartEvent {
 
   final KpiRange range;
 }
+
+final class TripChartRefreshRequested extends TripChartEvent {
+  const TripChartRefreshRequested();
+}

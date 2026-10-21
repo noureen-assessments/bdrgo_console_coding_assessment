@@ -14,6 +14,9 @@ class TripChartBloc extends Bloc<TripChartEvent, TripChartState> {
     : _getTripSeries = getTripSeries,
       super(const TripChartLoading(KpiRange.last24Hours)) {
     on<TripChartRangeSelected>(_onRangeSelected, transformer: restartable());
+    on<TripChartRefreshRequested>((event, emit) {
+      add(TripChartRangeSelected(state.range));
+    });
   }
 
   final GetTripSeriesUseCase _getTripSeries;
