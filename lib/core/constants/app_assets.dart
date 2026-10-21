@@ -34,6 +34,7 @@ abstract final class AppAssets {
   static const IconData refund = Icons.currency_exchange;
 
   static const IconData offline = Icons.wifi_off;
+  static const IconData maintenance = Icons.construction;
 
   static const IconData driverMarker = Icons.directions_car;
 
