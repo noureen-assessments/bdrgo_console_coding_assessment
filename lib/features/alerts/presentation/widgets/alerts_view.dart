@@ -6,6 +6,7 @@ import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../shared/widgets/live_indicator.dart';
+import '../../../maintenance/presentation/widgets/maintenance_ended_listener.dart';
 import '../bloc/alerts/alerts_bloc.dart';
 import 'alerts_body.dart';
 
@@ -14,6 +15,14 @@ class AlertsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MaintenanceEndedListener(
+      onEnded: () =>
+          context.read<AlertsBloc>().add(const AlertsRefreshRequested()),
+      child: _buildContent(),
+    );
+  }
+
+  Widget _buildContent() {
     return BlocBuilder<AlertsBloc, AlertsState>(
       builder: (context, state) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
