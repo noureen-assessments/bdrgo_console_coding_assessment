@@ -116,13 +116,13 @@ void main() {
       verifyInOrder([remote.signOut, tokens.deleteToken]);
     });
 
-    test('offline keeps the user signed in so they can retry', () async {
+    test('offline still forgets the token on this device', () async {
       when(remote.signOut).thenThrow(const NetworkFailure('offline'));
 
       final result = await repository.signOut();
 
-      expect(result.isLeft(), isTrue);
-      verifyNever(tokens.deleteToken);
+      expect(result, const Right<Failure, Unit>(unit));
+      verify(tokens.deleteToken).called(1);
     });
 
     test('an already revoked token counts as signed out', () async {
