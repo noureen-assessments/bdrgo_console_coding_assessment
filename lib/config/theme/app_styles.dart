@@ -50,14 +50,6 @@ abstract final class AppStyles {
   static TextStyle statusBadgeText(Color color) =>
       AppTextStyles.caption.copyWith(color: color);
 
-  static BoxDecoration severityBadge(Color color) => BoxDecoration(
-    border: Border.all(color: color),
-    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-  );
-
-  static TextStyle severityBadgeText(Color color) =>
-      AppTextStyles.caption.copyWith(color: color);
-
   static const acknowledgedOpacity = 0.5;
 
   static final criticalBannerText = AppTextStyles.body.copyWith(
