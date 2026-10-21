@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../shared/widgets/app_logo.dart';
