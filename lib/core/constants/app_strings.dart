@@ -140,6 +140,10 @@ abstract final class AppStrings {
       'They may belong to another city, or they are no longer active.';
   static const driverLoadFailed = "Couldn't load the driver";
 
+  static const alertInfo = 'Info';
+  static const alertWarning = 'Warning';
+  static const alertCritical = 'Critical';
+
   static String refundable(String amount) => 'Refundable: $amount';
 
   static String amountTooHigh(String remaining) =>
