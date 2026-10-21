@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
-import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/number_formatters.dart';
 import '../../../../core/utils/responsive.dart';
-import '../../../../shared/entities/money.dart';
 import '../../domain/entities/kpis.dart';
 import 'kpi_tile.dart';
 
@@ -22,7 +21,7 @@ class KpiTileGrid extends StatelessWidget {
     final tiles = [
       KpiTile(
         label: AppStrings.kpiActiveTrips,
-        icon: AppAssets.activeTrips,
+        accent: AppColors.kpiActiveTrips,
         value: NumberFormatters.count(trips.active),
         detail: AppStrings.kpiActiveBreakdown(
           NumberFormatters.count(trips.requested),
@@ -32,27 +31,21 @@ class KpiTileGrid extends StatelessWidget {
       ),
       KpiTile(
         label: AppStrings.kpiCompleted,
-        icon: AppAssets.completedTrips,
+        accent: AppColors.kpiCompleted,
         value: NumberFormatters.count(trips.completed),
         detail: AppStrings.kpiLast24Hours,
       ),
       KpiTile(
         label: AppStrings.kpiCancellationRate,
-        icon: AppAssets.cancellationRate,
+        accent: AppColors.kpiCancellation,
         value: NumberFormatters.percent(trips.cancellationRate),
         detail: AppStrings.kpiCancelled(
           NumberFormatters.count(trips.cancelled),
         ),
       ),
       KpiTile(
-        label: AppStrings.kpiRevenue,
-        icon: AppAssets.revenue,
-        value: _revenue(kpis.revenue),
-        detail: AppStrings.kpiLast24Hours,
-      ),
-      KpiTile(
         label: AppStrings.kpiDrivers,
-        icon: AppAssets.drivers,
+        accent: AppColors.kpiDrivers,
         value: AppStrings.kpiDriverPair(
           NumberFormatters.count(drivers.available),
           NumberFormatters.count(drivers.onTrip),
@@ -63,7 +56,7 @@ class KpiTileGrid extends StatelessWidget {
       ),
       KpiTile(
         label: AppStrings.kpiOpenAlerts,
-        icon: AppAssets.openAlerts,
+        accent: AppColors.kpiOpenAlerts,
         value: NumberFormatters.count(kpis.openAlerts),
         detail: AppStrings.kpiOpenAlertsDetail,
       ),
@@ -72,25 +65,36 @@ class KpiTileGrid extends StatelessWidget {
     final columns = context.isDesktop
         ? AppDimensions.kpiColumnsDesktop
         : AppDimensions.kpiColumnsMobile;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        const gap = AppDimensions.spaceMd;
-        final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
-        return Wrap(
-          spacing: gap,
-          runSpacing: gap,
-          children: tiles
-              .map((tile) => SizedBox(width: width, child: tile))
-              .toList(),
-        );
-      },
+    final rows = <Widget>[];
+    for (var start = 0; start < tiles.length; start += columns) {
+      if (rows.isNotEmpty) {
+        rows.add(const SizedBox(height: AppDimensions.spaceMd));
+      }
+      rows.add(_row(tiles, start, columns));
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: rows,
     );
   }
 
-  static String _revenue(List<Money> revenue) {
-    if (revenue.isEmpty) return AppStrings.noValue;
-    return revenue
-        .map((money) => NumberFormatters.currency(money.amount, money.currency))
-        .join('\n');
+  static Widget _row(List<Widget> tiles, int start, int columns) {
+    final cells = <Widget>[];
+    for (var index = start; index < start + columns; index++) {
+      if (cells.isNotEmpty) {
+        cells.add(const SizedBox(width: AppDimensions.spaceMd));
+      }
+      if (index < tiles.length) {
+        cells.add(Expanded(child: tiles[index]));
+      } else {
+        cells.add(const Spacer());
+      }
+    }
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: cells,
+      ),
+    );
   }
 }

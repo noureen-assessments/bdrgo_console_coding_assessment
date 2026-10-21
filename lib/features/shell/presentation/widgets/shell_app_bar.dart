@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../../../../config/theme/app_dimensions.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/responsive.dart';
+import '../../../../shared/widgets/app_logo.dart';
 import '../../../auth/domain/entities/current_user.dart';
 import '../../../auth/presentation/widgets/sign_out_button.dart';
 import 'signed_in_user_label.dart';
 
 class ShellAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ShellAppBar({required this.user, super.key});
+  const ShellAppBar({required this.user, required this.onLogoTap, super.key});
 
   final CurrentUser user;
+  final VoidCallback onLogoTap;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -23,17 +24,24 @@ class ShellAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(AppStrings.appName),
+                _logo(AppDimensions.logoAppBarCompact),
                 SignedInUserLabel(user: user),
               ],
             )
-          : const Text(AppStrings.appName),
+          : _logo(AppDimensions.logoAppBar),
       actions: [
         if (!isMobile) Center(child: SignedInUserLabel(user: user)),
         const SizedBox(width: AppDimensions.spaceXs),
         const SignOutButton(),
         const SizedBox(width: AppDimensions.spaceXs),
       ],
+    );
+  }
+
+  Widget _logo(double height) {
+    return InkWell(
+      onTap: onLogoTap,
+      child: AppLogo(height: height),
     );
   }
 }

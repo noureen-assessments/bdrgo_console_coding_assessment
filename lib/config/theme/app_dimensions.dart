@@ -19,6 +19,10 @@ abstract final class AppDimensions {
 
   static const double statusDot = 8;
 
+  static const double logoAppBar = 32;
+  static const double logoAppBarCompact = 24;
+  static const double logoSignIn = 48;
+
   static const double driverMarker = 28;
   static const double driverMarkerBorder = 2;
   static const double driverMarkerIcon = 16;
@@ -26,8 +30,13 @@ abstract final class AppDimensions {
   static const double driverPanelMaxHeight = 360;
 
   static const int kpiColumnsMobile = 2;
-  static const int kpiColumnsDesktop = 3;
+  static const int kpiColumnsDesktop = 5;
+  static const double kpiAccentBar = 4;
 
+  static const double cardShadowBlur = 12;
+  static const double cardShadowOffset = 4;
+
+  static const int chartFlex = 3;
   static const double chartHeight = 260;
   static const double chartLineWidth = 2;
   static const double chartLeftAxisSpace = 44;

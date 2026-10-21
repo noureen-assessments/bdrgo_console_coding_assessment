@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/theme/app_dimensions.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../shared/widgets/dialog_title_bar.dart';
 import '../../../../shared/widgets/message_banner.dart';
 import '../../domain/entities/trip_action.dart';
 import '../bloc/trip_action/trip_action_bloc.dart';
@@ -35,7 +35,12 @@ class TripActionDialog extends StatelessWidget {
       builder: (context, state) {
         final isSending = state is TripActionSending;
         return AlertDialog(
-          title: Text(title),
+          title: DialogTitleBar(
+            title: title,
+            onClose: isSending ? null : () => Navigator.pop(context),
+          ),
+          titlePadding: EdgeInsets.zero,
+          clipBehavior: Clip.antiAlias,
           scrollable: true,
           content: SizedBox(
             width: AppDimensions.formMaxWidth,
@@ -52,10 +57,6 @@ class TripActionDialog extends StatelessWidget {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: isSending ? null : () => Navigator.pop(context),
-              child: const Text(AppStrings.close),
-            ),
             FilledButton(
               onPressed: isSending ? null : () => _submit(context),
               child: isSending

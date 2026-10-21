@@ -45,7 +45,9 @@ class ShellPage extends StatelessWidget {
     List<NavDestination> destinations,
   ) {
     return Scaffold(
-      appBar: ShellAppBar(user: user),
+      appBar: ShellAppBar(user: user,
+        onLogoTap: () => _open(context, NavDestinations.dashboard),
+      ),
       drawer: destinations.isEmpty
           ? null
           : MobileNavigation(
@@ -63,7 +65,10 @@ class ShellPage extends StatelessWidget {
     List<NavDestination> destinations,
   ) {
     return Scaffold(
-      appBar: ShellAppBar(user: user),
+      appBar: ShellAppBar(
+        user: user,
+        onLogoTap: () => _open(context, NavDestinations.dashboard),
+      ),
       body: Row(
         children: [
           if (destinations.isNotEmpty) ...[

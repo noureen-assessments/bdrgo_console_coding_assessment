@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppTextStyles {
+  static const fontFamily = 'ClashGrotesk';
+
   static const headline = TextStyle(
     fontSize: 24,
     height: 32 / 24,

@@ -37,10 +37,10 @@ class DashboardContent extends StatelessWidget {
               LiveStatus(isLive: isLive, updatedAt: kpis.generatedAt),
             ],
           ),
-          const SizedBox(height: AppDimensions.spaceMd),
-          KpiTileGrid(kpis: kpis),
           const SizedBox(height: AppDimensions.spaceLg),
-          const TripChartCard(),
+          KpiTileGrid(kpis: kpis),
+          const SizedBox(height: AppDimensions.spaceXl),
+          TripChartCard(revenue: kpis.revenue),
         ],
       ),
     );

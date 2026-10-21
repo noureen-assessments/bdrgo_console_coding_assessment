@@ -43,8 +43,17 @@ class TripLineChart extends StatelessWidget {
                 _line((point) => point.cancelled, AppColors.chartCancelled),
               ],
               minY: 0,
-              gridData: const FlGridData(drawVerticalLine: false),
-              borderData: FlBorderData(show: false),
+              gridData: FlGridData(
+                verticalInterval: _bottomInterval(),
+                getDrawingHorizontalLine: _gridLine,
+                getDrawingVerticalLine: _gridLine,
+              ),
+              borderData: FlBorderData(
+                border: const Border(
+                  left: BorderSide(color: AppColors.chartAxis),
+                  bottom: BorderSide(color: AppColors.chartAxis),
+                ),
+              ),
               titlesData: FlTitlesData(
                 topTitles: const AxisTitles(),
                 rightTitles: const AxisTitles(),
@@ -87,9 +96,16 @@ class TripLineChart extends StatelessWidget {
       spots: spots,
       color: color,
       barWidth: AppDimensions.chartLineWidth,
+      isCurved: true,
+      preventCurveOverShooting: true,
       dotData: const FlDotData(show: false),
     );
   }
+
+  static FlLine _gridLine(double value) => const FlLine(
+    color: AppColors.chartGrid,
+    strokeWidth: AppDimensions.dividerThin,
+  );
 
   double _bottomInterval() {
     if (points.length <= _maxBottomLabels) return 1;

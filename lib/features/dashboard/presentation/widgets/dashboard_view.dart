@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../config/theme/app_colors.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../shared/widgets/no_data_found_widget.dart';
@@ -16,7 +17,10 @@ class DashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaintenanceEndedListener(
       onEnded: () => _refresh(context),
-      child: _buildContent(),
+      child: ColoredBox(
+        color: AppColors.pageBackground,
+        child: _buildContent(),
+      ),
     );
   }
 

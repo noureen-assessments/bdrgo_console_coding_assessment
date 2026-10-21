@@ -69,6 +69,31 @@ abstract final class AppStyles {
     foregroundColor: AppColors.onAlertCritical,
   );
 
+  static final dashboardCard = BoxDecoration(
+    color: AppColors.cardSurface,
+    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+    boxShadow: const [
+      BoxShadow(
+        color: AppColors.cardShadow,
+        blurRadius: AppDimensions.cardShadowBlur,
+        offset: Offset(0, AppDimensions.cardShadowOffset),
+      ),
+    ],
+  );
+
+  static final mutedLabel = AppTextStyles.body.copyWith(
+    color: AppColors.mutedText,
+  );
+
+  static final revenueValue = AppTextStyles.kpiValue.copyWith(
+    color: AppColors.revenueValue,
+    fontWeight: FontWeight.w700,
+  );
+
+  static final dialogTitle = AppTextStyles.title.copyWith(
+    color: AppColors.onPrimary,
+  );
+
   static final chartTooltipText = AppTextStyles.caption.copyWith(
     color: AppColors.onChartTooltip,
   );

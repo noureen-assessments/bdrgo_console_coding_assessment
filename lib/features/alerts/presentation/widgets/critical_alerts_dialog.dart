@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../shared/widgets/dialog_title_bar.dart';
 import '../bloc/critical_alerts/critical_alerts_bloc.dart';
 import 'alert_list_tile.dart';
 
@@ -33,22 +34,19 @@ class CriticalAlertsDialog extends StatelessWidget {
           );
         }
         return AlertDialog(
-          title: Text(
-            alerts.length == 1
+          title: DialogTitleBar(
+            title: alerts.length == 1
                 ? AppStrings.criticalAlert
                 : AppStrings.criticalAlerts(alerts.length),
+            onClose: () => Navigator.pop(context),
           ),
+          titlePadding: EdgeInsets.zero,
+          clipBehavior: Clip.antiAlias,
           scrollable: true,
           content: SizedBox(
             width: AppDimensions.formMaxWidth,
             child: Column(mainAxisSize: MainAxisSize.min, children: rows),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(AppStrings.close),
-            ),
-          ],
         );
       },
     );

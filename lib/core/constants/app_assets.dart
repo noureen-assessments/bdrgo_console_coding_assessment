@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 abstract final class AppAssets {
+  static const String logo = 'assets/images/badrgo_logo.svg';
+
   static const IconData email = Icons.email_outlined;
   static const IconData password = Icons.lock_outline;
   static const IconData showPassword = Icons.visibility;
@@ -16,16 +18,11 @@ abstract final class AppAssets {
   static const IconData alerts = Icons.notifications_outlined;
   static const IconData noAccess = Icons.lock_person_outlined;
 
-  static const IconData activeTrips = Icons.directions_car_outlined;
-  static const IconData completedTrips = Icons.check_circle_outline;
-  static const IconData cancellationRate = Icons.cancel_outlined;
-  static const IconData revenue = Icons.payments_outlined;
-  static const IconData drivers = Icons.people_outline;
-  static const IconData openAlerts = Icons.warning_amber_outlined;
   static const IconData criticalAlert = Icons.sos;
 
   static const IconData search = Icons.search;
   static const IconData clear = Icons.close;
+  static const IconData close = Icons.close;
   static const IconData dateRange = Icons.date_range_outlined;
 
   static const IconData cancelTrip = Icons.block;
