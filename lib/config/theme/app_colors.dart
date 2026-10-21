@@ -4,6 +4,7 @@ abstract final class AppColors {
   static const primary = Color(0xFFCA443A);
   static const onPrimary = Color(0xFFFFFFFF);
   static const surface = Color(0xFFFFFFFF);
+  static const surfaceContainer = Color(0xFFFCEAE7);
 
   static const errorBackground = Color(0xFFFFDAD6);
   static const onErrorBackground = Color(0xFF93000A);
@@ -23,6 +24,7 @@ abstract final class AppColors {
   static const chartAxis = Color(0xFFD5D8DE);
 
   static const pageBackground = Color(0xFFF7F8FC);
+  static const headerBackground = Color(0xFFf8f9f9);
   static const cardSurface = Color(0xFFFFFFFF);
   static const cardShadow = Color(0x14000000);
   static const mutedText = Color(0xFF9AA0A6);
@@ -35,8 +37,11 @@ abstract final class AppColors {
 
   static const revenueValue = Color(0xFFEA4335);
 
-  static const newRow = Color(0xFFE3F4E8);
-  static const updatedRow = Color(0xFFFFF4D6);
+  static const tripRequested = Color(0xFFB26A00);
+  static const tripAssigned = Color(0xFF6A4BC4);
+  static const tripInProgress = Color(0xFF1A73E8);
+  static const tripCompleted = Color(0xFF1E8E3E);
+  static const tripCancelled = Color(0xFFD93025);
 
   static const driverAvailable = Color(0xFF1E8E3E);
   static const driverOnTrip = Color(0xFF1A73E8);

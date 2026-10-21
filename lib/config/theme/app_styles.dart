@@ -42,21 +42,12 @@ abstract final class AppStyles {
     ),
   );
 
-  static final statusBadge = BoxDecoration(
-    border: Border.all(color: AppColors.primary),
-    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
-  );
-
-  static final statusBadgeText = AppTextStyles.caption.copyWith(
-    color: AppColors.primary,
-  );
-
-  static BoxDecoration severityBadge(Color color) => BoxDecoration(
+  static BoxDecoration statusBadge(Color color) => BoxDecoration(
     border: Border.all(color: color),
     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
   );
 
-  static TextStyle severityBadgeText(Color color) =>
+  static TextStyle statusBadgeText(Color color) =>
       AppTextStyles.caption.copyWith(color: color);
 
   static const acknowledgedOpacity = 0.5;

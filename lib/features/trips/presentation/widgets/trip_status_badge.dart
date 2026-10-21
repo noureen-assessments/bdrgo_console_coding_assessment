@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../config/theme/app_dimensions.dart';
-import '../../../../config/theme/app_styles.dart';
+import '../../../../config/theme/app_colors.dart';
+import '../../../../shared/widgets/status_badge.dart';
 import '../../domain/entities/trip_status.dart';
 
 class TripStatusBadge extends StatelessWidget {
@@ -11,15 +11,14 @@ class TripStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: AppStyles.statusBadge,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDimensions.spaceXs,
-          vertical: AppDimensions.spaceXxs,
-        ),
-        child: Text(status.label, style: AppStyles.statusBadgeText),
-      ),
-    );
+    return StatusBadge(label: status.label, color: _statusColor());
+  }
+
+  Color _statusColor() {
+    if (status == TripStatus.requested) return AppColors.tripRequested;
+    if (status == TripStatus.assigned) return AppColors.tripAssigned;
+    if (status == TripStatus.inProgress) return AppColors.tripInProgress;
+    if (status == TripStatus.completed) return AppColors.tripCompleted;
+    return AppColors.tripCancelled;
   }
 }

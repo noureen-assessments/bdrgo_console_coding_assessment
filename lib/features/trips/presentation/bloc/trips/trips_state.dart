@@ -1,14 +1,5 @@
 part of 'trips_bloc.dart';
 
-enum TripMark {
-  added(AppColors.newRow),
-  updated(AppColors.updatedRow);
-
-  const TripMark(this.color);
-
-  final Color color;
-}
-
 sealed class TripsState extends Equatable {
   const TripsState(this.filter);
 
@@ -35,7 +26,6 @@ final class TripsLoaded extends TripsState {
   const TripsLoaded(
     super.filter,
     this.page, {
-    this.marks = const {},
     this.isLoadingMore = false,
     this.nextPageError,
   });
@@ -43,26 +33,22 @@ final class TripsLoaded extends TripsState {
   final TripPage page;
 
 
-  final Map<String, TripMark> marks;
   final bool isLoadingMore;
   final String? nextPageError;
   bool get canLoadMore =>
       page.hasNextPage && !isLoadingMore && nextPageError == null;
 
-  TripsLoaded withRow(TripPage page, String tripId, TripMark mark) =>
-      TripsLoaded(
-        filter,
-        page,
-        marks: {...marks, tripId: mark},
-        isLoadingMore: isLoadingMore,
-        nextPageError: nextPageError,
-      );
+  TripsLoaded withPage(TripPage page) => TripsLoaded(
+    filter,
+    page,
+    isLoadingMore: isLoadingMore,
+    nextPageError: nextPageError,
+  );
 
   @override
   List<Object?> get props => [
     filter,
     page,
-    marks,
     isLoadingMore,
     nextPageError,
   ];

@@ -1,9 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../config/theme/app_colors.dart';
 import '../../../../../shared/use_cases/use_case.dart';
 import '../../../domain/entities/trip_change.dart';
 import '../../../domain/entities/trip_filter.dart';
@@ -67,7 +65,6 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     final current = state;
     if (current is! TripsLoaded || !current.page.hasNextPage) return;
     emit(TripsLoaded(current.filter, current.page,
-        marks: current.marks,
         isLoadingMore: true,
       ),
     );
@@ -81,12 +78,9 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
         (failure) => TripsLoaded(
           latest.filter,
           latest.page,
-          marks: latest.marks,
           nextPageError: failure.message,
         ),
-        (next) => TripsLoaded(latest.filter, latest.page.append(next),
-          marks: latest.marks,
-        ),
+        (next) => TripsLoaded(latest.filter, latest.page.append(next)),
       ),
     );
   }
@@ -109,13 +103,12 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     final latest = state;
     if (latest is! TripsLoaded || latest.filter != current.filter) return;
 
-    final mark = change.isNew ? TripMark.added : TripMark.updated;
     final shown = latest.page.find(trip.id);
     if (shown != null) {
       if (trip.isOlderThan(shown)) return;
-      emit(latest.withRow(latest.page.replace(trip), trip.id, mark));
+      emit(latest.withPage(latest.page.replace(trip)));
     } else if (change.isNew && latest.filter.matches(trip)) {
-      emit(latest.withRow(latest.page.addOnTop(trip), trip.id, mark));
+      emit(latest.withPage(latest.page.addOnTop(trip)));
     }
   }
 }
