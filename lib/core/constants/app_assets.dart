@@ -22,6 +22,7 @@ abstract final class AppAssets {
   static const IconData revenue = Icons.payments_outlined;
   static const IconData drivers = Icons.people_outline;
   static const IconData openAlerts = Icons.warning_amber_outlined;
+  static const IconData criticalAlert = Icons.sos;
 
   static const IconData search = Icons.search;
   static const IconData clear = Icons.close;

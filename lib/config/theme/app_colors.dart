@@ -29,6 +29,7 @@ abstract final class AppColors {
   static const alertInfo = Color(0xFF1A73E8);
   static const alertWarning = Color(0xFFB26A00);
   static const alertCritical = Color(0xFFD93025);
+  static const onAlertCritical = Color(0xFFFFFFFF);
 
   static const snackBarError = Color(0xFFBA1A1A);
   static const snackBarSuccess = Color(0xFF0B6E4F);

@@ -61,6 +61,14 @@ abstract final class AppStyles {
 
   static const acknowledgedOpacity = 0.5;
 
+  static final criticalBannerText = AppTextStyles.body.copyWith(
+    color: AppColors.onAlertCritical,
+  );
+
+  static final criticalBannerButton = TextButton.styleFrom(
+    foregroundColor: AppColors.onAlertCritical,
+  );
+
   static final chartTooltipText = AppTextStyles.caption.copyWith(
     color: AppColors.onChartTooltip,
   );
