@@ -158,6 +158,9 @@ abstract final class AppStrings {
 
   static String alertSummary(String type, String message) => '$type: $message';
 
+  static const maintenancePlanned = 'Planned maintenance';
+  static const maintenanceUnavailable = 'Service unavailable';
+
   static String criticalAlerts(int count) => '$count critical alerts';
 
   static String refundable(String amount) => 'Refundable: $amount';
