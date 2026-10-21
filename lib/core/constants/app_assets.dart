@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 abstract final class AppAssets {
   static const String logo = 'assets/images/badrgo_logo.svg';
+  static const String assignDriver = 'assets/images/driver.png';
 
   static const IconData email = Icons.email_outlined;
   static const IconData password = Icons.lock_outline;
@@ -26,7 +27,6 @@ abstract final class AppAssets {
   static const IconData dateRange = Icons.date_range_outlined;
 
   static const IconData cancelTrip = Icons.block;
-  static const IconData assignDriver = Icons.person_add_alt_1_outlined;
   static const IconData selected = Icons.check_circle;
   static const IconData refund = Icons.currency_exchange;
 

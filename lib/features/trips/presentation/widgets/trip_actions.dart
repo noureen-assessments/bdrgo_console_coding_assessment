@@ -34,7 +34,7 @@ class TripActions extends StatelessWidget {
             permission: TripPermission.assign,
             child: IconButton(
               tooltip: AppStrings.assignDriver,
-              icon: const Icon(AppAssets.assignDriver),
+              icon: const ImageIcon(AssetImage(AppAssets.assignDriver)),
               onPressed: () => _open(
                 context,
                 AssignDriverDialog(trip: trip),
