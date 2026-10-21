@@ -127,6 +127,19 @@ abstract final class AppStrings {
   static const amountInvalid = 'Enter an amount above 0.';
   static const refundIssued = 'Refund issued';
 
+  static const driverAvailable = 'Available';
+  static const driverOnTrip = 'On trip';
+  static const driverOffline = 'Offline';
+  static const mapAttribution = '© OpenStreetMap contributors';
+  static const noDriversOnline = 'No drivers are online right now.';
+  static const currentTrip = 'Current trip';
+  static const noCurrentTrip = 'No current trip';
+  static const openTrip = 'Open trip';
+  static const driverNotFound = 'Driver not found';
+  static const driverNotFoundDetail =
+      'They may belong to another city, or they are no longer active.';
+  static const driverLoadFailed = "Couldn't load the driver";
+
   static String refundable(String amount) => 'Refundable: $amount';
 
   static String amountTooHigh(String remaining) =>

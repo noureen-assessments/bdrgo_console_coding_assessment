@@ -4,6 +4,7 @@ abstract final class LogTags {
   static const http = 'http';
   static const storage = 'storage';
   static const sse = 'sse';
+  static const webSocket = 'websocket';
 }
 
 abstract final class LogMessages {
@@ -13,6 +14,12 @@ abstract final class LogMessages {
   static const redactedPath = '/[REDACTED_PATH]/';
   static const sseRefused = 'SSE connection refused; checking the session';
   static const sseBadFrame = 'SSE frame skipped: data is not a JSON object';
+  static const webSocketDropped =
+      'WebSocket closed; checking the session, then reconnecting';
+  static const webSocketUnauthorized =
+      'WebSocket closed with 4001; not reconnecting';
+  static const webSocketBadMessage =
+      'WebSocket message skipped: payload has an unexpected shape';
 
   static String redactedFrame(String? file) => '$redactedPath$file:';
 

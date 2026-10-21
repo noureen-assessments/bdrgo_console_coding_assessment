@@ -21,6 +21,11 @@ abstract final class AppColors {
   static const newRow = Color(0xFFE3F4E8);
   static const updatedRow = Color(0xFFFFF4D6);
 
+  static const driverAvailable = Color(0xFF1E8E3E);
+  static const driverOnTrip = Color(0xFF1A73E8);
+  static const driverOffline = Color(0xFF80868B);
+  static const onDriverMarker = Color(0xFFFFFFFF);
+
   static const snackBarError = Color(0xFFBA1A1A);
   static const snackBarSuccess = Color(0xFF0B6E4F);
   static const onSnackBar = Color(0xFFFFFFFF);

@@ -33,6 +33,15 @@ abstract final class AppStyles {
   static BoxDecoration legendDot(Color color) =>
       BoxDecoration(color: color, shape: BoxShape.circle);
 
+  static BoxDecoration driverMarker(Color color) => BoxDecoration(
+    color: color,
+    shape: BoxShape.circle,
+    border: Border.all(
+      color: AppColors.onDriverMarker,
+      width: AppDimensions.driverMarkerBorder,
+    ),
+  );
+
   static final statusBadge = BoxDecoration(
     border: Border.all(color: AppColors.primary),
     borderRadius: BorderRadius.circular(AppDimensions.radiusSm),

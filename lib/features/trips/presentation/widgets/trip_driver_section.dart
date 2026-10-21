@@ -4,7 +4,7 @@ import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/number_formatters.dart';
 import '../../domain/entities/trip_detail.dart';
-import 'trip_detail_row.dart';
+import '../../../../shared/widgets/detail_row.dart';
 import 'trip_detail_section.dart';
 
 class TripDriverSection extends StatelessWidget {
@@ -27,16 +27,16 @@ class TripDriverSection extends StatelessWidget {
     return TripDetailSection(
       title: AppStrings.sectionDriver,
       children: [
-        TripDetailRow(label: AppStrings.labelName, value: name),
+        DetailRow(label: AppStrings.labelName, value: name),
         if (phone != null)
-          TripDetailRow(label: AppStrings.labelPhone, value: phone),
+          DetailRow(label: AppStrings.labelPhone, value: phone),
         if (rating != null)
-          TripDetailRow(
+          DetailRow(
             label: AppStrings.labelRating,
             value: NumberFormatters.decimal(rating),
           ),
         if (vehicle != null)
-          TripDetailRow(
+          DetailRow(
             label: AppStrings.labelVehicle,
             value: AppStrings.vehicle(
               vehicle.make,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/number_formatters.dart';
 import '../../domain/entities/trip_detail.dart';
-import 'trip_detail_row.dart';
+import '../../../../shared/widgets/detail_row.dart';
 import 'trip_detail_section.dart';
 
 class TripRouteSection extends StatelessWidget {
@@ -16,18 +16,18 @@ class TripRouteSection extends StatelessWidget {
     return TripDetailSection(
       title: AppStrings.sectionRoute,
       children: [
-        TripDetailRow(label: AppStrings.labelPickup, value: trip.pickupAddress),
-        TripDetailRow(
+        DetailRow(label: AppStrings.labelPickup, value: trip.pickupAddress),
+        DetailRow(
           label: AppStrings.labelDropoff,
           value: trip.dropoffAddress,
         ),
-        TripDetailRow(
+        DetailRow(
           label: AppStrings.labelDistance,
           value: AppStrings.distanceKm(
             NumberFormatters.decimal(trip.distanceKm),
           ),
         ),
-        TripDetailRow(label: AppStrings.labelCity, value: trip.cityName),
+        DetailRow(label: AppStrings.labelCity, value: trip.cityName),
       ],
     );
   }

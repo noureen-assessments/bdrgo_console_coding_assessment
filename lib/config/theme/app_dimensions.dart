@@ -19,6 +19,12 @@ abstract final class AppDimensions {
 
   static const double statusDot = 8;
 
+  static const double driverMarker = 28;
+  static const double driverMarkerBorder = 2;
+  static const double driverMarkerIcon = 16;
+  static const double driverPanelWidth = 360;
+  static const double driverPanelMaxHeight = 360;
+
   static const int kpiColumnsMobile = 2;
   static const int kpiColumnsDesktop = 3;
 

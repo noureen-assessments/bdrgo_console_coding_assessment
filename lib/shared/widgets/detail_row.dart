@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../config/theme/app_dimensions.dart';
-import '../../../../config/theme/app_text_styles.dart';
+import '../../config/theme/app_dimensions.dart';
+import '../../config/theme/app_text_styles.dart';
 
-class TripDetailRow extends StatelessWidget {
-  const TripDetailRow({required this.label, required this.value, super.key});
+class DetailRow extends StatelessWidget {
+  const DetailRow({required this.label, required this.value, super.key});
 
   final String label;
   final String value;

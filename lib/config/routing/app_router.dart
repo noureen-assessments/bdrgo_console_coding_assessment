@@ -6,6 +6,7 @@ import '../../features/auth/domain/services/session_access.dart';
 import '../../features/auth/presentation/pages/sign_in_page.dart';
 import '../../features/auth/presentation/widgets/permission_gate.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/live_map/presentation/pages/live_map_page.dart';
 import '../../features/shell/presentation/navigation/nav_destination.dart';
 import '../../features/shell/presentation/navigation/nav_destinations.dart';
 import '../../features/shell/presentation/pages/shell_page.dart';
@@ -89,6 +90,7 @@ final class AppRouter {
   static Widget _sectionPage(NavDestination destination) {
     if (destination == NavDestinations.dashboard) return const DashboardPage();
     if (destination == NavDestinations.trips) return const TripsPage();
+    if (destination == NavDestinations.liveMap) return const LiveMapPage();
     return SectionPlaceholder(destination: destination);
   }
 

@@ -65,6 +65,7 @@ lib/
     ├── shell/              app bar, menu, sections
     ├── dashboard/          KPI tiles and trips chart
     ├── trips/              list, filters, live rows, actions, detail
+    ├── live_map/           driver map over WebSocket, driver panel
     └── connectivity/       online / offline
 ```
 
@@ -79,6 +80,7 @@ Every feature has the same folders (`data`, `domain`, `presentation`) and an
 | --- | --- |
 | `ApiConsumer` / `DioConsumer` (REST) and `GraphQLConsumer` | One place for HTTP; both share one Dio with the auth header and logging |
 | `SseClient` over the browser's `EventSource` | One shared live connection that every feature listens to |
+| `WebSocketService` (`web_socket_channel`) | One shared WebSocket; a feature listens to a topic with `watch(topic)` and the service subscribes, reconnects and subscribes again |
 | Sealed `Failure` types and `ApiErrorParser` | REST `error.code` and GraphQL `extensions.code` become the same typed failures (`Unauthenticated`, `Forbidden`, `NotFound`, `InvalidState`, `Validation`, `Maintenance`, `Network`, `Server`) |
 | `safeCall` | Repositories return `Either<Failure, T>` instead of throwing |
 | `SessionExpiryNotifier` / `AccessDeniedNotifier` | Every transport reports a `401` or `403` to one place |
@@ -170,6 +172,20 @@ Every feature has the same folders (`data`, `domain`, `presentation`) and an
 | Live detail | The page reloads when its trip changes over SSE |
 | Actions in the detail | The same assign, cancel and refund buttons as the list |
 
+### Live map (M5)
+
+| Added | Why |
+| --- | --- |
+| WebSocket `drivers.locations` | A full snapshot about every 2 s replaces all markers; no deltas to merge |
+| `watch(topic)` drives the connection | The first listener connects and subscribes, the last one disconnects, so leaving the page or signing out closes the socket |
+| Reconnect with `Backoff` (1 s doubling to 30 s) | Subscriptions belong to the connection, so every new connection subscribes again |
+| Session check before each retry, stop on close code `4001` | A banned or signed-out user is signed out instead of retrying forever |
+| `flutter_map` with OpenStreetMap tiles | Markers coloured by status (available, on trip), a legend and the OSM credit |
+| "Live" / "Reconnecting…" status | The last markers stay on the map while it reconnects |
+| Driver panel (GraphQL `driver(id)`) | Details, vehicle and current trip in one query; loading, not found and error with Retry |
+| Open trip | Opens the trip detail page, shown only with `trip:read` |
+| Panel beside the map on web, at the bottom on phones | The map keeps its zoom and position while the panel opens and closes |
+
 ### Connectivity
 
 | Added | Why |
@@ -185,6 +201,10 @@ Every feature has the same folders (`data`, `domain`, `presentation`) and an
   never ends delivers nothing. `EventSource` streams each event and reconnects
   by itself. It sits behind an `SseTransport` interface, so the client logic
   can be tested with a fake.
+- **WebSocket with `web_socket_channel`.** The API is a plain WebSocket with
+  JSON messages (`{ type, payload }`), not Socket.IO. The connection is passed
+  into `WebSocketServiceImpl`, so the reconnect logic can be tested with a
+  fake connection.
 - **One shared SSE connection.** The first listener opens it and the last one
   closes it; each feature keeps only the events it needs.
 - **GraphQL without a GraphQL package.** Queries are constants with
@@ -220,6 +240,8 @@ Inversion throughout.
 | `web` | Browser `EventSource` for SSE |
 | `intl` | Number, currency and date formats |
 | `fl_chart` | The trips-over-time chart |
+| `web_socket_channel` | The WebSocket for the live map |
+| `flutter_map`, `latlong2` | The live map with OpenStreetMap tiles |
 | `flutter_web_plugins` (SDK) | Clean URLs without `#` |
 | `bloc_test`, `mocktail` (dev) | Bloc and mock testing |
 
