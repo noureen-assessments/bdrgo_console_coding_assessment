@@ -23,6 +23,7 @@ abstract final class AppColors {
   static const chartAxis = Color(0xFFD5D8DE);
 
   static const pageBackground = Color(0xFFF7F8FC);
+  static const headerBackground = Color(0xFFf8f9f9);
   static const cardSurface = Color(0xFFFFFFFF);
   static const cardShadow = Color(0x14000000);
   static const mutedText = Color(0xFF9AA0A6);

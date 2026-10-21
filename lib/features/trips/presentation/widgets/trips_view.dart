@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_dimensions.dart';
 import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -28,7 +29,8 @@ class TripsView extends StatelessWidget {
       builder: (context, state) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
+          Container(
+            color: AppColors.headerBackground,
             padding: EdgeInsets.all(context.pagePadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
