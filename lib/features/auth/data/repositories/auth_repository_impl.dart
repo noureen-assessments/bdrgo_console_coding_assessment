@@ -51,12 +51,9 @@ final class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, Unit>> signOut() async {
-    final result = await safeCall(_remote.signOut);
-    if (result case Left(value: UnauthenticatedFailure()) || Right()) {
-      await _clearToken();
-      return const Right(unit);
-    }
-    return result.map((_) => unit);
+    await safeCall(_remote.signOut);
+    await _clearToken();
+    return const Right(unit);
   }
 
   @override

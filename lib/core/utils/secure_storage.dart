@@ -13,7 +13,7 @@ IOSOptions _getIOSOptions() => const IOSOptions(
 );
 
 
-WebOptions _getWebOptions() => const WebOptions(useSessionStorage: false);
+WebOptions _getWebOptions() => const WebOptions(useSessionStorage: true);
 
 class AppSecureStorage implements TokenStorage {
   AppSecureStorage({FlutterSecureStorage? storage})
