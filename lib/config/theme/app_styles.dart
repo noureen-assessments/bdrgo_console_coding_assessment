@@ -51,6 +51,14 @@ abstract final class AppStyles {
     color: AppColors.primary,
   );
 
+  static BoxDecoration severityBadge(Color color) => BoxDecoration(
+    border: Border.all(color: color),
+    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+  );
+
+  static TextStyle severityBadgeText(Color color) =>
+      AppTextStyles.caption.copyWith(color: color);
+
   static final chartTooltipText = AppTextStyles.caption.copyWith(
     color: AppColors.onChartTooltip,
   );
