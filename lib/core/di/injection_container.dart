@@ -10,6 +10,7 @@ import '../../features/auth/auth_injection.dart';
 import '../../features/connectivity/connectivity_injection.dart';
 import '../../features/dashboard/dashboard_injection.dart';
 import '../../features/live_map/live_map_injection.dart';
+import '../../features/maintenance/maintenance_injection.dart';
 import '../../features/trips/trips_injection.dart';
 import '../network/adapters/http_adapter.dart';
 import '../network/api_consumer.dart';
@@ -23,6 +24,7 @@ import '../network/sse/sse_transport_factory.dart';
 import '../network/websocket/websocket_service.dart';
 import '../network/websocket/websocket_service_impl.dart';
 import '../session/access_denied_notifier.dart';
+import '../session/maintenance_notifier.dart';
 import '../session/session_checker.dart';
 import '../session/session_expiry_notifier.dart';
 import '../storage/in_memory_token_storage.dart';
@@ -42,11 +44,13 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
     ..registerSingleton<ApiUrls>(ApiUrls(flavorConfig.values.baseUri))
     ..registerSingleton<TokenStorage>(tokenStorage)
     ..registerSingleton<SessionExpiryNotifier>(SessionExpiryNotifier())
-    ..registerSingleton<AccessDeniedNotifier>(AccessDeniedNotifier());
+    ..registerSingleton<AccessDeniedNotifier>(AccessDeniedNotifier())
+    ..registerSingleton<MaintenanceNotifier>(MaintenanceNotifier());
 
   sl
     ..registerLazySingleton<Dio>(
       () => _createDio(
+        sl(),
         sl(),
         sl(),
         sl(),
@@ -77,6 +81,7 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
     );
 
   initConnectivity();
+  initMaintenance();
   initAuth();
   initDashboard();
   initTrips();
@@ -93,7 +98,8 @@ Dio _createDio(
   ApiUrls urls,
   TokenStorage tokenStorage,
   SessionExpiryNotifier sessionExpiry,
-  AccessDeniedNotifier accessDenied, {
+  AccessDeniedNotifier accessDenied,
+  MaintenanceNotifier maintenance, {
   required bool withCredentials,
 }) {
   final dio =
@@ -112,6 +118,7 @@ Dio _createDio(
   dio.interceptors.add(
     AuthInterceptor(tokenStorage, sessionExpiry, accessDenied),
   );
+  dio.interceptors.add(MaintenanceInterceptor(maintenance));
   if (kDebugMode) dio.interceptors.add(LoggingInterceptor());
   return dio;
 }

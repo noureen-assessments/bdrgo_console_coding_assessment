@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../connectivity/presentation/widgets/connection_restored_listener.dart';
+import '../../../maintenance/presentation/widgets/maintenance_ended_listener.dart';
 import '../bloc/auth/auth_bloc.dart';
 import 'session_restore_view.dart';
 
@@ -23,10 +24,16 @@ class AuthGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConnectionRestoredListener(
-      onRestored: () =>
-          context.read<AuthBloc>().add(const AuthConnectionRestored()),
-      child: _buildSession(),
+      onRestored: () => _retryRestore(context),
+      child: MaintenanceEndedListener(
+        onEnded: () => _retryRestore(context),
+        child: _buildSession(),
+      ),
     );
+  }
+
+  void _retryRestore(BuildContext context) {
+    context.read<AuthBloc>().add(const AuthConnectionRestored());
   }
 
   Widget _buildSession() {

@@ -53,6 +53,15 @@ final class SseClientImpl implements SseClient {
     yield* _statusChanges.stream;
   }
 
+  @override
+  void reconnectNow() {
+    final timer = _retryTimer;
+    if (timer == null || !timer.isActive) return;
+    timer.cancel();
+    _attempt = 0;
+    _connect();
+  }
+
   Future<void> _connect() async {
     _setStatus(SseStatus.connecting);
     final token = await _tokenStorage.getToken();

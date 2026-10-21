@@ -34,7 +34,7 @@ abstract final class ApiErrorParser {
     return _build(
       error[ApiErrorKeys.code],
       _message(error[ApiErrorKeys.message]),
-      _asMap(error[ApiErrorKeys.details]),
+      _asMap(error[ApiErrorKeys.details] ?? error),
       statusCode,
     );
   }

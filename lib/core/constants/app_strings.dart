@@ -158,6 +158,21 @@ abstract final class AppStrings {
 
   static String alertSummary(String type, String message) => '$type: $message';
 
+  static const maintenancePlanned = 'Planned maintenance';
+  static const maintenanceUnavailable = 'Service unavailable';
+  static const maintenanceAutoRecover =
+      "You're still signed in. The console comes back by itself when the "
+      'service is up.';
+  static const durationUnderMinute = 'less than a minute';
+
+  static String maintenanceSince(String time, String duration) =>
+      'Since $time · $duration';
+
+  static String durationMinutes(int minutes) => '$minutes min';
+
+  static String durationHours(int hours, int minutes) =>
+      '$hours h $minutes min';
+
   static String criticalAlerts(int count) => '$count critical alerts';
 
   static String refundable(String amount) => 'Refundable: $amount';

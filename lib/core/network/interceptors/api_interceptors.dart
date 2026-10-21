@@ -3,7 +3,10 @@ import 'package:dio/dio.dart';
 import '../../constants/api_error_constants.dart';
 import '../../constants/api_headers.dart';
 import '../../constants/log_constants.dart';
+import '../../errors/api_error_parser.dart';
+import '../../errors/failures.dart';
 import '../../session/access_denied_notifier.dart';
+import '../../session/maintenance_notifier.dart';
 import '../../session/session_expiry_notifier.dart';
 import '../../storage/token_storage.dart';
 import '../../utils/logger.dart';
@@ -36,6 +39,23 @@ final class AuthInterceptor extends Interceptor {
       final status = err.response?.statusCode;
       if (status == ApiStatusCodes.unauthorized) _sessionExpiry.notify();
       if (status == ApiStatusCodes.forbidden) _accessDenied.notify();
+    }
+    handler.next(err);
+  }
+}
+
+
+final class MaintenanceInterceptor extends Interceptor {
+  MaintenanceInterceptor(this._maintenance);
+
+  final MaintenanceNotifier _maintenance;
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    final status = err.response?.statusCode;
+    if (status == ApiStatusCodes.serviceUnavailable) {
+      final failure = ApiErrorParser.fromDioException(err);
+      if (failure is MaintenanceFailure) _maintenance.notify(failure);
     }
     handler.next(err);
   }

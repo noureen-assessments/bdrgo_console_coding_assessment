@@ -4,6 +4,8 @@ abstract interface class SseClient {
   Stream<SseMessage> get messages;
 
   Stream<SseStatus> get status;
+
+  void reconnectNow();
 }
 
 enum SseStatus {

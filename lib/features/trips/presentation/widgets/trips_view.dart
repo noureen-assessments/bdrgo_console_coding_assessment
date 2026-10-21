@@ -6,6 +6,7 @@ import '../../../../config/theme/app_text_styles.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/number_formatters.dart';
 import '../../../../core/utils/responsive.dart';
+import '../../../maintenance/presentation/widgets/maintenance_ended_listener.dart';
 import '../bloc/trips/trips_bloc.dart';
 import 'trip_filter_bar.dart';
 import 'trips_body.dart';
@@ -15,6 +16,14 @@ class TripsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MaintenanceEndedListener(
+      onEnded: () =>
+          context.read<TripsBloc>().add(const TripsRefreshRequested()),
+      child: _buildContent(),
+    );
+  }
+
+  Widget _buildContent() {
     return BlocBuilder<TripsBloc, TripsState>(
       builder: (context, state) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

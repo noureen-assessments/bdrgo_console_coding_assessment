@@ -219,7 +219,21 @@ Every feature has the same folders (`data`, `domain`, `presentation`) and an
 | Acknowledged by anyone | The alert leaves the banner and the dialog; the dialog closes after the last one |
 | Created only while signed in with `alert:read` | Signing out or losing the permission closes it, so the next user starts empty |
 
-### Connectivity
+### Maintenance and connectivity (M7)
+
+**Maintenance**
+
+| Added | Why |
+| --- | --- |
+| One Dio interceptor for every `503` | REST, GraphQL and the `/api/me` check that SSE and the WebSocket run after a refused connection all pass through it, so any of them starts maintenance |
+| Maintenance screen over the page | Shows the reason, the server's message and since when (for example "Since 14:05 · 12 min"); the page stays underneath, so the user lands back where they were |
+| Poll `GET /api/health` with `Backoff` | The first wait is the server's `retryAfterSeconds`, then 1 s doubling to 30 s; a network error while the API restarts counts as still down |
+| Recovers by itself when health returns `200` | The screen goes away and SSE and the WebSocket reconnect at once instead of waiting out their backoff |
+| User stays signed in | A `503` never signs out; if the session could not be restored during maintenance, it is restored again when the API is back |
+| Stale data refreshed | Dashboard KPIs and chart, the alerts feed, the trips list (with its filters) and the open trip detail reload; the live map needs nothing, its snapshot comes every 2 s |
+| Dropped realtime while the API is up | Only the light "Reconnecting" chip on the page, not the maintenance screen |
+
+**Offline**
 
 | Added | Why |
 | --- | --- |
@@ -255,8 +269,8 @@ Every feature has the same folders (`data`, `domain`, `presentation`) and an
 
 **Design patterns used:** Registry (`NavDestinations`), Adapter
 (`AuthBlocSessionAccess`, `SseTransport`), Guard (`PermissionGate`), Observer
-(shared SSE stream), Command (`TripAction`), Repository and Dependency
-Inversion throughout.
+(shared SSE stream, `MaintenanceNotifier`), Command (`TripAction`), Repository
+and Dependency Inversion throughout.
 
 ## Packages
 
