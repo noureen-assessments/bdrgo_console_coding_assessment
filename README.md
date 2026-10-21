@@ -96,7 +96,7 @@ Every feature has the same folders (`data`, `domain`, `presentation`) and an
 | --- | --- |
 | Sign-in page (`SignInBloc`) | Signs in over REST and shows the server's own error message (wrong password, banned user) |
 | `AuthBloc` and `AuthGate` | Restores the session with `GET /api/me` before any page is built, so a refresh keeps the user signed in |
-| Sign-out over REST | The token is revoked on the server, not only forgotten locally |
+| Sign-out over REST | The token is revoked on the server when it can be reached, and always forgotten on this device, even offline |
 | One `401` path | Any `401` from any transport signs the user out once and closes the pages, which also closes their live connections |
 
 ### Role-aware shell (M2)
