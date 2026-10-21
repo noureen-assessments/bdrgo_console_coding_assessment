@@ -85,6 +85,11 @@ abstract final class AppStyles {
     color: AppColors.mutedText,
   );
 
+  static final revenueValue = AppTextStyles.kpiValue.copyWith(
+    color: AppColors.revenueValue,
+    fontWeight: FontWeight.w700,
+  );
+
   static final chartTooltipText = AppTextStyles.caption.copyWith(
     color: AppColors.onChartTooltip,
   );
