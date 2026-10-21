@@ -26,6 +26,9 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
        super(const TripsLoading(TripFilter())) {
     on<TripsStarted>(_onStarted);
     on<TripsFilterChanged>(_onFilterChanged, transformer: restartable());
+    on<TripsRefreshRequested>((event, emit) {
+      add(TripsFilterChanged(state.filter));
+    });
     on<TripsNextPageRequested>(_onNextPageRequested, transformer: droppable());
     on<TripsTripChanged>(_onTripChanged);
   }

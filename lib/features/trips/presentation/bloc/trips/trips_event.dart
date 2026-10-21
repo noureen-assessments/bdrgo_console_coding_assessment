@@ -14,6 +14,10 @@ final class TripsFilterChanged extends TripsEvent {
   final TripFilter filter;
 }
 
+final class TripsRefreshRequested extends TripsEvent {
+  const TripsRefreshRequested();
+}
+
 final class TripsNextPageRequested extends TripsEvent {
   const TripsNextPageRequested();
 }
