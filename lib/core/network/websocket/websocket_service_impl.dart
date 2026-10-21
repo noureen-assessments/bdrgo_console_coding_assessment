@@ -61,6 +61,15 @@ final class WebSocketServiceImpl implements WebSocketService {
     yield* _statusChanges.stream;
   }
 
+  @override
+  void reconnectNow() {
+    final timer = _retryTimer;
+    if (timer == null || !timer.isActive) return;
+    timer.cancel();
+    _attempt = 0;
+    _connect();
+  }
+
   bool get _hasListeners {
     for (final controller in _topics.values) {
       if (controller.hasListener) return true;
