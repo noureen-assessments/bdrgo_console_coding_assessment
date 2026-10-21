@@ -65,18 +65,36 @@ class KpiTileGrid extends StatelessWidget {
     final columns = context.isDesktop
         ? AppDimensions.kpiColumnsDesktop
         : AppDimensions.kpiColumnsMobile;
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        const gap = AppDimensions.spaceMd;
-        final width = (constraints.maxWidth - gap * (columns - 1)) / columns;
-        return Wrap(
-          spacing: gap,
-          runSpacing: gap,
-          children: tiles
-              .map((tile) => SizedBox(width: width, child: tile))
-              .toList(),
-        );
-      },
+    final rows = <Widget>[];
+    for (var start = 0; start < tiles.length; start += columns) {
+      if (rows.isNotEmpty) {
+        rows.add(const SizedBox(height: AppDimensions.spaceMd));
+      }
+      rows.add(_row(tiles, start, columns));
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: rows,
+    );
+  }
+
+  static Widget _row(List<Widget> tiles, int start, int columns) {
+    final cells = <Widget>[];
+    for (var index = start; index < start + columns; index++) {
+      if (cells.isNotEmpty) {
+        cells.add(const SizedBox(width: AppDimensions.spaceMd));
+      }
+      if (index < tiles.length) {
+        cells.add(Expanded(child: tiles[index]));
+      } else {
+        cells.add(const Spacer());
+      }
+    }
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: cells,
+      ),
     );
   }
 }
