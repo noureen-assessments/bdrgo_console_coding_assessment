@@ -8,9 +8,10 @@ import '../../../auth/presentation/widgets/sign_out_button.dart';
 import 'signed_in_user_label.dart';
 
 class ShellAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ShellAppBar({required this.user, super.key});
+  const ShellAppBar({required this.user, required this.onLogoTap, super.key});
 
   final CurrentUser user;
+  final VoidCallback onLogoTap;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -23,17 +24,24 @@ class ShellAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppLogo(height: AppDimensions.logoAppBarCompact),
+                _logo(AppDimensions.logoAppBarCompact),
                 SignedInUserLabel(user: user),
               ],
             )
-          : const AppLogo(height: AppDimensions.logoAppBar),
+          : _logo(AppDimensions.logoAppBar),
       actions: [
         if (!isMobile) Center(child: SignedInUserLabel(user: user)),
         const SizedBox(width: AppDimensions.spaceXs),
         const SignOutButton(),
         const SizedBox(width: AppDimensions.spaceXs),
       ],
+    );
+  }
+
+  Widget _logo(double height) {
+    return InkWell(
+      onTap: onLogoTap,
+      child: AppLogo(height: height),
     );
   }
 }
