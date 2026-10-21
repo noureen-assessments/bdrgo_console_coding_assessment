@@ -27,6 +27,10 @@ abstract final class AppDimensions {
 
   static const int kpiColumnsMobile = 2;
   static const int kpiColumnsDesktop = 3;
+  static const double kpiAccentBar = 4;
+
+  static const double cardShadowBlur = 12;
+  static const double cardShadowOffset = 4;
 
   static const double chartHeight = 260;
   static const double chartLineWidth = 2;
