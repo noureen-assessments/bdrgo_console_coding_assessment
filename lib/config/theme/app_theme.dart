@@ -15,6 +15,7 @@ abstract final class AppTheme {
     scaffoldBackgroundColor: AppColors.surface,
     cardTheme: const CardThemeData(color: AppColors.surface),
     dialogTheme: const DialogThemeData(backgroundColor: AppColors.surface),
+    fontFamily: AppTextStyles.fontFamily,
     textTheme: AppTextStyles.textTheme,
     inputDecorationTheme: const InputDecorationTheme(
       border: AppStyles.inputBorder,
