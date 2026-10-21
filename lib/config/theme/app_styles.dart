@@ -51,6 +51,24 @@ abstract final class AppStyles {
     color: AppColors.primary,
   );
 
+  static BoxDecoration severityBadge(Color color) => BoxDecoration(
+    border: Border.all(color: color),
+    borderRadius: BorderRadius.circular(AppDimensions.radiusSm),
+  );
+
+  static TextStyle severityBadgeText(Color color) =>
+      AppTextStyles.caption.copyWith(color: color);
+
+  static const acknowledgedOpacity = 0.5;
+
+  static final criticalBannerText = AppTextStyles.body.copyWith(
+    color: AppColors.onAlertCritical,
+  );
+
+  static final criticalBannerButton = TextButton.styleFrom(
+    foregroundColor: AppColors.onAlertCritical,
+  );
+
   static final chartTooltipText = AppTextStyles.caption.copyWith(
     color: AppColors.onChartTooltip,
   );

@@ -48,7 +48,7 @@ class DriverDetailModel extends DriverDetail {
       'rating': rating,
       'status': status.value,
       'vehicle': vehicle.toJson(),
-      'currentTrip': trip == null ? null : trip.toJson(),
+      'currentTrip': trip?.toJson(),
     };
   }
 }

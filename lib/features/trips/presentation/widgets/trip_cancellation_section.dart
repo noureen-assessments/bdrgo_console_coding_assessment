@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_strings.dart';
-import '../../domain/entities/trip_detail.dart';
 import '../../../../shared/widgets/detail_row.dart';
+import '../../domain/entities/trip_detail.dart';
 import 'trip_detail_section.dart';
 
 class TripCancellationSection extends StatelessWidget {

@@ -71,7 +71,7 @@ abstract final class ApiErrorParser {
       ),
       ApiErrorCodes.forbidden => ForbiddenFailure(message, statusCode: status),
       ApiErrorCodes.notFound => NotFoundFailure(message, statusCode: status),
-      ApiErrorCodes.invalidState => InvalidStateFailure(
+      ApiErrorCodes.invalidState || ApiErrorCodes.conflict => InvalidStateFailure(
         message,
         statusCode: status,
       ),

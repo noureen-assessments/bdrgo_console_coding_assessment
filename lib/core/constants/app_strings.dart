@@ -67,7 +67,7 @@ abstract final class AppStrings {
   static const anyDate = 'Any date';
   static const clearDates = 'Clear dates';
   static const loadMore = 'Load more';
-  static const loadMoreFailed = "Couldn't load more trips";
+  static const loadMoreFailed = "Couldn't load more";
   static const noDriverYet = 'No driver yet';
   static const tripDetailTitle = 'Trip details';
   static const tripNotFound = 'Trip not found';
@@ -139,6 +139,26 @@ abstract final class AppStrings {
   static const driverNotFoundDetail =
       'They may belong to another city, or they are no longer active.';
   static const driverLoadFailed = "Couldn't load the driver";
+
+  static const alertInfo = 'Info';
+  static const alertWarning = 'Warning';
+  static const alertCritical = 'Critical';
+  static const alertSos = 'SOS';
+  static const alertNoDriverAvailable = 'No driver available';
+  static const alertHighDemand = 'High demand';
+  static const alertRefundIssued = 'Refund issued';
+  static const alertAcknowledged = 'Acknowledged';
+  static const acknowledge = 'Acknowledge';
+  static const alertAcknowledgedDone = 'Alert acknowledged';
+  static const view = 'View';
+  static const dismiss = 'Dismiss';
+  static const criticalAlert = 'Critical alert';
+  static const alertsLoadFailed = "Couldn't load alerts";
+  static const noAlerts = 'No alerts right now';
+
+  static String alertSummary(String type, String message) => '$type: $message';
+
+  static String criticalAlerts(int count) => '$count critical alerts';
 
   static String refundable(String amount) => 'Refundable: $amount';
 

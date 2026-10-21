@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_strings.dart';
+import '../../features/alerts/presentation/pages/alerts_page.dart';
 import '../../features/auth/domain/entities/permission.dart';
 import '../../features/auth/domain/services/session_access.dart';
 import '../../features/auth/presentation/pages/sign_in_page.dart';
@@ -91,6 +92,7 @@ final class AppRouter {
     if (destination == NavDestinations.dashboard) return const DashboardPage();
     if (destination == NavDestinations.trips) return const TripsPage();
     if (destination == NavDestinations.liveMap) return const LiveMapPage();
+    if (destination == NavDestinations.alerts) return const AlertsPage();
     return SectionPlaceholder(destination: destination);
   }
 

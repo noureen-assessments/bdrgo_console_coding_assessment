@@ -94,7 +94,7 @@ final class WebSocketServiceImpl implements WebSocketService {
     final channel = _connector(_urls.webSocket(token: token));
     _channel = channel;
     _connection = channel.stream.listen(_onData, onError: (Object _) {}, onDone: _onClosed,);
-    channel.ready.then((_) => _onOpened(channel), onError: (Object _) {});
+    unawaited(channel.ready.then((_) => _onOpened(channel), onError: (Object _) {}));
   }
 
   void _onOpened(WebSocketChannel channel) {

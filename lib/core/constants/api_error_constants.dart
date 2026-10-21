@@ -14,6 +14,7 @@ abstract final class ApiErrorCodes {
   static const forbidden = 'FORBIDDEN';
   static const notFound = 'NOT_FOUND';
   static const invalidState = 'INVALID_STATE';
+  static const conflict = 'CONFLICT';
   static const validationFailed = 'VALIDATION_FAILED';
   static const maintenance = 'MAINTENANCE';
 }

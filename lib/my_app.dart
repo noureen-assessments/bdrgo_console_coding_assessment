@@ -5,6 +5,7 @@ import 'config/flavor/flavor_config.dart';
 import 'config/routing/app_router.dart';
 import 'config/theme/app_theme.dart';
 import 'core/constants/app_strings.dart';
+import 'features/alerts/presentation/widgets/critical_alerts_scope.dart';
 import 'features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'features/auth/presentation/widgets/auth_gate.dart';
 import 'features/connectivity/presentation/bloc/connectivity_bloc.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
     final app = Column(
       children: [
         const OfflineBanner(),
+        CriticalAlertsScope(navigatorKey: router.navigatorKey),
         Expanded(
           child: AuthGate(
             onSignedIn: router.showConsole,
