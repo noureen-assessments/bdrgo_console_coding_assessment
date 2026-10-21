@@ -8,10 +8,8 @@ final class AlertsStarted extends AlertsEvent {
   const AlertsStarted();
 }
 
-final class AlertsFilterChanged extends AlertsEvent {
-  const AlertsFilterChanged({required this.openOnly});
-
-  final bool openOnly;
+final class AlertsRefreshRequested extends AlertsEvent {
+  const AlertsRefreshRequested();
 }
 
 final class AlertsNextPageRequested extends AlertsEvent {

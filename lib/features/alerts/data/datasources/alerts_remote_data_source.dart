@@ -46,17 +46,10 @@ final class AlertsRemoteDataSourceImpl implements AlertsRemoteDataSource {
   Stream<bool> watchLive() =>
       _sse.status.map((status) => status == SseStatus.open).distinct();
 
-  static Map<String, Object?> _queryParameters(AlertPageRequest request) {
-    final parameters = <String, Object?>{
-      'page': request.page,
-      'pageSize': request.pageSize,
-    };
-    final acknowledged = request.acknowledged;
-    if (acknowledged != null) {
-      parameters['acknowledged'] = acknowledged.toString();
-    }
-    return parameters;
-  }
+  static Map<String, Object?> _queryParameters(AlertPageRequest request) => {
+    'page': request.page,
+    'pageSize': request.pageSize,
+  };
 
   static List<AlertModel> _parseAlert(SseMessage message) {
     try {

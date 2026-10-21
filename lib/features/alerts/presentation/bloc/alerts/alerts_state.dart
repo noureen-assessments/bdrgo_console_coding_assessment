@@ -1,41 +1,37 @@
 part of 'alerts_bloc.dart';
 
 sealed class AlertsState extends Equatable {
-  const AlertsState(this.openOnly, {this.isLive = false});
+  const AlertsState({this.isLive = false});
 
-  final bool openOnly;
   final bool isLive;
 
   AlertsState withLive(bool isLive);
 
   @override
-  List<Object?> get props => [openOnly, isLive];
+  List<Object?> get props => [isLive];
 }
 
 final class AlertsLoading extends AlertsState {
-  const AlertsLoading(super.openOnly, {super.isLive});
+  const AlertsLoading({super.isLive});
 
   @override
-  AlertsLoading withLive(bool isLive) =>
-      AlertsLoading(openOnly, isLive: isLive);
+  AlertsLoading withLive(bool isLive) => AlertsLoading(isLive: isLive);
 }
 
 final class AlertsError extends AlertsState {
-  const AlertsError(super.openOnly, this.message, {super.isLive});
+  const AlertsError(this.message, {super.isLive});
 
   final String message;
 
   @override
-  AlertsError withLive(bool isLive) =>
-      AlertsError(openOnly, message, isLive: isLive);
+  AlertsError withLive(bool isLive) => AlertsError(message, isLive: isLive);
 
   @override
-  List<Object?> get props => [openOnly, isLive, message];
+  List<Object?> get props => [isLive, message];
 }
 
 final class AlertsLoaded extends AlertsState {
   const AlertsLoaded(
-    super.openOnly,
     this.page, {
     super.isLive,
     this.isLoadingMore = false,
@@ -51,7 +47,6 @@ final class AlertsLoaded extends AlertsState {
 
   @override
   AlertsLoaded withLive(bool isLive) => AlertsLoaded(
-    openOnly,
     page,
     isLive: isLive,
     isLoadingMore: isLoadingMore,
@@ -59,11 +54,5 @@ final class AlertsLoaded extends AlertsState {
   );
 
   @override
-  List<Object?> get props => [
-    openOnly,
-    isLive,
-    page,
-    isLoadingMore,
-    nextPageError,
-  ];
+  List<Object?> get props => [isLive, page, isLoadingMore, nextPageError];
 }

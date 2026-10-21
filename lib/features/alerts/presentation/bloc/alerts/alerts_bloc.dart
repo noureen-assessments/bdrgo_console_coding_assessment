@@ -8,5 +8,5 @@ part 'alerts_event.dart';
 part 'alerts_state.dart';
 
 class AlertsBloc extends Bloc<AlertsEvent, AlertsState> {
-  AlertsBloc() : super(const AlertsLoading(true));
+  AlertsBloc() : super(const AlertsLoading());
 }
