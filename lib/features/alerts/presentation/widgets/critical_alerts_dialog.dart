@@ -38,6 +38,7 @@ class CriticalAlertsDialog extends StatelessWidget {
             title: alerts.length == 1
                 ? AppStrings.criticalAlert
                 : AppStrings.criticalAlerts(alerts.length),
+            onClose: () => Navigator.pop(context),
           ),
           titlePadding: EdgeInsets.zero,
           clipBehavior: Clip.antiAlias,
@@ -46,12 +47,6 @@ class CriticalAlertsDialog extends StatelessWidget {
             width: AppDimensions.formMaxWidth,
             child: Column(mainAxisSize: MainAxisSize.min, children: rows),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(AppStrings.close),
-            ),
-          ],
         );
       },
     );
