@@ -37,9 +37,6 @@ abstract final class AppColors {
 
   static const revenueValue = Color(0xFFEA4335);
 
-  static const newRow = Color(0xFFE3F4E8);
-  static const updatedRow = Color(0xFFFFF4D6);
-
   static const tripRequested = Color(0xFFB26A00);
   static const tripAssigned = Color(0xFF6A4BC4);
   static const tripInProgress = Color(0xFF1A73E8);

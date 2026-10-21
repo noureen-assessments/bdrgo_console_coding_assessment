@@ -13,16 +13,13 @@ import 'trip_actions.dart';
 import 'trip_status_badge.dart';
 
 class TripListTile extends StatelessWidget {
-  const TripListTile({required this.trip, this.mark, super.key});
+  const TripListTile({required this.trip, super.key});
 
   final TripSummary trip;
-
-  final TripMark? mark;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: mark?.color,
       onTap: () => Navigator.pushNamed(
         context,
         RouteNames.kTripDetail,
