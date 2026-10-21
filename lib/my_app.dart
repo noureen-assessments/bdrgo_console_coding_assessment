@@ -11,6 +11,7 @@ import 'features/auth/presentation/widgets/auth_gate.dart';
 import 'features/connectivity/presentation/bloc/connectivity_bloc.dart';
 import 'features/connectivity/presentation/widgets/offline_banner.dart';
 import 'features/maintenance/presentation/bloc/maintenance_bloc.dart';
+import 'features/maintenance/presentation/widgets/maintenance_scope.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -56,10 +57,12 @@ class MyApp extends StatelessWidget {
         const OfflineBanner(),
         CriticalAlertsScope(navigatorKey: router.navigatorKey),
         Expanded(
-          child: AuthGate(
-            onSignedIn: router.showConsole,
-            onSignedOut: router.showSignIn,
-            child: navigator ?? const SizedBox.shrink(),
+          child: MaintenanceScope(
+            child: AuthGate(
+              onSignedIn: router.showConsole,
+              onSignedOut: router.showSignIn,
+              child: navigator ?? const SizedBox.shrink(),
+            ),
           ),
         ),
       ],
