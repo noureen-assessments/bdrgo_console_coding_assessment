@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../shared/widgets/no_data_found_widget.dart';
+import '../../../maintenance/presentation/widgets/maintenance_ended_listener.dart';
 import '../bloc/trip_detail/trip_detail_bloc.dart';
 import 'trip_detail_content.dart';
 
@@ -14,6 +15,14 @@ class TripDetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MaintenanceEndedListener(
+      onEnded: () =>
+          context.read<TripDetailBloc>().add(TripDetailRequested(tripId)),
+      child: _buildContent(),
+    );
+  }
+
+  Widget _buildContent() {
     return BlocBuilder<TripDetailBloc, TripDetailState>(
       builder: (context, state) => switch (state) {
         TripDetailLoading() => const Center(child: CircularProgressIndicator()),
