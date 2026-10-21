@@ -148,6 +148,8 @@ abstract final class AppStrings {
   static const alertHighDemand = 'High demand';
   static const alertRefundIssued = 'Refund issued';
   static const alertAcknowledged = 'Acknowledged';
+  static const alertsLoadFailed = "Couldn't load alerts";
+  static const noAlerts = 'No alerts right now';
 
   static String refundable(String amount) => 'Refundable: $amount';
 
