@@ -59,6 +59,8 @@ abstract final class AppStyles {
   static TextStyle severityBadgeText(Color color) =>
       AppTextStyles.caption.copyWith(color: color);
 
+  static const acknowledgedOpacity = 0.5;
+
   static final chartTooltipText = AppTextStyles.caption.copyWith(
     color: AppColors.onChartTooltip,
   );
