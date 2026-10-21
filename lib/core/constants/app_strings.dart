@@ -160,6 +160,8 @@ abstract final class AppStrings {
 
   static const maintenancePlanned = 'Planned maintenance';
   static const maintenanceUnavailable = 'Service unavailable';
+  static const maintenanceMessage =
+      'The service is under maintenance. Please check back shortly.';
 
   static String criticalAlerts(int count) => '$count critical alerts';
 
