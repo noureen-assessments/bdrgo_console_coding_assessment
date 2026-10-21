@@ -19,6 +19,9 @@ abstract final class AppDimensions {
 
   static const double statusDot = 8;
 
+  static const double logoAppBar = 32;
+  static const double logoAppBarCompact = 24;
+
   static const double driverMarker = 28;
   static const double driverMarkerBorder = 2;
   static const double driverMarkerIcon = 16;

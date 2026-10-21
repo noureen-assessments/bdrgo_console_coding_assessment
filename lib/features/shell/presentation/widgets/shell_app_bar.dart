@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../config/theme/app_dimensions.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/responsive.dart';
+import '../../../../shared/widgets/app_logo.dart';
 import '../../../auth/domain/entities/current_user.dart';
 import '../../../auth/presentation/widgets/sign_out_button.dart';
 import 'signed_in_user_label.dart';
@@ -23,11 +23,11 @@ class ShellAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(AppStrings.appName),
+                const AppLogo(height: AppDimensions.logoAppBarCompact),
                 SignedInUserLabel(user: user),
               ],
             )
-          : const Text(AppStrings.appName),
+          : const AppLogo(height: AppDimensions.logoAppBar),
       actions: [
         if (!isMobile) Center(child: SignedInUserLabel(user: user)),
         const SizedBox(width: AppDimensions.spaceXs),
