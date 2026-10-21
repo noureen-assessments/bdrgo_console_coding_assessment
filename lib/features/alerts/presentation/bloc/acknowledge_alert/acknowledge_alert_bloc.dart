@@ -11,9 +11,7 @@ part 'acknowledge_alert_state.dart';
 
 class AcknowledgeAlertBloc
     extends Bloc<AcknowledgeAlertEvent, AcknowledgeAlertState> {
-  AcknowledgeAlertBloc({required AcknowledgeAlertUseCase acknowledgeAlert})
-    : _acknowledgeAlert = acknowledgeAlert,
-      super(const AcknowledgeAlertIdle()) {
+  AcknowledgeAlertBloc({required AcknowledgeAlertUseCase acknowledgeAlert}): _acknowledgeAlert = acknowledgeAlert, super(const AcknowledgeAlertIdle()) {
     on<AcknowledgeAlertSubmitted>(_onSubmitted, transformer: droppable());
   }
 
