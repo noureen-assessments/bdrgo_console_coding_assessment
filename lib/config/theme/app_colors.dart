@@ -17,6 +17,8 @@ abstract final class AppColors {
   static const chartCancelled = Color(0xFFD93025);
   static const chartTooltip = Color(0xFF263238);
   static const onChartTooltip = Color(0xFFFFFFFF);
+  static const chartGrid = Color(0xFFEDEFF3);
+  static const chartAxis = Color(0xFFD5D8DE);
 
   static const pageBackground = Color(0xFFF7F8FC);
   static const cardSurface = Color(0xFFFFFFFF);
