@@ -22,6 +22,7 @@ abstract final class AppAssets {
 
   static const IconData search = Icons.search;
   static const IconData clear = Icons.close;
+  static const IconData close = Icons.close;
   static const IconData dateRange = Icons.date_range_outlined;
 
   static const IconData cancelTrip = Icons.block;
