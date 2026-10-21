@@ -17,8 +17,6 @@ abstract interface class AlertsRemoteDataSource {
 final class AlertsRemoteDataSourceImpl implements AlertsRemoteDataSource {
   const AlertsRemoteDataSourceImpl(this._api, this._sse);
 
-  static const pageSize = 20;
-
   final ApiConsumer _api;
   final SseClient _sse;
 
@@ -51,7 +49,7 @@ final class AlertsRemoteDataSourceImpl implements AlertsRemoteDataSource {
   static Map<String, Object?> _queryParameters(AlertPageRequest request) {
     final parameters = <String, Object?>{
       'page': request.page,
-      'pageSize': pageSize,
+      'pageSize': request.pageSize,
     };
     final acknowledged = request.acknowledged;
     if (acknowledged != null) {
