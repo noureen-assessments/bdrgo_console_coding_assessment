@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import '../../config/env/env.dart';
 import '../../config/flavor/flavor_config.dart';
 import '../../config/routing/app_router.dart';
+import '../../features/alerts/alerts_injection.dart';
 import '../../features/auth/auth_injection.dart';
 import '../../features/connectivity/connectivity_injection.dart';
 import '../../features/dashboard/dashboard_injection.dart';
@@ -80,6 +81,7 @@ Future<void> initCore(FlavorConfig flavorConfig) async {
   initDashboard();
   initTrips();
   initLiveMap();
+  initAlerts();
 
   sl.registerLazySingleton<AppRouter>(() => AppRouter(session: sl()));
 }
