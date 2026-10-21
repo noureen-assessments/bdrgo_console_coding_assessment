@@ -81,7 +81,7 @@ Every feature has the same folders (`data`, `domain`, `presentation`) and an
 | `ApiConsumer` / `DioConsumer` (REST) and `GraphQLConsumer` | One place for HTTP; both share one Dio with the auth header and logging |
 | `SseClient` over the browser's `EventSource` | One shared live connection that every feature listens to |
 | `WebSocketService` (`web_socket_channel`) | One shared WebSocket; a feature listens to a topic with `watch(topic)` and the service subscribes, reconnects and subscribes again |
-| Sealed `Failure` types and `ApiErrorParser` | REST `error.code` and GraphQL `extensions.code` become the same typed failures (`Unauthenticated`, `Forbidden`, `NotFound`, `InvalidState`, `Validation`, `Maintenance`, `Network`, `Server`) |
+| Sealed `Failure` types and `ApiErrorParser` | REST `error.code` and GraphQL `extensions.code` become the same typed failures (`Unauthenticated`, `Forbidden`, `NotFound`, `InvalidState`, `Validation`, `Maintenance`, `Network`, `Server`); both `409` codes, `INVALID_STATE` and `CONFLICT`, become `InvalidState` |
 | `safeCall` | Repositories return `Either<Failure, T>` instead of throwing |
 | `SessionExpiryNotifier` / `AccessDeniedNotifier` | Every transport reports a `401` or `403` to one place |
 | `TokenStorage` (`AppSecureStorage`, `InMemoryTokenStorage`) | The token is stored encrypted; the rest of the app depends only on the interface |
@@ -185,6 +185,39 @@ Every feature has the same folders (`data`, `domain`, `presentation`) and an
 | Driver panel (GraphQL `driver(id)`) | Details, vehicle and current trip in one query; loading, not found and error with Retry |
 | Open trip | Opens the trip detail page, shown only with `trip:read` |
 | Panel beside the map on web, at the bottom on phones | The map keeps its zoom and position while the panel opens and closes |
+
+### Alerts (M6)
+
+**Feed**
+
+| Added | Why |
+| --- | --- |
+| REST `GET /api/alerts` | 20 alerts per page, newest first; the next page loads on scroll or **Load more** |
+| SSE `alert.created` / `alert.acknowledged` | Both events carry the full alert: a new one goes on top, a known one replaces its row |
+| Older events ignored | An alert never goes back from acknowledged to open, so a replayed event cannot undo it |
+| Repeated rows skipped | New alerts on top move the server's pages, so the next page can repeat rows already shown |
+| Acknowledged rows greyed | Open alerts stand out; acknowledged ones also say "Acknowledged" |
+| Severity badge | Info, warning and critical, each with its own color |
+| Loading, error with Retry, empty, "Live" / "Reconnecting" | Every state of the page is shown |
+
+**Acknowledge**
+
+| Added | Why |
+| --- | --- |
+| REST `POST /api/alerts/{id}/acknowledge` | The answer is the updated alert, so the row greys at once without a reload |
+| `PermissionGate` on the button | Shown only with `alert:acknowledge` and only on open alerts |
+| One small Bloc per button | Each row sends its own request; a double tap sends once |
+| `409` and other errors | The server's message is shown in a red snackbar; the row is fixed by the SSE event |
+
+**Critical alerts**
+
+| Added | Why |
+| --- | --- |
+| Red banner above every page | A new critical alert is seen wherever the user is, until it is dismissed or acknowledged |
+| Banner at the app root, not in the shell | Switching sections or opening a trip detail keeps the banner |
+| **View** opens a dialog | One alert, or a list of them, each with its details and an Acknowledge button |
+| Acknowledged by anyone | The alert leaves the banner and the dialog; the dialog closes after the last one |
+| Created only while signed in with `alert:read` | Signing out or losing the permission closes it, so the next user starts empty |
 
 ### Connectivity
 
