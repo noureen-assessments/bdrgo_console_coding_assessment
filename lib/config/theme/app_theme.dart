@@ -6,6 +6,7 @@ import 'app_text_styles.dart';
 
 abstract final class AppTheme {
   static ThemeData get lightTheme => ThemeData(
+    appBarTheme: const AppBarThemeData(backgroundColor: AppColors.surfaceContainer),
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary,
       primary: AppColors.primary,
