@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "badrgo console (DEV)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "deviceId": "chrome",
+      "args": ["--dart-define=API_URL=${env:API_URL}"]
+    },
+    {
+      "name": "badrgo console (DEV, cookie auth)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "deviceId": "chrome",
+      "args": [
+        "--dart-define=API_URL=${env:API_URL}",
+        "--dart-define=WEB_AUTH_MODE=cookie"
+      ]
+    },
+    {
+      "name": "badrgo console (ALPHA)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "program": "lib/main_alpha.dart",
+      "deviceId": "chrome",
+      "args": ["--dart-define=API_URL=${env:API_URL}"]
+    },
+    {
+      "name": "badrgo console (PROD)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "program": "lib/main_prod.dart",
+      "deviceId": "chrome",
+      "args": ["--dart-define=API_URL=${env:API_URL}"]
+    }
+  ]
+}
