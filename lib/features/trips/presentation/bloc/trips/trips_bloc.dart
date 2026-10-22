@@ -106,6 +106,10 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     final shown = latest.page.find(trip.id);
     if (shown != null) {
       if (trip.isOlderThan(shown)) return;
+      if (!latest.filter.shownStatuses.contains(trip.status)) {
+        emit(latest.withPage(latest.page.remove(trip.id)));
+        return;
+      }
       emit(latest.withPage(latest.page.replace(trip)));
     } else if (change.isNew && latest.filter.matches(trip)) {
       emit(latest.withPage(latest.page.addOnTop(trip)));
