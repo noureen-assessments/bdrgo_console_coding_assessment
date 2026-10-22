@@ -73,6 +73,8 @@ final class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
       return [TripChangeModel.fromSse(message)];
     } on TypeError {
       AppLogger.warning(LogMessages.sseBadFrame, name: LogTags.sse);
+    } on FormatException {
+      AppLogger.warning(LogMessages.sseBadFrame, name: LogTags.sse);
     }
     return const [];
   }
