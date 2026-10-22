@@ -48,7 +48,8 @@ class TripListTile extends StatelessWidget {
           TripActions(
             trip: trip,
             onTripChanged: () => context.read<TripsBloc>().add(
-              TripsTripChanged(TripChange(tripId: trip.id, isNew: false)),
+              TripsTripChanged(TripChange(tripId: trip.id, status: trip.status),
+              ),
             ),
           ),
           const SizedBox(width: AppDimensions.spaceXs),

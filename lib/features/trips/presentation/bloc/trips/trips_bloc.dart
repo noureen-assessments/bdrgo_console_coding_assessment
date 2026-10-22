@@ -93,7 +93,9 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     final change = event.change;
     final current = state;
     if (current is! TripsLoaded) return;
-    if (!change.isNew && !current.page.contains(change.tripId)) return;
+    final isShown = current.page.contains(change.tripId);
+    final fitsFilter = current.filter.shownStatuses.contains(change.status);
+    if (!isShown && !fitsFilter) return;
 
     final result = await _getTrip(change.tripId);
     final trip = result.fold((_) => null, (trip) => trip);
@@ -111,7 +113,7 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
         return;
       }
       emit(latest.withPage(latest.page.replace(trip)));
-    } else if (change.isNew && latest.filter.matches(trip)) {
+    } else if (latest.filter.matches(trip)) {
       emit(latest.withPage(latest.page.addOnTop(trip)));
     }
   }

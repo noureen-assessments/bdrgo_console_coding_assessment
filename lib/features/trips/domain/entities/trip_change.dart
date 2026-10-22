@@ -1,13 +1,15 @@
 import 'package:equatable/equatable.dart';
 
+import 'trip_status.dart';
+
 
 class TripChange extends Equatable {
-  const TripChange({required this.tripId, required this.isNew});
+  const TripChange({required this.tripId, required this.status});
 
   final String tripId;
 
-  final bool isNew;
+  final TripStatus status;
 
   @override
-  List<Object?> get props => [tripId, isNew];
+  List<Object?> get props => [tripId, status];
 }
