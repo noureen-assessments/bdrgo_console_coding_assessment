@@ -57,6 +57,19 @@ class TripPage extends Equatable {
     );
   }
 
+  TripPage remove(String tripId) {
+    final kept = <TripSummary>[];
+    for (final row in trips) {
+      if (row.id != tripId) kept.add(row);
+    }
+    return TripPage(
+      trips: kept,
+      totalCount: totalCount - 1,
+      endCursor: endCursor,
+      hasNextPage: hasNextPage,
+    );
+  }
+
   TripPage addOnTop(TripSummary trip) => TripPage(
     trips: [trip, ...trips],
     totalCount: totalCount + 1,
